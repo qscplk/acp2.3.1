@@ -1,0 +1,28 @@
+<aui-dialog-header>
+  {{ 'update' | translate }}
+</aui-dialog-header>
+<aui-dialog-content>
+  <alo-integrate-form 
+    *ngIf="toolService"
+    #integrateForm=alo-integrate-form
+    [toolService]="toolService"
+    (saved)="saved($event)"
+    (statusChange)="statusChange($event)"
+  >
+  </alo-integrate-form>
+</aui-dialog-content>
+<aui-dialog-footer>
+  <div>
+    <button
+      aui-button="primary"
+      (click)="submit()"
+      [loading]="loading"
+      [disabled]="loading"
+    >
+      {{ 'update' | translate }}
+    </button>
+    <button aui-button [auiDialogClose]="null" [disabled]="loading">
+      {{ 'cancel' | translate }}
+    </button>
+  </div>
+</aui-dialog-footer>

@@ -1,0 +1,92 @@
+<aui-table
+  [dataSource]="data"
+  [trackBy]="trackByFn"
+>
+  <ng-container auiTableColumnDef="name">
+    <aui-table-header-cell
+      *auiTableHeaderCellDef
+    >
+      {{ 'code.repository_name' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      <img
+        class="repo-icon"
+        [src]="'icons/tool-chain/list/' + item.type.toLowerCase() + '.svg'"
+        alt="devops"
+      >
+      <span>{{ item.fullName }}</span>
+      <aui-icon
+        *ngIf="item.status?.phase === 'WaitingToDelete'"
+        class="warning-icon"
+        icon="basic:trash_s"
+        [auiTooltip]="item.status?.message"
+      ></aui-icon>
+      <aui-icon
+        *ngIf="item.status?.phase === 'Error'"
+        class="warning-icon"
+        icon="exclamation_circle_s"
+        [auiTooltip]="item.status?.message"
+      ></aui-icon>
+      <a
+        *ngIf="item.httpURL"
+        class="jump-icon"
+        [title]="'jump_to' | translate:{ name: item.type }"
+        [href]="item.httpURL"
+        target="_blank"
+      >
+        <aui-icon icon="basic:jump"></aui-icon>
+      </a>
+    </aui-table-cell>
+  </ng-container>
+
+  <ng-container auiTableColumnDef="address">
+    <aui-table-header-cell *auiTableHeaderCellDef>
+      {{ 'code.repository_address' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      <aui-tag
+        class="copy-tag"
+        type="info"
+        size="small"
+        [auiTooltipCopy]="item.cloneURL"
+        [auiTooltipCopyTip]="'[' + ('click_to_copy' | translate) + '] ' + item.cloneURL"
+        [auiTooltipCopySuccessTip]="'copy_success_tip' | translate"
+      >HTTPS</aui-tag>
+        <aui-tag
+          class="copy-tag"
+          type="info"
+          size="small"
+          [auiTooltipCopy]="item.sshURL"
+          [auiTooltipCopyTip]="'[' + ('click_to_copy' | translate) + '] ' + item.sshURL"
+          [auiTooltipCopySuccessTip]="'copy_success_tip' | translate"
+        >SSH</aui-tag>
+    </aui-table-cell>
+  </ng-container>
+
+  <ng-container auiTableColumnDef="capacity">
+    <aui-table-header-cell *auiTableHeaderCellDef>
+      {{ 'code.repository_used' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      {{ item.type.toLowerCase() === 'gitee' ? '-' : item.sizeHumanize.toUpperCase() }}
+    </aui-table-cell>
+  </ng-container>
+  <ng-container auiTableColumnDef="commit">
+    <aui-table-header-cell *auiTableHeaderCellDef>
+      {{ 'code.repository_commit' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      <div class="commit-info">
+        <span
+          *ngIf="item.commitID"
+          [auiTooltipCopy]="item.commitID"
+          [auiTooltipCopyTip]="'[' + ('click_to_copy' | translate) + '] ' + item.commitID"
+          [auiTooltipCopySuccessTip]="'copy_success_tip' | translate"
+        >{{ (item.commitID || '').substr(0, 7) || '-' }}</span>
+        <span>{{ item.commit | aclRelativeTime }}</span>
+      </div>
+    </aui-table-cell>
+  </ng-container>
+  <aui-table-header-row *auiTableHeaderRowDef="columns"></aui-table-header-row>
+  <aui-table-row *auiTableRowDef="let row; columns: columns"></aui-table-row>
+</aui-table>

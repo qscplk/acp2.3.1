@@ -1,0 +1,62 @@
+@import 'variables';
+@import '~@alauda/ui/theme/_pattern';
+
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  .list-header {
+    @include table-card-header;
+  }
+
+  .app-status-container {
+    display: flex;
+    .app-status {
+      display: flex;
+      align-items: center;
+      width: 200px;
+      margin-right: 20px;
+      .status-gauge-bar {
+        width: 150px;
+        margin-right: 5px;
+        padding-bottom: 7px;
+      }
+    }
+  }
+
+  .address-field {
+    display: flex;
+  }
+
+  .resoure-header {
+    display: flex;
+    align-items: center;
+    .resoure-kind {
+      margin-left: 8px;
+    }
+  }
+
+  .no-data {
+    display: flex;
+    height: 80px;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    background-color: white;
+  }
+
+  .detail-page-tab-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    position: relative;
+    aui-code-editor {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      height: 100%;
+      width: 100%;
+    }
+  }
+}

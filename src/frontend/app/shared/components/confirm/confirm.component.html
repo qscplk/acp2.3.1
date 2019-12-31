@@ -1,0 +1,31 @@
+<aui-dialog-content>
+  <div class="alo-confirm">
+    <aui-icon
+      [icon]="data.icon || 'exclamation_circle_s'"
+      color="#e54545"
+    ></aui-icon>
+    <div class="content">
+      <div class="title">{{ data.title }}</div>
+      <div
+        class="description"
+        *ngIf="data.description"
+      >
+        {{ data.description }}
+      </div>
+    </div>
+  </div>
+</aui-dialog-content>
+<aui-dialog-footer>
+  <button
+    [aui-button]="data.okType || 'error'"
+    (click)="confirm()"
+  >
+    {{ data.okText || 'ok' | translate }}
+  </button>
+  <button
+    aui-button
+    (click)="cancel()"
+  >
+    {{ 'cancel' | translate }}
+  </button>
+</aui-dialog-footer>

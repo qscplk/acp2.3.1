@@ -1,0 +1,92 @@
+<div class="branchs-group">
+  <button
+    *ngFor="let group of groups"
+    class="branchs-group__label"
+    [class.isSelected]="group.type === filterBy"
+    [disabled]="!group.enabled"
+    (click)="onFilterChange(group.type)"
+  >{{ translates[group.type] | translate }} ({{ group.count }})</button>
+</div>
+<aui-table [dataSource]="items || []">
+  <ng-container auiTableColumnDef="name">
+    <aui-table-header-cell *auiTableHeaderCellDef>
+      {{ translates[filterBy] | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      <div
+        class="name-cell"
+        [class.name-cell--disabled]="item.stale"
+      >
+        <img class="name-cell__icon" src="icons/pipeline/multi-branch.svg" alt="devops" />
+        <div class="name-cell__content">
+          <div class="name-cell__name">
+            <span auiTooltip="{{'pipeline.branch_not_found' | translate}}{{ translates[item.type] | translate }}"
+                  [auiTooltipDisabled]="!item.stale">{{ item.name }}</span>
+            <a *ngIf="item.type === 'pr' && item.prUrl"
+               class="pr-link"
+               [title]="'pipeline.jump_to_code_repo' | translate"
+               [href]="item.prUrl"
+               target="_blank">
+              <aui-icon icon="basic:jump"></aui-icon>
+            </a>
+          </div>
+          <div class="name-cell__title">{{item?.prTitle}}</div>
+        </div>
+      </div>
+    </aui-table-cell>
+  </ng-container>
+  <ng-container auiTableColumnDef="status">
+    <aui-table-header-cell *auiTableHeaderCellDef>
+      {{ 'pipeline.history' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      <alo-history-preview
+        [project]="pipeline.namespace"
+        [pipelineName]="pipeline.name"
+        [histories]="item.histories"
+        [viewLogsPermission]="permissions?.pipelineLogs?.get"
+        category="all"
+      ></alo-history-preview>
+    </aui-table-cell>
+  </ng-container>
+  <ng-container auiTableColumnDef="actions">
+    <aui-table-header-cell *auiTableHeaderCellDef>
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      <alo-menu-trigger
+        [menu]="actionsMenu"
+        [context]="{ item: item }"
+      ></alo-menu-trigger>
+    </aui-table-cell>
+  </ng-container>
+  <aui-table-header-row *auiTableHeaderRowDef="columns"></aui-table-header-row>
+  <aui-table-row *auiTableRowDef="let row; columns: columns;"></aui-table-row>
+</aui-table>
+<alo-no-data
+  *ngIf="!items || !items.length"
+  [resourceName]="translates[filterBy] | translate"
+  [withSpace]="filterBy === 'pr'"
+></alo-no-data>
+<aui-menu #actionsMenu>
+  <ng-template auiMenuContent let-item="item">
+    <acl-disabled-container [isAllowed]="permissions?.pipelines?.create"
+                            *ngIf="!item.stale">
+      <aui-menu-item (click)="start(item)">
+        {{ 'start' | translate }}
+      </aui-menu-item>
+    </acl-disabled-container>
+    <acl-disabled-container [isAllowed]="permissions?.pipelines?.get">
+      <aui-menu-item (click)="histories(item)">
+        {{ 'pipeline.history' | translate }}
+      </aui-menu-item>
+    </acl-disabled-container>
+    <!--<aui-menu-item
+      *ngIf="item.stale"
+      type="danger"
+      [divide]="true"
+      (click)="delete(item)"
+    >
+      {{ 'delete' | translate }}
+    </aui-menu-item>-->
+  </ng-template>
+</aui-menu>

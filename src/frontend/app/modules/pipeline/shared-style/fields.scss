@@ -1,0 +1,58 @@
+@import 'var';
+
+.basic-body {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: -12px;
+
+  .field {
+    width: 50%;
+    padding-right: 24px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    label::after {
+      content: ':';
+      margin-right: 8px;
+    }
+
+    .isEnabled {
+      color: $color-primary;
+    }
+  }
+}
+
+.color {
+  &--pending {
+    color: $color-primary;
+  }
+  &--success {
+    color: $color-success;
+  }
+  &--failure {
+    color: $color-error;
+  }
+  &--skip {
+    color: $color-info;
+  }
+  &--change {
+    color: $color-primary;
+  }
+}
+
+.icon-spin {
+  display: inline-block;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

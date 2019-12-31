@@ -1,0 +1,50 @@
+<ng-container *aloPageHeaderContent>
+  <div class="page-header">
+    <alo-breadcrumb>
+      <ng-template aloBreadcrumbItem>
+        <span>{{ 'nav_continuous_delivery' | translate }}</span>
+      </ng-template>
+      <ng-template aloBreadcrumbItem>
+        <a [routerLink]="['../']">{{ 'pipeline.list' | translate }}</a>
+      </ng-template>
+      <ng-template aloBreadcrumbItem>
+        <ng-container [ngSwitch]="(params$ | async)?.method">
+          <ng-container *ngSwitchCase="'script'">
+            {{ 'pipeline.create_by_script' | translate }}
+          </ng-container>
+          <ng-container *ngSwitchCase="'template'">
+            {{ 'pipeline.create_by_template' | translate }}
+          </ng-container>
+          <ng-container *ngSwitchCase="'multi-branch'">
+            {{ 'pipeline.create_by_multi_branch' | translate }}
+          </ng-container>
+        </ng-container>
+      </ng-template>
+    </alo-breadcrumb>
+    <button
+      *ngIf="selectedTemplate"
+      aui-button="text"
+      type="button"
+      size="small"
+      (click)="openTemplateDetailDialog()"
+    >
+      <span>
+        {{
+          (translate.locale$ | async) === 'zh'
+            ? (selectedTemplate?.displayName)['zh-CN']
+            : selectedTemplate?.displayName?.en
+        }}
+      </span>
+      <span>
+        {{ selectedTemplate?.version }}
+      </span>
+    </button>
+  </div>
+</ng-container>
+<alo-pipeline-create-container
+  [method]="(params$ | async)?.method"
+  [project]="(params$ | async)?.project"
+  [type]="(params$ | async)?.type"
+  [name]="(params$ | async)?.name"
+  (templateSelected)="onTemplateSelected($event)"
+></alo-pipeline-create-container>

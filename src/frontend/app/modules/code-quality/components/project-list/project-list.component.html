@@ -1,0 +1,88 @@
+<ng-container *aloAsyncData="
+  let items;
+  let loading = loading;
+  let error = error;
+  let refresh = refresh;
+  handler: fetchProjects;
+  params: params
+">
+  <aui-table
+    [dataSource]="items"
+    [trackBy]="identity"
+    auiSort
+    [active]="sort.active"
+    [direction]="sort.direction"
+    (sortChange)="onSortChange($event)"
+  >
+    <ng-container auiTableColumnDef="repositoryName">
+      <aui-table-header-cell
+        *auiTableHeaderCellDef
+      >
+        {{ 'code_quality.repository_name' | translate }}
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item" class="code-repository">
+        <img
+          class="icon"
+          src="icons/pipeline/badges/sonarqube.svg"
+          alt="devops"
+        />
+        <span [auiTooltip]="item.codeAddress">{{ item.codeAddress }}</span>
+      </aui-table-cell>
+    </ng-container>
+    <ng-container auiTableColumnDef="status">
+      <aui-table-header-cell
+        *auiTableHeaderCellDef
+        aui-sort-header
+      >
+        {{ 'code_quality.quality_gate' | translate }}
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item">
+        <aui-tag
+          [color]="item.mainBranch?.status | pure:statusColor"
+          size="small"
+        >
+          {{ item.mainBranch?.status | pure:status | translate }}
+        </aui-tag>
+      </aui-table-cell>
+    </ng-container>
+    <ng-container auiTableColumnDef="date">
+      <aui-table-header-cell
+        *auiTableHeaderCellDef
+        aui-sort-header
+      >
+        {{ 'code_quality.latest_scan_time' | translate }}
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item">
+        {{ item.mainBranch?.lastAttempt | aclRelativeTime }}
+      </aui-table-cell>
+    </ng-container>
+    <ng-container auiTableColumnDef="link">
+      <aui-table-header-cell
+        *auiTableHeaderCellDef
+      >
+        {{ 'code_quality.sonarqube_link' | translate }}
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item">
+        <a *ngIf="item.link;else noLink"
+           [href]="item.link"
+           [title]="item.link"
+           target="_blank">
+          <aui-icon icon="basic:jump"></aui-icon>
+        </a>
+        <ng-template #noLink>
+          -
+        </ng-template>
+      </aui-table-cell>
+    </ng-container>
+    <aui-table-header-row *auiTableHeaderRowDef="columns"></aui-table-header-row>
+    <aui-table-row *auiTableRowDef="let row; columns: columns"></aui-table-row>
+  </aui-table>
+  <alo-no-data
+    *ngIf="!items || !items.length"
+    [resourceName]="'code_quality.scan_data' | translate"
+    [loading]="loading"
+    [error]="error"
+    (retry)="refresh()"
+  >
+  </alo-no-data>
+</ng-container>

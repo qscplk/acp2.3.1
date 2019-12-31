@@ -1,0 +1,17 @@
+@import 'var';
+
+:host {
+  .pencil {
+    cursor: pointer;
+    margin-left: 4px;
+    flex-shrink: 0;
+    color: $color-primary;
+  }
+  .not-allowed-update {
+    cursor: not-allowed;
+    color: #999;
+  }
+  alo-tags-label {
+    line-height: 18px;
+  }
+}

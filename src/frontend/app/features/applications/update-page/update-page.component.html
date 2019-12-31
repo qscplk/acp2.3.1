@@ -1,0 +1,33 @@
+<ng-container
+  *aloAsyncData="
+    let applicationDetail;
+    let error = error;
+    let loading = loading;
+    let refresh = refetch;
+    handler: fetchApplication;
+    params: (identity$ | async)
+  "
+>
+  <div *aloPageHeaderContent class="page-header">
+    <ng-container *aloPageHeaderContent>
+      <alo-breadcrumb>
+        <ng-template aloBreadcrumbItem>
+          <a [routerLink]="['../../']">{{ 'applications.list' | translate }}</a>
+        </ng-template>
+        <ng-template aloBreadcrumbItem>
+          <a [routerLink]="['../']">{{ (identity$ | async).name }}</a>
+        </ng-template>
+        <ng-template aloBreadcrumbItem>
+          {{ 'update' | translate }}
+        </ng-template>
+      </alo-breadcrumb>
+    </ng-container>
+  </div>
+
+  <alo-application-update
+    [params]="identity$ | async"
+    [data]="applicationDetail?.data"
+    (canceled)="onCanceled()"
+    (saved)="onUpdated($event)"
+  ></alo-application-update>
+</ng-container>

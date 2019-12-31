@@ -1,0 +1,21 @@
+<div *aloPageHeaderContent
+     class="page-header">
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['../../']">{{ 'applications.list' | translate }}</a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['../']">
+        {{ (identity$ | async).applicationName }}
+      </a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <span>
+        {{ 'update_container' | translate }}
+      </span>
+    </ng-template>
+  </alo-breadcrumb>
+</div>
+
+<alo-container-update [params]="identity$ | async">
+</alo-container-update>

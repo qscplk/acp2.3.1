@@ -1,0 +1,35 @@
+<aui-dialog-header>{{ 'code.update_report' | translate }}</aui-dialog-header>
+<aui-dialog-content>
+  <aui-inline-alert type="primary">
+    <span>
+      {{ 'code.update_report_tips' | translate }}
+    </span>
+  </aui-inline-alert>
+  <aui-table
+    [dataSource]="data"
+    [trackBy]="resourceIdentity"
+  >
+    <ng-container auiTableColumnDef="name">
+      <aui-table-header-cell *auiTableHeaderCellDef>{{ 'name' | translate }}</aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item">
+        <span>{{ item.name }}</span>
+      </aui-table-cell>
+    </ng-container>
+    <ng-container auiTableColumnDef="type">
+      <aui-table-header-cell *auiTableHeaderCellDef>{{ 'type' | translate }}</aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item">
+        <span>{{ item.kind }}</span>
+      </aui-table-cell>
+    </ng-container>
+    <aui-table-header-row *auiTableHeaderRowDef="columns"></aui-table-header-row>
+    <aui-table-row *auiTableRowDef="let row; columns: columns;"></aui-table-row>
+  </aui-table>
+</aui-dialog-content>
+<aui-dialog-footer>
+  <button
+    aui-button="primary"
+    (click)="close()"
+  >
+    {{ 'i_know' | translate }}
+  </button>
+</aui-dialog-footer>

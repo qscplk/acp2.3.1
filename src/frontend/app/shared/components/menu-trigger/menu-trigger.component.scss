@@ -1,0 +1,24 @@
+@import 'var';
+
+.alo-menu-trigger {
+  box-shadow: none;
+  color: $color-text-main;
+  display: block;
+
+  &.aui-button--text {
+    width: 28px;
+    height: 28px;
+    ::ng-deep .aui-button__content {
+      line-height: 28px;
+    }
+  }
+
+  &:focus {
+    box-shadow: none;
+  }
+  &.isActive,
+  &:hover {
+    color: $color-primary;
+    background-color: #e6f5fc;
+  }
+}

@@ -1,0 +1,13 @@
+<aui-dialog-header>
+  <span>
+    {{ 'preview_yaml' | translate }}
+  </span>
+</aui-dialog-header>
+<aui-dialog-content>
+  <aui-code-editor 
+    [options]="editorOptions"
+    diffMode="true"
+    [originalValue]="originalYaml"
+    [(ngModel)]="currentYaml">
+  </aui-code-editor>
+</aui-dialog-content>

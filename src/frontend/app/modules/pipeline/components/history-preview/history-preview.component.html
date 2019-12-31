@@ -1,0 +1,106 @@
+<div class="alo-history-preview">
+  <div>
+    <aui-icon
+      [class]="'alo-history-preview__status--' + histories[0]?.status.phase.toLowerCase()"
+      [icon]="getHistoryStatusIcon(histories[0]?.status.phase)"
+      [ngClass]="{'icon-spin': getHistoryStatusIcon(histories[0]?.status.phase) === 'basic:sync_circle_s'}"
+    ></aui-icon>
+  </div>
+  <div class="alo-history-preview__content">
+    <a
+      [routerLink]="['/workspace', project, 'pipelines', category, pipelineName]"
+      *ngIf="type === 'multi-branch'"
+      class="branch-id"
+    >
+      {{ histories[0]?.branch }}
+    </a>
+    <a
+      [routerLink]="['/workspace', project, 'pipelines', category, pipelineName, histories[0]?.name]"
+      *ngIf="histories[0]?.jenkins?.build"
+      class="history_id"
+    >
+      #{{histories[0]?.jenkins?.build }}
+    </a>
+    <span
+      class="history_id"
+      *ngIf="!histories[0]?.jenkins?.build"
+    >
+      -
+    </span>
+    {{ histories[0]?.createdAt | aclRelativeTime }}
+    <aui-icon
+      margin="left"
+      icon="basic:overview"
+      [ngClass]="{'alo-history-preview__overview': viewLogsPermission, 'alo-history-preview__disabled': !viewLogsPermission}"
+      (click)="openLogs(histories[0])"
+      auiTooltipActive="alo-history-preview__overview--actived"
+      [auiTooltip]="(viewLogsPermission ? 'pipeline.click_to_view_history_overview' : 'forbidden') | translate"
+    ></aui-icon>
+    <div
+      *ngIf="histories.length > 1"
+      class="alo-history-preview__num"
+    >
+      {{ 'pipeline.recent_records_prefix' | translate }}
+      <button
+        aui-button="text"
+        [auiTooltip]="records"
+        auiTooltipPosition="bottom center"
+        auiTooltipType="info"
+        auiTooltipTrigger="click"
+        auiTooltipClass="records"
+      >
+        {{ histories.length > 5 ? 5 : histories.length }}
+      </button>
+      {{ 'pipeline.recent_records_suffix' | translate }}
+    </div>
+  </div>
+</div>
+
+<ng-template #records>
+  <div class="alo-history-preview__list">
+    <div
+      class="alo-history-preview__list-item"
+      *ngFor="let history of histories.slice(0,5)"
+    >
+      <div>
+      <aui-icon
+        [icon]="getHistoryStatusIcon(history.status.phase)"
+        [class]="'alo-history-preview__status--' + history.status.phase.toLowerCase()"
+        [ngClass]="{'icon-spin': getHistoryStatusIcon(history.status.phase) === 'basic:sync_circle_s'}"
+      ></aui-icon>
+      <a 
+        [routerLink]="['/workspace',history.namespace,'pipelines', category, pipelineName]"
+        *ngIf="type === 'multi-branch'"
+      >
+        {{ history?.branch }}
+      </a>
+      </div>
+      <div>
+        <a
+          [routerLink]="['/workspace', project, 'pipelines', category, pipelineName, history.name]"
+          *ngIf="history?.jenkins?.build"
+          class="history_id"
+        >
+          #{{history?.jenkins?.build}}
+        </a>
+        <span
+          class="history_id"
+          *ngIf="!history?.jenkins?.build"
+        >
+          -
+        </span>
+      </div>
+      <div>
+        {{ history.createdAt | aclRelativeTime }}
+      </div>
+      <div>
+        <aui-icon
+          (click)="openLogs(history)"
+          margin="left"
+          class="alo-history-preview__overview"
+          icon="basic:overview"
+        ></aui-icon>
+      </div>
+    </div>
+  </div>
+</ng-template>

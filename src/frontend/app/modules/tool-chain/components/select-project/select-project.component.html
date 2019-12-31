@@ -1,0 +1,49 @@
+<aui-dialog-header
+  class="alo-select-project__header"
+>
+  <span>{{ 'tool_chain.select_project' | translate }}</span>
+  <div class="alo-search">
+    <aui-search
+      [keyword]="keyword$$ | async"
+      [placeholder]="(searchBy === 'name' ? 'search_by_name_placeholder' : 'search_by_display_name_placeholder') | translate"
+      [searchButton]="true"
+      [searching]="loading"
+      (search)="keyword$$.next($event)"
+    ></aui-search>
+  </div>
+</aui-dialog-header>
+<aui-dialog-content class="alo-select-project__content">
+  <div
+    class="project-card"
+    *ngFor="let item of (projectList$ | async)?.items"
+    (click)="select(item)"
+  >
+    <div class="card-cell name-cell">
+      <img src="icons/project.svg" alt="devops" >
+      <div class="name-wrapper">
+        <div class="name">{{ item.name }}</div>
+        <div class="display-name">{{ item.displayName }}</div>
+      </div>
+    </div>
+    <div class="card-cell creation-time-cell">
+      <span class="creation-item">
+        {{ item.creationTimestamp | aclRelativeTime }}
+      </span>
+    </div>
+    <div class="card-cell description-cell">
+      <span
+        title="{{ item.description || '-' }}"
+        style="-webkit-box-orient: vertical;"
+        class="description"
+      >
+        {{ item.description || '-' }}
+      </span>
+    </div>
+  </div>
+  <div
+    *ngIf="!(projectList$ | async)?.length"
+    class="empty-list-placeholder"
+  >
+    {{ 'no_result' | translate }}
+  </div>
+</aui-dialog-content>

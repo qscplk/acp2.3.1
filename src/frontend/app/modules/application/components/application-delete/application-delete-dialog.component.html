@@ -1,0 +1,57 @@
+<ng-container *ngIf="!deleting && !deleteError && data.application">
+  <aui-dialog-header></aui-dialog-header>
+  <aui-dialog-content>
+    <aui-inline-alert type="warning">
+      {{ 'application.application_delete_tip' | translate:{ name: data.application?.name
+      } }}
+    </aui-inline-alert>
+    <div class="delete-content" *ngIf="yamlResources">
+      <aui-table auiSort [dataSource]="yamlResources" [active]="sortParams.active" [direction]="sortParams.direction"
+        (sortChange)="sortChange($event)">
+        <ng-container auiTableColumnDef="name">
+          <aui-table-header-cell *auiTableHeaderCellDef aui-sort-header>
+            <aui-checkbox (click)="$event.stopPropagation(); selecteAll()" [(ngModel)]="allResourceSelected"></aui-checkbox>
+            {{ 'name' | translate }}
+          </aui-table-header-cell>
+          <aui-table-cell *auiTableCellDef="let item">
+            <aui-checkbox [(ngModel)]="checkedMap[item.metadata.name+':'+item.kind]"></aui-checkbox>
+            {{ item.metadata.name }}
+          </aui-table-cell>
+        </ng-container>
+        <ng-container auiTableColumnDef="type">
+          <aui-table-header-cell *auiTableHeaderCellDef aui-sort-header>
+            {{ 'type' | translate }}
+          </aui-table-header-cell>
+          <aui-table-cell *auiTableCellDef="let item">
+            {{ item.kind }}
+          </aui-table-cell>
+        </ng-container>
+        <aui-table-header-row *auiTableHeaderRowDef="columns"></aui-table-header-row>
+        <aui-table-row *auiTableRowDef="let row; columns: columns;"></aui-table-row>
+      </aui-table>
+    </div>
+  </aui-dialog-content>
+  <aui-dialog-footer>
+    <button aui-button="primary" (click)="delete()">
+      {{ 'sure' | translate }}
+    </button>
+    <button aui-button (click)="cancel()">
+      {{ 'cancel' | translate }}
+    </button>
+  </aui-dialog-footer>
+</ng-container>
+
+<ng-container *ngIf="deleting && !deleteError">
+  <aui-dialog-content>
+    <div class="spinner-icon">
+      <aui-icon icon="spinner"></aui-icon>
+    </div>
+    <div class="spinner-tip">{{ 'deleting' | translate }}</div>
+  </aui-dialog-content>
+</ng-container>
+
+<ng-container *ngIf="deleteError">
+  <alo-application-resource-report [title]="'application.application_name_delete_fail' | translate:{name:data.application?.name}"
+    failOrSuccess="fail" [reports]="reports" (close)="cancel()">
+  </alo-application-resource-report>
+</ng-container>

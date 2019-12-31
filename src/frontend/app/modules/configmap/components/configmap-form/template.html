@@ -1,0 +1,82 @@
+<form
+  [formGroup]="form"
+  auiForm
+  auiFormLabelWidth="150px"
+  [auiFormEmptyAddon]="true"
+>
+  <aui-card>
+    <div auiCardHeader>
+      {{ (updateMode ? 'configmap.update' : 'configmap.create' ) | translate }}
+    </div>
+    <aui-form-item formGroupName="metadata">
+      <label auiFormItemLabel>
+        {{ 'name' | translate }}
+      </label>
+      <input
+        auiFormItemControl
+        aui-input
+        (blur)="onBlur()"
+        required
+        [readonly]="updateMode"
+        formControlName="name"
+        [placeholder]="nameRule.placeholder | translate"
+      >
+      <div auiFormItemError *ngIf="form.get('metadata.name').errors?.required">
+        {{ nameRule.requiredError | translate }}
+      </div>
+      <div auiFormItemError *ngIf="form.get('metadata.name').errors?.pattern">
+        {{ nameRule.patternError | translate }}
+      </div>
+      <div auiFormItemError *ngIf="form.get('metadata.name').errors?.maxlength">
+        {{ nameRule.maxLengthError | translate }}
+      </div>
+    </aui-form-item>
+
+    <ng-content></ng-content>
+
+    <aui-form-item
+      [hidden]="true"
+      formGroupName="metadata"
+    >
+      <label auiFormItemLabel>
+        {{ 'labels' | translate }}
+      </label>
+
+      <alo-key-value-form-table
+        auiFormItemControl
+        (blur)="onBlur()"
+        formControlName="labels"
+      >
+      </alo-key-value-form-table>
+    </aui-form-item>
+
+    <aui-form-item
+      [hidden]="true"
+      formGroupName="metadata"
+    >
+      <label auiFormItemLabel>
+        {{ 'annotations' | translate }}
+      </label>
+
+      <alo-key-value-form-table
+        auiFormItemControl
+        (blur)="onBlur()"
+        formControlName="annotations"
+      >
+      </alo-key-value-form-table>
+    </aui-form-item>
+
+    <aui-form-item>
+      <label auiFormItemLabel>
+        {{ 'data' | translate }}
+      </label>
+
+      <alo-key-value-form-list
+        auiFormItemControl
+        (blur)="onBlur()"
+        formControlName="data"
+      >
+      </alo-key-value-form-list>
+    </aui-form-item>
+  </aui-card>
+</form>

@@ -1,0 +1,12 @@
+.alo-breadcrumb {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  list-style: none;
+  justify-content: flex-start;
+  &__seperator {
+    margin: 0 4px;
+  }
+}

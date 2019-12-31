@@ -1,0 +1,54 @@
+<div
+  *aloPageHeaderContent
+  class="page-header"
+>
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['/admin/projects']">
+        {{ 'project.list' |  translate }}
+      </a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['/admin/projects', project]" [queryParams]="{ tab: '1' }">
+        {{ project }}
+      </a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <span>
+        {{ 'project.bind_artifact_registry' | translate }}
+        ({{ service }})
+      </span>
+    </ng-template>
+  </alo-breadcrumb>
+</div>
+<div class="title">
+</div>
+<aui-card>
+  <div auiCardHeader>
+    {{ 'bind' | translate }}
+  </div>
+  <alo-artifact-registry-binding-form
+    #form=artifact-registry-binding-form
+    [project]="project"
+    [service]="service"
+    (saved)="saved($event)"
+    (statusChange)="statusChange($event)"
+  >
+  </alo-artifact-registry-binding-form>
+  <div
+    auiCardFooter
+    class="actions"
+  >
+    <button
+      aui-button="primary"
+      [loading]="loading"
+      [disabled]="loading"
+      (click)="submit()"
+    >{{ 'binding_account' | translate }}</button>
+    <button
+      aui-button
+      [disabled]="loading"
+      (click)="cancel()"
+    >{{ 'cancel' | translate }}</button>
+  </div>
+</aui-card>

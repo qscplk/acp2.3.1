@@ -1,0 +1,28 @@
+<acl-page-state [adapter]="dataManager">
+  <ng-template let-history="history" let-report="report" let-permissions="permissions">
+    <ng-container *aloPageHeaderContent>
+      <alo-breadcrumb>
+        <ng-template aloBreadcrumbItem>
+          <span>{{ 'nav_continuous_delivery' | translate }}</span>
+        </ng-template>
+        <ng-template aloBreadcrumbItem>
+          <a [routerLink]="['../../']">{{ 'pipeline.list' | translate }}</a>
+        </ng-template>
+        <ng-template aloBreadcrumbItem>
+          <a [routerLink]="['../']">{{ name }}</a>
+        </ng-template>
+        <ng-template aloBreadcrumbItem>{{ historyName }}</ng-template>
+      </alo-breadcrumb>
+    </ng-container>
+    <div class="card">
+      <alo-pipeline-history-basic-info
+        *ngIf="!!history"
+        [project]="project"
+        [history]="history"
+        [permissions]="permissions"
+        (statusChange)="pipelineStatusChange($event)"
+        (stageStatusChanged)="dataManager.reload()"
+      ></alo-pipeline-history-basic-info>
+    </div>
+  </ng-template>
+</acl-page-state>

@@ -1,0 +1,161 @@
+<aui-tab-group
+  type="card"
+  [(selectedIndex)]="activeContainerIndex"
+>
+  <ng-container *ngFor="let item of containers;let i = index">
+    <aui-tab
+      (close)="close(i)"
+      [closeable]="canClose"
+    >
+      <div class="card-body">
+        <aui-form-item>
+          <label auiFormItemLabel>{{'application.container_name' |
+            translate}}</label>
+          <input
+            auiFormItemControl
+            [(ngModel)]="item.container.name"
+            [readonly]="item.container.isEdit || false"
+            name="containerName"
+            #containerName="ngModel"
+            aui-input
+            required
+            maxlength="63"
+            pattern="[a-z0-9]([-a-z0-9]*[a-z0-9])?"
+          />
+          <div
+            auiFormItemError
+            *ngIf="containerName.errors?.required"
+          >{{ 'required' | translate }}</div>
+        </aui-form-item>
+        <aui-form-item>
+          <label auiFormItemLabel>{{'image' | translate}}</label>
+          <input
+            auiFormItemControl
+            [(ngModel)]="item.container.image"
+            name="image"
+            #image="ngModel"
+            aui-input
+            required
+            readonly
+          />
+          <button
+            aui-button="primary"
+            [plain]="true"
+            (click)="selectImage(i)"
+            class="select-image"
+          >
+            {{ 'update' | translate }}
+          </button>
+          <div
+            auiFormItemError
+            *ngIf="image.errors?.required"
+          >{{ 'required' | translate }}</div>
+          <div auiFormItemHint>{{ 'application.deployment_form_image_repository_hint' | translate}}</div>
+        </aui-form-item>
+        <aui-form-item>
+          <label auiFormItemLabel>{{ 'application.container_size' | translate
+            }}</label>
+          <div
+            auiFormItemControl
+            class="size-container"
+          >
+            <alo-container-update-size
+              [(ngModel)]="item.container.resources"
+              #resources
+              name="resources"
+            ></alo-container-update-size>
+          </div>
+        </aui-form-item>
+      </div>
+      <alo-foldable-block [title]="('container' | translate)+'-'+('advanced' | translate)">
+        <aui-card>
+            <div auiCardHeader>
+              {{ 'container' | translate }}-{{ 'advanced' | translate }}
+            </div>
+            <div>
+              <aui-form-item>
+                <label auiFormItemLabel>{{ 'environment_variables' |
+                  translate }}</label>
+                <div
+                  auiFormItemControl
+                  class="environment-container"
+                >
+                  <alo-container-update-env
+                    [(ngModel)]="item.container.env"
+                    [cluster]="params?.cluster"
+                    [namespace]="params?.namespace"
+                    #envs
+                    name="envs"
+                  ></alo-container-update-env>
+                </div>
+              </aui-form-item>
+              <aui-form-item>
+                <label auiFormItemLabel>{{ 'env_from' | translate }}</label>
+                <div
+                  auiFormItemControl
+                  class="environment-container"
+                >
+                  <alo-container-update-env-from
+                    [(ngModel)]="item.container.envFrom"
+                    [namespace]="params?.namespace"
+                    [cluster]="params?.cluster"
+                    #envfrom
+                    name="envfrom"
+                  ></alo-container-update-env-from>
+                </div>
+              </aui-form-item>
+              <aui-form-item>
+                <label auiFormItemLabel>{{ 'volume' | translate }}</label>
+                <div
+                  auiFormItemControl
+                  class="volume-container"
+                >
+                  <alo-container-update-volume
+                    [(ngModel)]="item.container.volumeMounts"
+                    #volume
+                    name="volume"
+                    [containerParams]="{namespace: params?.namespace, cluster: params?.cluster}"
+                    [container]="item.container"
+                  ></alo-container-update-volume>
+                </div>
+              </aui-form-item>
+              <aui-form-item>
+                <label auiFormItemLabel>{{'command' | translate}}</label>
+                <input
+                  auiFormItemControl
+                  [(ngModel)]="item.container.command"
+                  name="command"
+                  #command="ngModel"
+                  aui-input
+                />
+              </aui-form-item>
+              <aui-form-item>
+                <label auiFormItemLabel>{{'parameter' | translate}}</label>
+                <alo-params-input
+                  [(ngModel)]="item.container.args"
+                  name="args"
+                  #args="ngModel"
+                ></alo-params-input>
+              </aui-form-item>
+            </div>
+        </aui-card>
+      </alo-foldable-block>
+      <ng-container *auiTabLabel>
+        <alo-status-icon
+          status="error"
+          *ngIf="!item.container.name || !item.container.image"
+        >
+        </alo-status-icon>
+        {{ item.container.name || ('unnamed'|translate) }}
+      </ng-container>
+    </aui-tab>
+    <ng-container *auiTabHeaderAddon>
+      <button
+        aui-button
+        (click)="add()"
+      >
+        {{ 'application.add_container' | translate}}
+      </button>
+    </ng-container>
+  </ng-container>
+</aui-tab-group>

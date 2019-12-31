@@ -1,0 +1,12 @@
+:host {
+  .build-node {
+    width: 100%;
+  }
+  ::ng-deep aui-code-editor {
+    flex: 1;
+    ::ng-deep .aui-code-editor {
+      height: 100px;
+      min-height: 100px;
+    }
+  }
+}

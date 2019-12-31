@@ -1,0 +1,18 @@
+<alo-breadcrumb *aloPageHeaderContent>
+  <ng-template aloBreadcrumbItem>
+    <span>{{ 'error' | translate }}</span>
+  </ng-template>
+</alo-breadcrumb>
+<div class="alo-error-page">
+  <img src="icons/no-namespace.svg" alt="devops" />
+  <div class="alo-error-page__title">
+    <ng-container *ngIf="isAdmin$ | async as isAdmin; else contact">
+      {{ 'no_namespace' | translate }}, {{ 'please_go_project_manage' | translate  }}
+      <a href="javascript:;" (click)="navigateToProject()">{{ 'create_namespace' | translate }}</a>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #contact>
+    {{ 'no_namespace' | translate }}, {{ 'please_contact_admin' | translate }}
+</ng-template>

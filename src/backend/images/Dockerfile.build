@@ -1,0 +1,19 @@
+# Golang environment for build
+
+FROM golang:1.9.4-alpine
+RUN echo 'https://mirror.tuna.tsinghua.edu.cn/alpine/edge/community' > /etc/apk/repositories
+RUN echo 'https://mirror.tuna.tsinghua.edu.cn/alpine/v3.6/main' >> /etc/apk/repositories
+RUN apk add --no-cache bash git gcc musl-dev libc-dev upx
+
+RUN sed -i 's|dl-cdn.alpinelinux.org|mirrors.aliyun.com|g' /etc/apk/repositories
+RUN apk --no-cache add curl
+
+COPY . $GOPATH/src/alauda.io/diablo
+RUN cd $GOPATH/src/alauda.io/diablo/src/backend && \
+  GO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-w -s" -v -a -installsuffix cgo -o dist/backend && \
+  mv dist/backend /backend && chmod +x /backend && \
+  rm -rf $GOPATH/src/*
+COPY ./dist /public
+RUN ls -l /public
+
+CMD ["/backend"]

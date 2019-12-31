@@ -1,0 +1,68 @@
+<alo-array-form-table
+  [noRowSeparator]="true"
+  (remove)="remove($event)"
+  [rows]="form.controls"
+>
+  <ng-container *aloArrayFormTableHeader>
+    <th width="18%">{{ 'domain_prefix' | translate }}</th>
+    <th width="32%">{{ 'domain' | translate }}</th>
+    <th width="32%">{{ 'application.url' | translate }}</th>
+    <th width="18%">{{ 'container_port' | translate }}</th>
+  </ng-container>
+
+  <!-- Input row -->
+  <ng-container
+    *aloArrayFormTableRow="let control"
+    [formGroup]="control"
+  >
+    <td>
+      <input
+        (blur)="onBlur()"
+        aui-input
+        formControlName="domainPrefix"
+      >
+    </td>
+    <td>
+      <input
+        (blur)="onBlur()"
+        aui-input
+        formControlName="domainName"
+      >
+    </td>
+    <td>
+      <input
+        (blur)="onBlur()"
+        aui-input
+        formControlName="path"
+      >
+    </td>
+    <td>
+      <input
+        (blur)="onBlur()"
+        aui-input
+        formControlName="targetPort"
+        type="number"
+      >
+    </td>
+  </ng-container>
+
+  <!-- Row controls -->
+  <ng-container *aloArrayFormTableFooter>
+    <button
+      aui-button="primary"
+      class="add-button"
+      *ngIf="!isSingle"
+      size="small"
+      [plain]="true"
+      (click)="add(length)"
+    >
+      <aui-icon icon="basic:add_circle">
+      </aui-icon>
+      {{ 'add' | translate }}
+    </button>
+  </ng-container>
+
+  <ng-container *ngIf="isSingle">
+    <ng-container *aloArrayFormTableRowControl></ng-container>
+  </ng-container>
+</alo-array-form-table>

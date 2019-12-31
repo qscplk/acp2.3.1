@@ -1,0 +1,152 @@
+<ng-container *ngIf="state$ | async as state">
+  <div
+    class="diagram-container"
+    (mousedown)="onMouseEvents($event)"
+    (mouseup)="onMouseEvents($event)"
+    (mousemove)="onMouseEvents($event)"
+    (wheel)="onMouseEvents($event)"
+  >
+    <div
+      [style.transform]="state.navigator | pure: toTransform"
+      class="diagram"
+      [class.with-transition]="state.navigator | pure: withTransition"
+      [style.width]="state.viewModel.width | pure:toPix"
+      [style.height]="state.viewModel.height | pure:toPix"
+    >
+      <svg class="diagram__svg">
+        <ng-container *ngFor="let link of state.viewModel.links">
+          <line
+            *ngIf="link.y1 === link.y2; else stepLine"
+            [attr.x1]="link.x1"
+            [attr.y1]="link.y1"
+            [attr.x2]="link.x2"
+            [attr.y2]="link.y2"
+            [style.stroke]="link.color"
+          />
+          <ng-template #stepLine>
+            <path [attr.d]="link | pure: toPath" [style.stroke]="link.color" />
+          </ng-template>
+        </ng-container>
+      </svg>
+      <div class="diagram__dom">
+        <em
+          *ngFor="let endpoint of state.viewModel.endpoints"
+          class="endpoint"
+          [style.left]="endpoint.x | pure:toPix"
+          [style.top]="endpoint.y | pure:toPix"
+        ></em>
+        <button
+          *ngFor="let placeholder of state.viewModel.addGroupPlaceholders"
+          class="group-placeholder"
+          [class.selected]="(placeholder.after | pure: addPrefix('after')) === state.selected"
+          [style.left]="placeholder.x | pure:toPix"
+          [style.top]="placeholder.y | pure:toPix"
+          (click)="select('after', placeholder.after)"
+        >
+          <aui-icon icon="basic:plus" size="12"></aui-icon>
+        </button>
+        <ng-container *ngFor="let group of state.viewModel.groups">
+          <span
+            class="group"
+            [class.selected]="(group.parallel | pure: addPrefix('parallel')) === state.selected"
+            [class.has-error]="(group.parallel | pure: parallelNameHasError | async) && submitted"
+            [style.left]="group.x | pure:toPix"
+            [style.top]="group.y | pure:toPix"
+            [attr.group]="group.parallel"
+            (click)="select('parallel', group.parallel)"
+          >
+            <em class="group-icon"></em>
+            <span>{{ (group.parallel | pure: getParallelName | async) || ('unnamed' | translate) }}</span>
+          </span>
+          <div
+            *ngFor="let node of group.nodes"
+            class="node"
+            [class.selected]="(node.stage | pure: addPrefix('stage'))  === state.selected"
+            [class.has-error]="(node.stage | pure: stageHasError | async) && submitted"
+            [style.left]="node.x | pure:toPix"
+            [style.top]="node.y | pure:toPix"
+            [style.height]="node.height | pure:toPix"
+            (click)="select('stage', node.stage)"
+          >
+            <div
+              class="node__header"
+              [class.has-error]="(node.stage | pure: stageNameHasError | async) && submitted"
+            >
+              <span>{{ (node.stage | pure: getStageName | async) || ('unnamed' | translate) }}</span>
+            </div>
+            <ul class="node__fields">
+              <ng-container
+                *ngIf="node.stage | pure: getStageFields | async as fields"
+              >
+                <ng-container *ngIf="fields.length; else noParameters">
+                  <li
+                    *ngFor="let field of fields"
+                    [class.has-error]="field.hasError && submitted"
+                  >
+                    {{ field.displayName | pure:toCurrentLang | async }}: {{ field.value | json }}
+                  </li>
+                </ng-container>
+                <ng-template #noParameters>
+                  <li class="no-parameters">{{ 'no_parameters' | translate }}</li>
+                </ng-template>
+              </ng-container>
+            </ul>
+          </div>
+        </ng-container>
+        <div
+          *ngFor="let placeholder of state.viewModel.addNodePlaceholders"
+          class="stage-placeholder"
+          [class.selected]="(placeholder.parent | pure: addPrefix('of')) === state.selected"
+          [style.left]="placeholder.x | pure:toPix"
+          [style.top]="placeholder.y | pure:toPix"
+          (click)="select('of', placeholder.parent)"
+        >
+          <aui-icon icon="basic:plus" size="12"></aui-icon>
+          <span>{{ 'add_parallel_stage' | translate }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="navigator-status">
+    {{ 'size' | translate }}: {{ state.navigator.scale | percent }}
+  </div>
+  <div class="navigator">
+    <div class="navigator__action-group">
+      <div class="navigator__action" (click)="zoomReset()" title="1:1 {{ 'view' | translate }}">
+        <aui-icon size="14" icon="basic:actual_size"></aui-icon>
+      </div>
+    </div>
+    <div class="navigator__action-group">
+      <div class="navigator__action" (click)="zoomOut()" title="{{ 'zoom_out' | translate }}">
+        <aui-icon size="14" icon="basic:plus"></aui-icon>
+      </div>
+      <div class="navigator__action" (click)="zoomIn()" title="{{ 'zoom_in' | translate }}">
+        <aui-icon size="14" icon="basic:minus"></aui-icon>
+      </div>
+    </div>
+    <div class="navigator__action-group">
+      <div
+        class="navigator__action"
+        (click)="zoomFitSize(state.viewModel.width, state.viewModel.height)"
+        title="{{ 'panoramic_view' | translate }}"
+      >
+        <aui-icon size="14" icon="basic:full_size"></aui-icon>
+      </div>
+    </div>
+  </div>
+  <div
+    class="pipeline-settings"
+    [class.selected]="!state.selected"
+    auiTooltip="{{ 'you_can_config_pipeline_settings_here' | translate }}"
+    (click)="select()"
+  >
+    <aui-icon
+      *ngIf="(pipelineSettingsHasErrors$ | async) && submitted"
+      icon="exclamation_triangle_s"
+    ></aui-icon>
+    <div>
+      <aui-icon icon="basic:setting"></aui-icon>
+      <span>{{ 'pipeline_settings' | translate }}</span>
+    </div>
+  </div>
+</ng-container>

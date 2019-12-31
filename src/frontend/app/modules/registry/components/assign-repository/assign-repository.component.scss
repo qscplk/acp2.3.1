@@ -1,0 +1,29 @@
+@import 'var';
+
+.remove-button {
+  font-size: 16px;
+  color: $color-text-help;
+  cursor: pointer;
+  &:hover {
+    color: $color-primary;
+  }
+}
+
+.select-line {
+  display: flex;
+  margin-bottom: 16px;
+
+  aui-tree-select {
+    width: 100%;
+  }
+
+  button {
+    margin-left: 8px;
+  }
+}
+
+:host::ng-deep {
+  .aui-table__column-actions {
+    max-width: 64px;
+  }
+}

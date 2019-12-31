@@ -1,0 +1,124 @@
+<form
+  [formGroup]="form"
+  auiForm
+  auiFormLabelWidth="150px"
+  [auiFormEmptyAddon]="true"
+>
+  <aui-card>
+    <div auiCardHeader>{{ 'storage.create' | translate }}</div>
+
+    <aui-form-item formGroupName="metadata">
+      <label auiFormItemLabel>
+        {{ 'name' | translate }}
+      </label>
+      <input
+        auiFormItemControl
+        aui-input
+        required
+        [readonly]="updateMode"
+        (blur)="onBlur()"
+        [readonly]="updateMode"
+        formControlName="name"
+        [placeholder]="nameRule.placeholder | translate"
+      />
+      <div auiFormItemError *ngIf="form.get('metadata.name').errors?.required">
+        {{ nameRule.requiredError | translate }}
+      </div>
+      <div auiFormItemError *ngIf="form.get('metadata.name').errors?.pattern">
+        {{ nameRule.patternError | translate }}
+      </div>
+      <div auiFormItemError *ngIf="form.get('metadata.name').errors?.maxlength">
+        {{ nameRule.maxLengthError | translate }}
+      </div>
+    </aui-form-item>
+
+    <ng-content></ng-content>
+
+    <aui-form-item formGroupName="spec">
+      <label auiFormItemLabel>
+        {{ 'storage.storageclasses' | translate }}
+      </label>
+      <aui-select
+        auiFormItemControl
+        required
+        filterable
+        [loading]="!storageClassNames"
+        (blur)="onBlur()"
+        formControlName="storageClassName"
+      >
+        <aui-option
+          *ngFor="let storageClassName of storageClassNames"
+          [value]="storageClassName"
+        >
+          {{ storageClassName }}
+        </aui-option>
+      </aui-select>
+    </aui-form-item>
+
+    <aui-form-item formGroupName="spec">
+      <label auiFormItemLabel>
+        {{ 'storage.accessMode' | translate }}
+      </label>
+      <aui-radio-group auiFormItemControl formControlName="accessModes">
+        <aui-radio-button
+          *ngFor="let accessMode of accessModes"
+          [value]="accessMode"
+        >
+          {{ 'storage.' + accessMode | translate }}
+        </aui-radio-button>
+      </aui-radio-group>
+    </aui-form-item>
+
+    <aui-form-item formGroupName="spec">
+      <label auiFormItemLabel>
+        {{ 'size' | translate }}
+      </label>
+      <input
+        auiFormItemControl
+        required
+        aui-input
+        (blur)="onBlur()"
+        formControlName="resources"
+      />
+    </aui-form-item>
+
+    <aui-form-item [hidden]="true" formGroupName="metadata">
+      <label auiFormItemLabel>
+        {{ 'labels' | translate }}
+      </label>
+
+      <alo-key-value-form-table
+        auiFormItemControl
+        (blur)="onBlur()"
+        formControlName="labels"
+      >
+      </alo-key-value-form-table>
+    </aui-form-item>
+
+    <aui-form-item [hidden]="true" formGroupName="metadata">
+      <label auiFormItemLabel>
+        {{ 'annotations' | translate }}
+      </label>
+
+      <alo-key-value-form-table
+        auiFormItemControl
+        (blur)="onBlur()"
+        formControlName="annotations"
+      >
+      </alo-key-value-form-table>
+    </aui-form-item>
+
+    <aui-form-item [hidden]="true" formGroupName="spec">
+      <label auiFormItemLabel>
+        {{ 'selectors' | translate }}
+      </label>
+
+      <alo-key-value-form-table
+        auiFormItemControl
+        (blur)="onBlur()"
+        formControlName="selector"
+      >
+      </alo-key-value-form-table>
+    </aui-form-item>
+  </aui-card>
+</form>

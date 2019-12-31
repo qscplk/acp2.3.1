@@ -1,0 +1,19 @@
+.foldable-bar {
+  cursor: pointer;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  .content {
+    padding: 0 10px;
+    color: lightgray;
+  }
+  .filling-block {
+    flex: 1;
+    hr {
+      height: 1px;
+      border: none;
+      border-top: 1px dashed lightgray;
+    }
+  }
+}

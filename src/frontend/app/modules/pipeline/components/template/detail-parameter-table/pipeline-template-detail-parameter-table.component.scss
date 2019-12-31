@@ -1,0 +1,28 @@
+@import 'var';
+
+.field-name {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+  font-weight: 600;
+  display: flex;
+  .index {
+    background-color: $color-primary;
+    display: inline-block;
+    width: 6px;
+    height: 16px;
+    margin-right: 8px;
+    align-self: center;
+  }
+}
+aui-table-header-cell,
+aui-table-row aui-table-cell:first-child {
+  max-width: 300px;
+}
+aui-table-cell {
+  div {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}

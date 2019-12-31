@@ -1,0 +1,16 @@
+<div *aloPageHeaderContent>
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <span>{{ 'code_quality.projects' | translate }}</span>
+    </ng-template>
+  </alo-breadcrumb>
+</div>
+
+<alo-code-quality-project-card-list
+  [namespace]="namespace$ | async"
+  [keywords]="(queryParams$ | async).keywords"
+  [sortActive]="(queryParams$ | async).sort"
+  (keywordsChange)="onKeywordsChange($event)"
+  (sortChange)="onSortChange($event)"
+>
+</alo-code-quality-project-card-list>

@@ -1,0 +1,46 @@
+@import '../app/shared/mixins';
+
+.tag-info {
+  display: flex;
+  align-items: center;
+  .tag-grid {
+    overflow: hidden;
+    cursor: default;
+    .tag-text {
+      cursor: pointer;
+      :hover {
+        background-color: #ededed;
+      }
+    }
+    .tag-status {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      font-size: 12px;
+      color: #999999;
+      > * + * {
+        margin-left: 8px;
+      }
+    }
+  }
+}
+
+.copy-icon {
+  color: #999999;
+  cursor: pointer;
+  &:hover {
+    color: $color-primary;
+  }
+}
+
+.aui-table__column-digest {
+  max-width: 120px;
+}
+.aui-table__column-action {
+  max-width: 68px;
+}
+
+alo-scan-status {
+  display: block;
+  width: 80%;
+}

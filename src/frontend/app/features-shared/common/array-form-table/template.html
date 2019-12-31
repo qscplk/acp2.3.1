@@ -1,0 +1,64 @@
+<table class="alo-form-table"
+       [class.alo-form-table--no-row-separator]="noRowSeparator">
+  <thead *ngIf="headerTemplate">
+    <tr>
+      <ng-container *ngTemplateOutlet="headerTemplate"></ng-container>
+      <th class="alo-form-table__action-col"></th>
+    </tr>
+  </thead>
+
+  <ng-container *ngFor="let row of rows; let index = index; trackBy: trackByFn">
+    <ng-container *ngFor="let rowTemplate of rowTemplates; let templateIndex = index">
+      <tr [style.background-color]="rowBackgroundColorFn(row, index)"
+          [attr.rowtemplateindex]="templateIndex"
+          [class.alo-form-table--row-group-start]="templateIndex === 0">
+        <ng-container *ngTemplateOutlet="rowTemplate; context: { $implicit: row, index: index }"></ng-container>
+        <td *ngIf="templateIndex === 0"
+            class="alo-form-table__action-col">
+          <ng-container *ngIf="rowControlTemplate">
+            <ng-container *ngTemplateOutlet="rowControlTemplate; context: { $implicit: row, index: index }"></ng-container>
+          </ng-container>
+
+          <aui-icon *ngIf="!rowControlTemplate"
+                    icon="basic:minus_circle"
+                    (click)="remove.emit(index)">
+          </aui-icon>
+        </td>
+      </tr>
+    </ng-container>
+  </ng-container>
+
+  <tr *ngIf="!rows || rows.length === 0">
+    <td colspan="100">
+      <alo-zero-state *ngIf="!zeroStateTemplate"
+                      [resourceName]="resourceName">
+      </alo-zero-state>
+
+      <ng-container *ngIf="zeroStateTemplate">
+        <ng-container *ngTemplateOutlet="zeroStateTemplate"></ng-container>
+      </ng-container>
+    </td>
+  </tr>
+
+  <tr class="alo-form-table__bottom-control-row">
+    <td colspan="100">
+      <div class="alo-form-table__bottom-control-buttons">
+        <ng-container *ngIf="footerTemplate">
+          <ng-container *ngTemplateOutlet="footerTemplate"></ng-container>
+        </ng-container>
+
+        <button *ngIf="!footerTemplate"
+                type="button"
+                aui-button="primary"
+                class="add-button"
+                size="mini"
+                [plain]="true"
+                (click)="add.emit()">
+          <aui-icon icon="basic:add_circle">
+          </aui-icon>
+          {{ 'add' | translate }}
+        </button>
+      </div>
+    </td>
+  </tr>
+</table>

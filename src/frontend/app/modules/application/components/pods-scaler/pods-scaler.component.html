@@ -1,0 +1,35 @@
+<div class="info">
+  <div class="count">{{ podInfo.desired }}</div>
+  <div class="label">
+    {{ deploying || scaling ? ('scaling' | translate) : 'Pods' }}
+  </div>
+</div>
+<div class="progress">
+  <button aui-button [ngStyle]="{'visibility': scaleEnable ? 'unset' : 'hidden'}"
+    [disabled]="scaling || !allowedUpdate" (click)="scaleDown()" square="true">
+    <aui-icon icon="basic:minus"></aui-icon>
+  </button>
+  <ng-container *ngFor="let part of parts; index as i; trackBy: trackByFn">
+    <div [style.flex]="part" [auiTooltip]="statusTooltip"></div>
+    <ng-template #statusTooltip>
+      <div class="status-scaler-tooltip">
+        <div class="status">
+          <alo-status-icon [status]="statusList[i]"></alo-status-icon>
+          <div class="status-scaler-tooltip__label">
+            <ng-container [ngSwitch]="statusList[i]">
+              <ng-template ngSwitchCase="stopped">{{ 'running' | translate }}: {{podInfo.current}}</ng-template>
+              <ng-template ngSwitchDefault>{{ statusList[i] | translate }}: {{ part }}</ng-template>
+            </ng-container>
+          </div>
+        </div>
+        <ul class="desc">
+          <li *ngFor="let message of errorMessages">{{message}}</li>
+        </ul>
+      </div>
+    </ng-template>
+  </ng-container>
+  <button aui-button [ngStyle]="{'visibility': scaleEnable ? 'unset' : 'hidden'}"
+    [disabled]="scaling || !allowedUpdate" (click)="scaleUp()" square="true">
+    <aui-icon icon="basic:plus"></aui-icon>
+  </button>
+</div>

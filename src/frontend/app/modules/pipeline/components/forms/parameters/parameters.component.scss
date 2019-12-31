@@ -1,0 +1,81 @@
+@import 'var';
+
+hr {
+  border-bottom: 1px dashed #ededed;
+  border-top: none;
+  margin: 16px 0;
+  &:first-child {
+    display: none;
+  }
+}
+.form-addon {
+  color: #999;
+  width: 20px;
+  margin-left: 8px;
+}
+.advanced-fields-button {
+  background: #fafafa;
+  text-align: center;
+  color: $color-primary;
+  height: 20px;
+  margin: 0 20px;
+  font-size: 12px;
+  line-height: 20px;
+  &:hover {
+    background-color: $button-default-bg-hover;
+    cursor: pointer;
+  }
+}
+
+.group-name {
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+aui-icon {
+  &:hover {
+    color: $color-primary;
+  }
+}
+
+aui-code-editor {
+  flex: 1;
+  ::ng-deep .aui-code-editor {
+    height: 100px;
+    min-height: 100px;
+  }
+}
+
+:host {
+  position: relative;
+  display: block;
+  border: solid 1px transparent;
+  &[hidden] {
+    display: none;
+  }
+  ::ng-deep aui-dynamic-form {
+    .dynamic-form-group {
+      aui-form-item .aui-form-item {
+        margin-bottom: 16px;
+      }
+    }
+  }
+}
+
+.pipeline-global-settings {
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+}
+
+.empty {
+  border: dashed 1px #ccc;
+  color: #999;
+  border-radius: 2px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 36px;
+}

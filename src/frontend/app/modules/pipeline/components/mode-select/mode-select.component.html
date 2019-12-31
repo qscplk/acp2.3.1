@@ -1,0 +1,39 @@
+<aui-dialog-header>
+  <span> {{ 'pipeline.create_pipeline' | translate }} </span>
+</aui-dialog-header>
+<aui-dialog-content>
+  <div class="alo-card-group">
+    <a
+      *aclFeatureGate="'devops-pipeline-graph'"
+      class="mini-card card"
+      [routerLink]="['/workspace', namespace, 'pipelines', category, 'visual-create']"
+    >
+      <aui-icon icon="diablo:graph_file" size="80px,80px"></aui-icon>
+      <span> {{ 'pipeline.create_by_graph' | translate }} </span>
+    </a>
+    <a
+      class="mini-card card"
+      [routerLink]="['/workspace', namespace, 'pipelines', category, 'create']"
+      [queryParams]="{ method: 'template' }"
+    >
+      <aui-icon icon="diablo:template_file_line" size="80px,80px"></aui-icon>
+      <span> {{ 'pipeline.create_by_template' | translate }} </span>
+    </a>
+    <a
+      class="mini-card card"
+      [routerLink]="['/workspace', namespace, 'pipelines', category, 'create']"
+      [queryParams]="{ method: 'script' }"
+    >
+      <aui-icon icon="diablo:jenkins_file" size="80px,80px"></aui-icon>
+      <span> {{ 'pipeline.create_by_script' | translate }} </span>
+    </a>
+    <a
+      class="mini-card card"
+      [routerLink]="['/workspace', namespace, 'pipelines', category, 'create']"
+      [queryParams]="{ method: 'multi-branch' }"
+    >
+      <aui-icon icon="diablo:multi_branch_file" size="80px,80px"></aui-icon>
+      <span> {{ 'pipeline.create_by_multi_branch' | translate }} </span>
+    </a>
+  </div>
+</aui-dialog-content>

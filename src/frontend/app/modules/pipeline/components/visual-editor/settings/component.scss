@@ -1,0 +1,75 @@
+@import 'var';
+
+.side-form {
+  &__body {
+    padding: 0 20px 16px 20px;
+  }
+}
+
+:host(.side-form) {
+  > .side-form__body {
+    margin: 0 0;
+  }
+}
+
+.trigger-box {
+  border: solid 1px #ededed;
+  border-radius: 2px;
+  padding: 12px;
+
+  &.enabled {
+    border-color: $color-primary;
+  }
+
+  + .trigger-box {
+    margin-top: 16px;
+  }
+
+  &__header {
+    border-bottom: solid 1px #ededed;
+    font-size: 16px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.error-hint {
+  color: #e54545;
+  display: none;
+}
+
+.ng-submitted {
+  .error-hint.has-error {
+    display: block;
+  }
+}
+
+.run-policy-description {
+  padding: 0 0 0 16px;
+  margin: 0;
+}
+
+.readonly-field {
+  display: flex;
+  flex-direction: row;
+  height: 32px;
+  align-items: center;
+  margin-bottom: 16px;
+  > label {
+    flex: 0 0 auto;
+    padding-right: 8px;
+    &:after {
+      content: ':';
+      padding-left: 2px;
+    }
+  }
+  > div {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

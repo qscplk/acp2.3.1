@@ -1,0 +1,26 @@
+<aui-card *ngIf="!isMulti">
+  <div auiCardHeader>
+    {{ containerName }}
+  </div>
+  <div class="alo-single-container">
+    <alo-container-update-form [container]="selectedContainer" [volumeInfo]="selectedVolume"
+      [params]="containerParams" #updateForm></alo-container-update-form>
+    <div *ngIf="!selectedContainer" class="no-data">
+      <span>{{ 'loading' | translate }}</span>
+    </div>
+  </div>
+</aui-card>
+
+<div class="mutate-buttons">
+  <div class="yaml-preview">
+    <button aui-button="primary" [plain]="true" (click)="previewYaml()">
+      <aui-icon icon="basic:yaml"></aui-icon>
+      {{ 'preview_yaml' | translate }}
+    </button>
+  </div>
+  <div>
+    <button aui-button="primary" [disabled]="!selectedContainer || !updateForm?.vilidate()"
+      (click)="save()">{{ 'update' | translate}}</button>
+    <button aui-button (click)="cancel()">{{ 'cancel' | translate }}</button>
+  </div>
+</div>

@@ -1,0 +1,92 @@
+@import 'var';
+
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+::ng-deep {
+  .alo-select-project {
+    &__header .aui-dialog__header-title {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    &__footer {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    &__content {
+      .project-card {
+        display: flex;
+        padding: 12px 8px;
+        border-radius: 2px;
+        box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.24);
+        cursor: pointer;
+
+        &:hover {
+          box-shadow: 0 0 0 1px $color-primary, 0 4px 16px 0 rgba(0, 0, 0, 0.16);
+        }
+
+        & + .project-card {
+          margin-top: 12px;
+        }
+
+        .card-cell {
+          width: 33%;
+          display: flex;
+          align-items: center;
+          flex: 100% 1 1;
+          font-size: 14px;
+          color: #333333;
+        }
+
+        .creation-time-cell {
+          margin-left: 16px;
+        }
+
+        .description-cell .description {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          word-break: break-all;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+        }
+
+        .name-wrapper {
+          margin-left: 8px;
+          padding-right: 16px;
+          width: 90%;
+          & > div {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            word-break: break-all;
+            white-space: nowrap;
+          }
+          .name {
+            font-size: 16px;
+            color: #333333;
+          }
+
+          .display-name {
+            font-size: 12px;
+            color: #999999;
+          }
+        }
+      }
+
+      .empty-list-placeholder {
+        padding: 200px 0;
+        border-radius: 2px;
+        border: dashed 1px #cccccc;
+        font-size: 14px;
+        color: #999999;
+        text-align: center;
+      }
+    }
+  }
+}

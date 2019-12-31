@@ -1,0 +1,80 @@
+<acl-page-state
+  [adapter]="dataLoader"
+>
+  <ng-template let-data>
+    <div *aloPageHeaderContent class="page-header">
+      <alo-breadcrumb>
+        <ng-template aloBreadcrumbItem>
+          <a [routerLink]="['../']">{{ 'applications.list' | translate }}</a>
+        </ng-template>
+        <ng-template aloBreadcrumbItem>
+          <span> {{ (identity$ | async).name }} </span>
+        </ng-template>
+      </alo-breadcrumb>
+      <div>
+        <button
+          *ngIf="allowedStart$ | async"
+          aui-button="primary"
+          size="small"
+          [disabled]="!detailComp.canStart"
+          (click)="detailComp.toggleApp('start')"
+        >
+          <aui-icon icon="basic:play_12_s"></aui-icon>
+          {{ 'application.start' | translate }}
+        </button>
+        <button
+          *ngIf="allowedStop$ | async"
+          aui-button="default"
+          size="small"
+          [plain]="true"
+          [disabled]="!detailComp.canStop"
+          (click)="detailComp.toggleApp('stop')"
+        >
+          <aui-icon icon="basic:stop_12_s"></aui-icon>
+          {{ 'application.stop' | translate }}
+        </button>
+        <button
+          aui-button="primary"
+          [plain]="true"
+          size="small"
+          [auiDropdown]="actions"
+          [disabled]="!data?.data"
+        >
+          {{ 'action' | translate }}
+          <aui-icon icon="angle_down" margin="left"></aui-icon>
+        </button>
+      </div>
+    </div>
+    <aui-menu #actions>
+      <acl-disabled-container [isAllowed]="allowedUpdate$ | async">
+        <aui-menu-item
+          *ngIf="
+            !isEmpty(data?.data?.deployments) && isEmpty(data?.data?.daemonsets) && isEmpty(data?.data?.statefulsets)
+          "
+          [routerLink]="['./update']"
+          >{{ 'update' | translate }}</aui-menu-item
+        >
+      </acl-disabled-container>
+      <acl-disabled-container [isAllowed]="allowedUpdate$ | async">
+        <aui-menu-item (click)="updateByYaml()">{{
+          'YAML ' + ('update' | translate)
+        }}</aui-menu-item>
+      </acl-disabled-container>
+
+      <acl-disabled-container [isAllowed]="allowedDelete$ | async">
+        <aui-menu-item (click)="confirmDelete()">{{
+          'application.delete_application' | translate
+        }}</aui-menu-item>
+      </acl-disabled-container>
+    </aui-menu>
+    <alo-application-detail
+      #detailRef
+      [params]="identity$ | async"
+      [data]="data?.data"
+      [allowedUpdate]="allowedUpdate$ | async"
+      (updated)="refresh()"
+      (deleted)="onDeleted()"
+      (notFound)="onDeleted()"
+    ></alo-application-detail>
+  </ng-template>
+</acl-page-state>

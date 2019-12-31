@@ -1,0 +1,74 @@
+<aui-page>
+<ng-container *auiPageHeader>
+  <div>
+    <alo-logo>
+    </alo-logo>
+  </div>
+  <alo-global-actions></alo-global-actions>
+</ng-container>
+<div *auiPageToolbar>
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <span>
+        {{ 'project_list' | translate }}
+      </span>
+    </ng-template>
+  </alo-breadcrumb>
+  <div class="global-loader" [class.loading]="showLoadingBar$ | async"></div>
+</div>
+<main *auiPageContent>
+  <ng-container
+    *aloAsyncData="
+      let projects;
+      let loading = loading;
+      let error = error;
+      params: params$ | async;
+      handler: fetchProjects;
+      notification: refresh$;
+    "
+  >
+    <div class="list-header">
+      <div class="actions">
+      </div>
+      <div class="alo-search">
+        <aui-search
+          [keyword]="keywords"
+          [placeholder]="(searchBy === 'name' ? 'search_by_name_placeholder' : 'search_by_display_name_placeholder') | translate"
+          [searchButton]="true"
+          [searching]="loading"
+          (search)="search($event)"
+        ></aui-search>
+      </div>
+    </div>
+    <div>
+      <alo-project-list
+        [params]="params$ | async"
+        [data]="projects"
+        [itemRoute]="projectRoute"
+        (sortChange)="onSort($event)"
+      >
+      </alo-project-list>
+      <ng-container *ngIf="!projects || !projects.length">
+        <div *ngIf="(showAdminTips$ | async) && !loading; else noData" class="no-data no-data--card">
+          <span>
+            {{ 'admin_no_projects' | translate }}
+            <a href="javascript:;" (click)="navigateToProject()">
+              {{ 'create_project' | translate }}
+            </a>
+          </span>
+        </div>
+        <ng-template #noData>
+          <alo-no-data
+            mode="card"
+            [resourceName]="'project.list' | translate"
+            [translateOptions]="noDataTranslates"
+            [error]="error || projects && projects.errors"
+            [loading]="loading"
+            (retry)="refresh$.next()"
+          ></alo-no-data>
+        </ng-template>
+      </ng-container>
+    </div>
+  </ng-container>
+</main>
+</aui-page>

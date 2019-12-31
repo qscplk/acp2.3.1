@@ -1,0 +1,90 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  labels:
+    app.alauda.io/name: devops-api.alauda-system
+  name: devops-api
+  namespace: alauda-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.alauda.io/name: devops-api.alauda-system
+  template:
+    metadata:
+      labels:
+        app.alauda.io/name: devops-api.alauda-system
+    spec:
+      containers:
+        - name: backend
+          image: index.alauda.cn/alaudak8s/diablo-clone:v1.9-b.1
+          imagePullPolicy: Always
+          env:
+            - name: TIMESTAMP
+              value: '20190611'
+          ports:
+            - containerPort: 9090
+          livenessProbe:
+            tcpSocket:
+              port: 9090
+            failureThreshold: 10
+            initialDelaySeconds: 2
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            tcpSocket:
+              port: 9090
+            failureThreshold: 3
+            initialDelaySeconds: 2
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 250m
+              memory: 256Mi
+      imagePullSecrets:
+        - name: alaudak8s
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: devops-api
+  namespace: alauda-system
+spec:
+  selector:
+    app.alauda.io/name: devops-api.alauda-system
+  ports:
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
+---
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: devops-api
+  namespace: alauda-system
+  annotations:
+    kubernetes.io/ingress.class: ''
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /devops(/|$)(.*)
+            backend:
+              serviceName: devops-api
+              servicePort: 9090
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: devops-api
+  namespace: alauda-system
+data:
+  key: value

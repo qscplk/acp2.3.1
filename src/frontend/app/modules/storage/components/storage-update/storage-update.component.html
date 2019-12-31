@@ -1,0 +1,50 @@
+<form class="alo-mutate-page-wrapper">
+    <alo-pvc-form
+      *ngIf="mode === 'form'"
+      [updateMode]="isUpdate$ | async"
+      name="formModel"
+      [cluster]="cluster"
+      [namespace]="namespace"
+      [ngModel]="formModel"
+      (ngModelChange)="formModelChange($event)"
+    >
+      <aui-form-item labelWidth="150px">
+        <label auiFormItemLabel>
+          {{ 'display_name' | translate }}
+        </label>
+        <input
+          auiFormItemControl
+          aui-input
+          [(ngModel)]="displayName"
+          name="displayname"
+          #displayname="ngModel"
+        >
+        <div auiFormItemAddon></div>
+      </aui-form-item>
+    </alo-pvc-form>
+
+    <aui-code-editor
+      *ngIf="mode === 'yaml'"
+      [actionsConfig]="actionsConfig$ | async"
+      [originalValue]="originalYaml$ | async"
+      [options]="editorOptions"
+      name="yaml"
+      [(ngModel)]="yaml"
+    >
+    </aui-code-editor>
+
+    <div class="alo-mutate-page-bottom-buttons">
+      <button
+        aui-button="primary"
+        [loading]="submitting"
+        [disabled]="submitDisabled"
+        (click)="update()"
+      >{{ method$ | async | translate }}</button>
+      <button
+        type="button"
+        [routerLink]="['../']"
+        [disabled]="submitDisabled"
+        aui-button
+      >{{ 'cancel' | translate }}</button>
+    </div>
+  </form>

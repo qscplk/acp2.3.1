@@ -1,0 +1,114 @@
+@import 'var';
+
+.alo-service-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(204px, 1fr));
+  grid-gap: 16px;
+}
+
+.alo-service-card {
+  padding: 20px;
+  position: relative;
+  border-radius: 2px;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.24);
+  display: block;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    box-shadow: 0 0 0 1px $color-primary, 0 4px 16px 0 rgba(0, 0, 0, 0.16);
+  }
+
+  .status-icons {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-size: 16px;
+    display: flex;
+    aui-icon {
+      display: inline-flex;
+    }
+    > span {
+      margin-right: 8px;
+    }
+    .warning-icon {
+      color: #f8ac58;
+    }
+    .integrate-icon {
+      color: #999;
+      &:hover {
+        color: $color-primary;
+      }
+    }
+  }
+
+  .icon-stack {
+    height: 60px;
+    position: relative;
+
+    .type-icon {
+      display: block;
+      margin: auto;
+      height: 100%;
+      width: 80px;
+    }
+
+    .enterprise-mark {
+      display: block;
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(10px);
+    }
+
+    .shallow-mark {
+      font-size: 18px;
+      color: $color-primary;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(10px);
+      background-color: white;
+    }
+  }
+
+  .title {
+    margin: 8px 0;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    text-align: center;
+    color: #333333;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .description {
+    height: 32px;
+    font-size: 12px;
+    line-height: 16px;
+    color: #999999;
+    text-align: center;
+    overflow: hidden;
+    word-wrap: break-word;
+    display: -webkit-box;
+    /* autoprefixer: ignore next */
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .tags {
+    text-align: center;
+    margin-top: 8px;
+  }
+}

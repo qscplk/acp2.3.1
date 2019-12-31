@@ -1,0 +1,25 @@
+<div class="field">
+  <div class="field-name">{{field.display.name[translateKey$|async]}}</div>
+  <div
+    class="field-value"
+    *ngIf="!field | pure:valueMapper; else keyValueTable"
+  >
+    {{field?.value}}
+  </div>
+  <ng-template #keyValueTable>
+    <table>
+      <tbody>
+      <tr>
+        <th>{{'key'|translate}}</th>
+        <th>{{'value'|translate}}</th>
+      </tr>
+      <ng-container *ngFor="let item of field | pure:valueMapper">
+        <tr>
+          <td>{{item.key}}</td>
+          <td>{{item.value}}</td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </ng-template>
+</div>

@@ -1,0 +1,30 @@
+<aui-dialog-header>
+  <aui-icon
+    class="header-icon"
+    icon="exclamation_triangle_s"
+  ></aui-icon>
+  <span>{{ 'tool_chain.delete_tool' | translate }}</span>
+</aui-dialog-header>
+<aui-dialog-content>
+  <div class="hint">{{ 'tool_chain.force_delete_tool_hint' | translate:data }}</div>
+  <div class="tips">{{ 'tool_chain.delete_tool_input_tips' | translate: data }}</div>
+  <input
+    aui-input
+    [(ngModel)]="inputingName"
+  >
+</aui-dialog-content>
+<aui-dialog-footer>
+  <button
+    aui-button="danger"
+    [disabled]="loading || (inputingName !== data.name)"
+    [loading]="loading"
+    (click)="delete()"
+  >{{ 'delete' | translate }}</button>
+  <button
+    aui-button
+    [disabled]="loading"
+    auiDialogClose
+  >
+    {{ 'cancel' | translate }}
+  </button>
+</aui-dialog-footer>

@@ -1,0 +1,6 @@
+<ul class="alo-breadcrumb">
+  <ng-container *ngFor="let item of items; let i = index">
+    <li><ng-container *ngTemplateOutlet="item"></ng-container></li>
+    <li class="alo-breadcrumb__seperator" *ngIf="i + 1 < items.length">/</li>
+  </ng-container>
+</ul>

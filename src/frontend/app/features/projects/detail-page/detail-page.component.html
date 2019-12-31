@@ -1,0 +1,26 @@
+<div
+  *aloPageHeaderContent
+  class="page-header"
+>
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['../']">{{ 'project.list' | translate }}</a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <span>
+        {{ name$ | async }}
+      </span>
+    </ng-template>
+  </alo-breadcrumb>
+</div>
+<ng-container *aloAsyncData="
+  let data;
+  let refresh = refetch;
+  handler: fetchProject;
+  params: name$ | async;
+">
+  <alo-project-detail
+    [data]="data || { name: name$ | async }"
+    (updated)="refresh()"
+  ></alo-project-detail>
+</ng-container>

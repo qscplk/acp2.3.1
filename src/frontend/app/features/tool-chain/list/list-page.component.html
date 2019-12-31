@@ -1,0 +1,49 @@
+<ng-container *aloPageHeaderContent>
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <span>
+        {{ 'nav_tool_chain' | translate }}
+      </span>
+    </ng-template>
+  </alo-breadcrumb>
+</ng-container>
+
+<aui-card>
+  <div auiCardHeader>
+    <button
+      aui-button="primary"
+      [disabled]="!(toolTypes$ | async) || !(toolTypes$ | async).length"
+      (click)="integrateTool()"
+    >
+      {{ 'tool_chain.integrate' | translate }}
+    </button>
+  </div>
+  <alo-tool-type-bar
+    [(selectedType)]="selectedType"
+    (selectedTypeChange)="selectedType$$.next($event)"
+    [types]="visibleToolTypes$ | async"
+    [resources]="allServices$ | async"
+    [additionalCount]="{ artifactRepository: registryCount }"
+  ></alo-tool-type-bar>
+  <alo-service-list
+    *ngIf="hasServices$ | async"
+    [services]="filteredServices$ | async"
+    [showTag]="selectedType === 'all'"
+    (cardClick)="navigateToDetail($event)"
+  ></alo-service-list>
+  <alo-artifact-manager-list
+    *ngIf="(managers$ | async)?.length"
+    [showTag]="selectedType === 'all'"
+    [managers]="filteredManages$ | async"
+    (cardClick)="navigateToDetail($event)"
+  ></alo-artifact-manager-list>
+  <div
+    *ngIf="
+      !(filteredServices$ | async)?.length &&
+      !(filteredManages$ | async)?.length
+    "
+    class="empty-list-hint"
+  >
+    {{ (loading ? 'loading' : 'tool_chain.no_integrated_tools') | translate }}
+  </div>
+</aui-card>

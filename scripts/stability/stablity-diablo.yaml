@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: alaudak8s
+  namespace: alauda-system
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJpbmRleC5hbGF1ZGEuY24iOnsidXNlcm5hbWUiOiJhbGF1ZGFrOHMvcHVzaDIiLCJwYXNzd29yZCI6IjEyMzQ1NiIsImVtYWlsIjoiZGV2c0BhbGF1ZGEuaW8iLCJhdXRoIjoiWVd4aGRXUmhhemh6TDNCMWMyZ3lPakV5TXpRMU5nPT0ifX19
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: stability-diablo
+  namespace: alauda-system
+  labels:
+    app: stability
+    alauda.test: 'true'
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: stability-diablo
+    spec:
+      containers:
+        - name: stability-diablo
+          image: index.alauda.cn/alaudak8s/diablo-e2e:v1.0.10
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              cpu: 1500m
+              memory: 1536Mi
+          env:
+            - name: BASE_URL
+              value: https://118.24.242.63/devops/
+            - name: TESTIMAGE
+              value: 10.0.128.97:60080/alaudak8s/helloworld:latest
+            - name: CASE_TYPE
+              value: stability
+            - name: OIDC_ENABLED
+              value: 'true'
+            - name: USER_TOKEN
+              value: eyJhbGciOiJSUzI1NiIsImtpZCI6IjBjYjZhOTkyOGNkMTlmM2M3YjM1NDBmMWRhNGViYjllNzc3MTNlZWMifQ.eyJpc3MiOiJodHRwczovLzExOC4yNC4yNDIuNjMvZGV4Iiwic3ViIjoiQ2lRd09HRTROamcwWWkxa1lqZzRMVFJpTnpNdE9UQmhPUzB6WTJReE5qWXhaalUwTmpZU0JXeHZZMkZzIiwiYXVkIjoiYWxhdWRhLWF1dGgiLCJleHAiOjE1MzkzOTU4OTgsImlhdCI6MTUzOTMwOTQ5OCwibm9uY2UiOiJybmciLCJhdF9oYXNoIjoiN245dDVyWTBwRUZvQ1EzN3dXTTBGQSIsImVtYWlsIjoiYWRtaW5AYWxhdWRhLmlvIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJhZG1pbiIsImV4dCI6eyJpc19hZG1pbiI6ZmFsc2UsImNvbm5faWQiOiIifX0.FdWeDuVhwx5qNV6rDDwwj1V7Myu_JqdbyiPvj29pheq8qVDvgL7kjnl82Tt61sGBX8f5bAzZflp7NqSMaH2CiAP5I4F0wrKGdwmRXO-v_5S3zwj091ev1WqgRuT_Va2GyxrqVsf_NJv2AQjyFlcOyR86k6qtc0c8f_mOVzqQOmcD1p_7_9EXpoZy5oXH24xe-56JvpFoA-OZiTgZIG_uQZ0s8b4yQ3pOuG_MTZGtdIHd4uMz5viWUPV_zCdHPyX8vRytwnb4pOwKGWmi2S7404MRZ-F1nmgndpTyxkkDetgYgWlxjc__11UsQLVLv8TLbi3NkZmYUCqapxVK9Pjfzg
+            - name: TEST_TIME
+              value: '259200'
+            - name: DING_DING_URL
+              value: https://oapi.dingtalk.com/robot/send
+            - name: DING_DING_ACCESS_TOKEN
+              value: 0af8c3916019275772160520b1d95abcc1740fa750ede45758148b564a5d1647
+          volumeMounts:
+            - mountPath: /dev/shm
+              name: shm
+              readOnly: false
+            - mountPath: /home/jenkins/.kube/config
+              name: config
+              readOnly: false
+            - mountPath: /go/src/alauda.io/diablo/e2e-reports
+              name: e2e-reports
+              readOnly: false
+      volumes:
+        - name: shm
+          hostPath:
+            path: /dev/shm
+        - name: config
+          hostPath:
+            path: /etc/kubernetes/admin.conf
+        - name: e2e-reports
+          hostPath:
+            path: /root/alauda-uireport/stability/diablo/e2e-reports
+      imagePullSecrets:
+        - name: alaudak8s
+      nodeSelector:
+        node-role.kubernetes.io/master: ''

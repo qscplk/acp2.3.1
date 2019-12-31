@@ -1,0 +1,10 @@
+<aui-dialog-header>
+  {{'pipeline.preview_jenkinsfile'|translate}}
+</aui-dialog-header>
+<aui-dialog-content>
+  <aui-code-editor
+    [(ngModel)]="jenkinsfilePreview"
+    [options]="editorOptions"
+    [actionsConfig]="actionsConfig"
+  ></aui-code-editor>
+</aui-dialog-content>

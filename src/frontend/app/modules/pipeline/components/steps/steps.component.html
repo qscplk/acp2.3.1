@@ -1,0 +1,19 @@
+<ul class="alo-steps">
+  <li
+    class="alo-steps__step alo-steps__step--active"
+    *ngFor="let step of stepConfigs; let i = index"
+  >
+    <span
+      class="alo-steps__icon"
+      [class.alo-steps__icon--active]="i === currentIndex"
+      [class.alo-steps__icon--complete]="i < currentIndex"
+    >
+      <span *ngIf="i >= currentIndex">{{ i+1 }}</span>
+      <aui-icon
+        icon="check_s"
+        *ngIf="i < currentIndex"
+      ></aui-icon>
+    </span>
+    <span [class.alo-steps__text--active]="i === currentIndex">{{ 'pipeline.' + step | translate }}</span>
+  </li>
+</ul>

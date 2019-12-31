@@ -1,0 +1,50 @@
+@import '~@alauda/ui/theme/_mixin';
+
+.time-pick {
+  position: relative;
+  z-index: 1;
+  button {
+    margin: 4px;
+    border-radius: 14px;
+  }
+  .time-container {
+    top: 0;
+    box-shadow: 0 0 5px 0px #ccc;
+    background-color: white;
+    position: absolute;
+    height: 170px;
+    width: 114px;
+    display: flex;
+    flex-direction: column;
+    .current-time {
+      line-height: 32px;
+      padding-left: 12px;
+      border-bottom: 1px solid #ededed;
+    }
+    .time-pick-plane {
+      display: flex;
+      overflow: auto;
+      .column {
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        @include scroll-bar;
+        .cell {
+          width: 57px;
+          line-height: 32px;
+          text-align: center;
+          &:hover {
+            background-color: #f7f7f7;
+          }
+          &.selected {
+            background-color: #f7f7f7;
+          }
+        }
+        &:last-of-type {
+          border-left: 1px solid #ededed;
+        }
+      }
+    }
+  }
+}

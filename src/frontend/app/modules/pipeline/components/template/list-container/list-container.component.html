@@ -1,0 +1,67 @@
+<div style="margin: 16px auto 20px auto">
+  <ng-container
+    *aloAsyncData="
+      let templatesData;
+      let loading = loading;
+      params: params$ | async;
+      handler: fetchData
+    "
+  >
+    <aui-card>
+      <div auiCardHeader class="header">
+        <div>
+          <span>{{ 'pipeline.templates' | translate }}</span>
+          <!--<a
+            href="/devops-docs/admin/project/templatehelp/"
+            target="_blank"
+          >
+            <aui-icon
+              class="help-icon"
+              icon="basic:help_doc"
+            ></aui-icon>
+          </a>-->
+        </div>
+        <aui-search
+          [placeholder]="'search_by_display_name_placeholder' | translate"
+          [searchButton]="true"
+          [searching]="loading"
+          (search)="search($event)"
+        ></aui-search>
+      </div>
+      <div class="header-action">
+        <div>
+          <button
+            [ngClass]="{ isSelected: type === 'custom' }"
+            (click)="typeChange('custom')"
+          >
+            {{ 'pipeline.custom' | translate }} ({{ templateCount }})
+          </button>
+          <button
+            [ngClass]="{ isSelected: type === 'official' }"
+            (click)="typeChange('official')"
+          >
+            {{ 'pipeline.official' | translate }} ({{ clusterTemplateCount }})
+          </button>
+        </div>
+      </div>
+      <alo-pipeline-template-list
+        [templates]="templatesData?.items"
+      ></alo-pipeline-template-list>
+      <alo-no-data
+        *ngIf="!loading && !templatesData?.total"
+        mode="card"
+        [resourceName]="'pipeline.template' | translate"
+        [loading]="loading"
+      ></alo-no-data>
+      <aui-paginator
+        *ngIf="templatesData?.total"
+        [pageIndex]="(params$ | async)?.pageIndex"
+        [pageSize]="(params$ | async)?.itemsPerPage"
+        [pageSizeOptions]="[10, 20, 50]"
+        [length]="templatesData.total"
+        (currentPageChange)="currentPageChange($event)"
+        (pageSizeChange)="pageSizeChange($event)"
+      ></aui-paginator>
+    </aui-card>
+  </ng-container>
+</div>

@@ -1,0 +1,99 @@
+@import 'var';
+@import '~@alauda/ui/theme/_mixin';
+
+.history-name {
+  &__overview {
+    cursor: pointer;
+    color: #999;
+    &:hover {
+      color: $color-primary;
+    }
+    &--actived {
+      color: $color-primary;
+    }
+  }
+  &__disabled {
+    color: #ccc;
+    cursor: not-allowed;
+  }
+}
+
+.aui-table {
+  &__column-actions {
+    max-width: 100px;
+  }
+  &__column-branch {
+    line-height: unset;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+}
+.triggers {
+  display: flex;
+  .trigger {
+    min-width: 24px;
+  }
+}
+
+.badges {
+  margin-left: 8px;
+  display: flex;
+  border-radius: 10px;
+  img {
+    width: 20px;
+    height: 20px;
+  }
+  &:hover {
+    background-color: rgba(181, 187, 191, 0.1);
+  }
+}
+.name-cell {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: unset;
+  text-overflow: unset;
+  white-space: unset;
+  min-width: 0;
+  &__content {
+    flex: 1;
+    display: block;
+    min-width: 0;
+  }
+  &__name {
+    display: block;
+    width: 100%;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 22px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  &__description {
+    width: 100%;
+    display: block;
+    color: $color-text-help;
+    font-size: 12px;
+    line-height: 16px;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+::ng-deep {
+  .aui-sub-dropdown {
+    max-height: 284px;
+    overflow-y: scroll;
+    @include scroll-bar();
+  }
+}
+::ng-deep .submenu-item {
+  .aui-menu-item {
+    max-width: 280px;
+    @include text-overflow();
+  }
+}

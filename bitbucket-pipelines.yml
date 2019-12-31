@@ -1,0 +1,11 @@
+image: node:lts-alpine
+
+pipelines:
+  default:
+    - step:
+        caches:
+          - node
+        script:
+          - apk add autoconf automake build-base libtool nasm pkgconfig zlib-dev
+          - yarn --frozen-lockfile
+          - yarn build

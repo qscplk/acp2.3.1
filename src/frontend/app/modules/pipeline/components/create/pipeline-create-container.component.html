@@ -1,0 +1,176 @@
+<aui-card>
+  <div auiCardHeader>
+    <alo-steps
+      [currentIndex]="method === 'template' ? stepIndex : stepIndex - 1"
+      [stepConfigs]="stepConfigs"
+    ></alo-steps>
+  </div>
+  <aui-inline-alert
+    class="alo-pipeline-create--no_jenkins"
+    type="error"
+    [content]="'pipeline.no_instance' | translate"
+    *ngIf="
+      jenkinsInstances && !jenkinsInstances.length && isStepOn(stepNames.Basic)
+    "
+  ></aui-inline-alert>
+  <div>
+    <!-- select template form -->
+    <form
+      #templateForm="ngForm"
+      [formGroup]="model.templateStep"
+      auiForm
+      auiFormLabelWidth="200px"
+      [auiFormEmptyAddon]="true"
+    >
+      <!-- *ngIf="isSupport('templateSelect')" -->
+      <alo-pipeline-template-select-from
+        *ngIf="isSupport(stepNames.Template)"
+        [hidden]="!isStepOn(stepNames.Template)"
+        [form]="model.templateStep"
+        [project]="project"
+        [type]="type"
+        (templateSelected)="onTemplateSelect(templateForm)"
+      ></alo-pipeline-template-select-from>
+    </form>
+    <div class="alo-pipeline-create__basic">
+      <!-- basic form -->
+      <form
+        #basicForm="ngForm"
+        [formGroup]="model.basicStep"
+        auiForm
+        auiFormLabelWidth="200px"
+        [auiFormEmptyAddon]="true"
+        [hidden]="!isStepOn(stepNames.Basic)"
+      >
+        <alo-pipeline-basic-form
+          [form]="model.basicStep.controls.basic"
+          [project]="project"
+          [method]="method"
+          type="create"
+          (jenkinsChanged)="jenkinsChanged($event)"
+        ></alo-pipeline-basic-form>
+      </form>
+      <!-- select repo form -->
+      <form
+        #repoForm="ngForm"
+        [formGroup]="model.repoStep"
+        auiForm
+        auiFormLabelWidth="200px"
+        [auiFormEmptyAddon]="true"
+      >
+        <alo-pipeline-repository-form
+          *ngIf="isSupport(stepNames.Repository)"
+          [hidden]="!isStepOn(stepNames.Repository)"
+          [form]="model.repoStep.controls.jenkinsfile"
+          [project]="project"
+          [method]="method"
+          type="create"
+        ></alo-pipeline-repository-form>
+      </form>
+      <alo-pipeline-dynamic-parameters-form
+        *ngIf="isSupport(stepNames.DynamicParameters)"
+        [hidden]="!isStepOn(stepNames.DynamicParameters)"
+        [project]="project"
+        [templateFields]="model.templateStep.controls.template.value?.arguments"
+        [template]="modelTemplate"
+        [jenkinsInstance]="
+          model.basicStep.controls.basic.value?.jenkins_instance
+        "
+      ></alo-pipeline-dynamic-parameters-form>
+      <!-- write jenksinfile editor form -->
+      <form
+        [formGroup]="model.scriptStep"
+        #scriptForm="ngForm"
+        auiForm
+        auiFormLabelWidth="200px"
+        [auiFormEmptyAddon]="true"
+      >
+        <alo-pipeline-script-form
+          [form]="model.scriptStep.controls.editor_script"
+          *ngIf="isSupport(stepNames.Script) && isStepOn(stepNames.Script)"
+        ></alo-pipeline-script-form>
+      </form>
+      <!-- trigger form -->
+      <form
+        [formGroup]="model.triggerStep"
+        #triggerForm="ngForm"
+        auiForm
+        style="padding: 0 100px"
+      >
+        <div [hidden]="!isStepOn(stepNames.Trigger)">
+          <alo-pipeline-code-change-trigger-form
+            [form]="getCodeTriggerControls()"
+          ></alo-pipeline-code-change-trigger-form>
+          <alo-pipeline-cron-trigger-form
+            *ngIf="method !== 'multi-branch'"
+            [form]="getCronTriggerControls()"
+            [project]="project"
+            [jenkinsBinding]="getJenkinsBinding()"
+          ></alo-pipeline-cron-trigger-form>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div auiCardFooter class="alo-pipeline-create__footer__container">
+    <div>
+      <button
+        aui-button="primary"
+        [plain]="true"
+        (click)="previewJenkinsfile()"
+        *ngIf="isStepOn(stepNames.End) && method === 'template'"
+      >
+        {{ 'pipeline.preview_jenkinsfile' | translate }}
+      </button>
+    </div>
+    <div class="alo-pipeline-create__footer">
+      <acl-disabled-container
+        *ngIf="
+          (stepIndex > 0 && method === 'template') ||
+          (stepIndex > 1 && method !== 'template')
+        "
+        [isAllowed]="true"
+        [isDisabled]="
+          stepIndex === 1 && method === 'template' && type === 'copy'
+        "
+        [tooltip]="'pipeline.copy_pipeline_not_support_change' | translate"
+      >
+        <button aui-button (click)="step('prev')">
+          {{ 'pipeline.step_previous' | translate }}
+        </button>
+      </acl-disabled-container>
+      <button
+        aui-button="primary"
+        (click)="
+          step(
+            'next',
+            method === 'template'
+              ? stepIndex === 0
+                ? templateForm
+                : stepIndex === 1
+                ? basicForm
+                : ''
+              : stepIndex === 1
+              ? basicForm
+              : model.basicStep.value?.basic?.source === 'repo'
+              ? repoForm
+              : scriptForm
+          )
+        "
+        *ngIf="stepIndex < 3 && !(method === 'template' && stepIndex === 0)"
+        [disabled]="jenkinsInstances && !jenkinsInstances.length"
+      >
+        {{ 'pipeline.step_next' | translate }}
+      </button>
+      <button
+        aui-button="primary"
+        (click)="submit(triggerForm)"
+        *ngIf="isStepOn(stepNames.End)"
+      >
+        {{ 'pipeline.create' | translate }}
+      </button>
+      <button aui-button (click)="cancel()">
+        {{ 'pipeline.cancel_create' | translate }}
+      </button>
+    </div>
+  </div>
+</aui-card>

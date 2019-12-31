@@ -1,0 +1,12 @@
+<div
+  class="
+    code-quanlity-icon
+    code-quanlity-icon--{{ type }}-{{ (level || 'e').toLowerCase() }}
+  "
+  [class.code-quanlity-icon--small]="small"
+>
+  <ng-container *ngIf="type === iconTypes.Coverage">
+    <div class="value"></div>
+    <div class="fill"></div>
+  </ng-container>
+</div>

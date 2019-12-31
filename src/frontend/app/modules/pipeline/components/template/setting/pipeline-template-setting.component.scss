@@ -1,0 +1,29 @@
+@import 'var';
+
+.radio {
+  label {
+    width: 170px;
+    display: inline-block;
+    text-align: right;
+    padding-right: 4px;
+
+    &::after {
+      content: ':';
+      margin-right: 8px;
+    }
+  }
+}
+form {
+  width: 100%;
+  margin: 16px;
+  .buttons {
+    display: flex;
+    justify-content: flex-end;
+  }
+  aui-select {
+    width: 100%;
+  }
+  .add-secret {
+    margin-left: 8px;
+  }
+}

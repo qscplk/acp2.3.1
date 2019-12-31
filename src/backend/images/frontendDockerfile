@@ -1,0 +1,10 @@
+FROM index.alauda.cn/alaudaorg/alaudabase-alpine-run:alpine3.10
+
+RUN mkdir -p /diablo/public/en
+
+COPY static/ /diablo/public/en/
+
+ARG commit_id=dev
+ARG app_version=dev
+ENV COMMIT_ID=${commit_id}
+ENV APP_VERSION=${app_version}

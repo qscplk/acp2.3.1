@@ -1,0 +1,30 @@
+<div class="status-gauge-status-hint">
+</div>
+<div class="status-gauge-container"
+     [auiTooltipDisabled]="statusItems.length > 0"
+     [auiTooltip]="noDataTooltip">
+  <ng-container *ngFor="let item of statusItems">
+    <div class="status-gauge-container__item"
+         (click)="onStatusBarClick(item.key)"
+         [auiTooltip]="statusTooltip"
+         [ngClass]="'status-gauge-container__item--' + item.status"
+         [style.flex-grow]="item.value">
+    </div>
+
+    <ng-template #statusTooltip>
+      <div class="status-gauge-tooltip">
+        <alo-status-icon [status]="item.status"></alo-status-icon>
+        <div class="status-gauge-tooltip__label">
+          {{ labelRender(item.key) }}:
+          {{ item.value }}
+        </div>
+      </div>
+    </ng-template>
+  </ng-container>
+</div>
+
+<ng-template #noDataTooltip>
+  <div class="status-gauge-tooltip">
+    {{ 'no_data' | translate }}
+  </div>
+</ng-template>

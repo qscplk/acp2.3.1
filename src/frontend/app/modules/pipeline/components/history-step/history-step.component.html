@@ -1,0 +1,66 @@
+<ng-container *aloAsyncData="let loading = loading;
+  params: params$|async;
+  handler: fetchData;
+  notification: refresh$;
+  pullIn: more? 4000: 0;">
+  <div class="step_header"
+       [ngClass]="{ folded: !canUnfoldLog(step) }"
+       (click)="stepLogs(step)">
+    <div class="step_status {{step.result !== 'UNKNOWN'? step.result: step.state}}">
+      <aui-icon
+        [ngClass]="{'icon-spin': getStatusIcon() === 'basic:sync_circle_s'}"
+        [icon]="getStatusIcon()"
+      ></aui-icon>
+    </div>
+    <div class="step_title">
+      <div class="title">
+        <aui-icon icon="angle_{{active? 'down': 'right'}}"></aui-icon>
+        <span class="name">{{step.displayName}}</span>
+        <div style="position: relative; width: 100%">
+          <div
+            *ngIf="step.displayDescription"
+            class="description"
+          >
+            {{step.displayDescription}}
+          </div>
+        </div>
+      </div>
+      <div class="duration">
+        {{ step.durationInMillis | aloDuration }}
+      </div>
+    </div>
+  </div>
+  <pre
+    *ngIf="text && active"
+    class="step_content"
+  >
+
+    <div
+      class="line"
+      *ngFor="let tx of text; let id = index; trackBy: trackLogs"
+    >
+      <div class="id">{{id + 1}}</div>
+      <div class="log_content">{{tx}}</div>
+    </div>
+  </pre>
+  <div class="parameters-container" *ngIf="step?.input && showStepInput" [ngClass]="{confirm: false}">
+    <div class="parameter-message">
+      {{step?.input?.message}}
+    </div>
+    <alo-pipeline-parameters-input-form
+            [id]="step?.input?.id"
+            [parameters]="getParameters()"
+            (saved)="onTriggered($event)"
+            #paramForm="alo-pipeline-parameters-input-form">
+      <div class="operations">
+        <acl-disabled-container [isAllowed]="permissions?.pipelinesInput?.create">
+          <button aui-button="success" (click)="paramForm.submit(true)">{{ 'pipeline.process' | translate }}</button>
+        </acl-disabled-container>
+        <acl-disabled-container [isAllowed]="permissions?.pipelinesInput?.create">
+          <button aui-button="danger" (click)="paramForm.submit(false)">{{ 'pipeline.terminate' | translate }}</button>
+        </acl-disabled-container>
+      </div>
+    </alo-pipeline-parameters-input-form>
+  </div>
+</ng-container>
+

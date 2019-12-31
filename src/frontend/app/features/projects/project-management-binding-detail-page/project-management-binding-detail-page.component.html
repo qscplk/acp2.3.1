@@ -1,0 +1,155 @@
+<div *aloPageHeaderContent>
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['/admin/projects']">{{ 'project.list' | translate }}</a>
+    </ng-template>
+    <ng-container *ngIf="params$ | async as params">
+      <ng-template aloBreadcrumbItem>
+        <a
+          [routerLink]="['/admin/projects', params?.namespace]"
+          [queryParams]="{ tab: '1' }"
+        >
+          {{ params?.namespace }}
+        </a>
+      </ng-template>
+      <ng-template aloBreadcrumbItem>
+        <span>
+          {{ params?.bindingName }}
+        </span>
+      </ng-template>
+    </ng-container>
+  </alo-breadcrumb>
+</div>
+
+<acl-page-state
+  [adapter]="dataLoader"
+  (redirect)="back()"
+  [autoRedirect]="false"
+>
+  <ng-template>
+    <aui-card *ngIf="binding$ | async as binding">
+      <div auiCardHeader class="info-header">
+        <div class="header-title">
+          <img
+            class="type-icon"
+            [src]="
+              'icons/tool-chain/' + binding?.serviceType.toLowerCase() + '.svg'
+            "
+            alt="devops"
+          />
+          <span>{{ binding?.name }}</span>
+          <aui-icon
+            *ngIf="binding?.status.phase === 'Error'"
+            class="alert"
+            [auiTooltip]="binding?.status.message"
+            [auiTooltipDisabled]="!binding?.status.message"
+            auiTooltipPosition="top start"
+            icon="exclamation_circle_s"
+          ></aui-icon>
+        </div>
+        <alo-menu-trigger
+          [menu]="actionsMenu"
+          [context]="binding"
+        ></alo-menu-trigger>
+      </div>
+
+      <aui-menu #actionsMenu>
+        <aui-menu-group>
+        <acl-disabled-container [isAllowed]="(permission$ | async)?.update">
+          <aui-menu-item (click)="updateBind(binding)">{{
+            'update' | translate
+          }}</aui-menu-item>
+        </acl-disabled-container>
+      </aui-menu-group>
+      <aui-menu-group>
+        <acl-disabled-container [isAllowed]="(permission$ | async)?.delete">
+          <aui-menu-item
+            type="danger"
+            [divide]="true"
+            (click)="unbind(binding)"
+            >{{ 'project.unbind' | translate }}</aui-menu-item
+          >
+        </acl-disabled-container>
+      </aui-menu-group>
+      </aui-menu>
+
+  <ul>
+    <li>
+      <span>{{ 'project_management.service_name' | translate }}：</span>
+      <span>
+        <a
+          [routerLink]="[
+            '/admin/tool-chain/projectmanagement',
+            binding?.service
+          ]"
+          >{{ binding?.service }}</a
+        >
+      </span>
+    </li>
+    <li>
+      <span>{{ 'auth_type' | translate }}：</span>
+      <span>{{
+        getSecretTypeDisplayName(binding?.secretType) | translate
+      }}</span>
+    </li>
+    <li>
+      <span>{{ 'kind' | translate }}：</span>
+      <span>{{ 'project_management' | translate }}</span>
+    </li>
+    <li>
+      <span>{{ 'secret' | translate }}：</span>
+      <span>
+        <a *ngIf="binding?.secret" [routerLink]="secretRoute(binding?.secret)">
+          {{ secretName(binding?.secret) }}
+        </a>
+        <ng-container *ngIf="!binding?.secret">{{
+          'no_auth' | translate
+        }}</ng-container>
+      </span>
+    </li>
+    <li>
+      <span>{{ 'project.bind_at' | translate }}：</span>
+      <span>{{ binding?.creationTimestamp | aclStandardTime }}</span>
+    </li>
+    <li>
+      <span>{{ 'description' | translate }}：</span>
+      <span>
+        <span>{{ binding?.description || '-' }}</span>
+      </span>
+    </li>
+  </ul>
+</aui-card>
+
+    <aui-card *ngIf="filteredProjects$ | async as filteredProjects">
+      <div class="list-header">
+        <div>{{ 'project_management.jira_project' | translate }}</div>
+        <div class="actions">
+          <acl-disabled-container *ngIf="binding$ | async as binding" [isAllowed]="assignPermisson$ | async">
+            <button
+              aui-button
+              (click)="assignProject(binding)"
+            >
+              {{ 'project_management.assign_project' | translate }}
+            </button>
+          </acl-disabled-container>
+          <aui-search
+            [placeholder]="'filter_by_name_placeholder' | translate"
+            (keywordChange)="projectsFilter$$.next($event)"
+          ></aui-search>
+        </div>
+      </div>
+      <alo-project-management-project-list
+        [projects]="filteredProjects"
+        [binding]="binding$ | async"
+        [accessible]="!!(binding$ | async)?.accessUrl"
+      ></alo-project-management-project-list>
+      <alo-no-data
+        *ngIf="!filteredProjects?.length"
+        [resourceName]="'project_management.jira_project' | translate"
+        [loading]="loading"
+        (retry)="updated$$.next(null)"
+      >
+      </alo-no-data>
+    </aui-card>
+  </ng-template>
+</acl-page-state>

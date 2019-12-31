@@ -1,0 +1,20 @@
+<ng-container *ngIf="kind === 'label'">
+  <alo-tags-label [tags]="resource?.objectMeta?.labels"> </alo-tags-label>
+  <div *ngIf="!resource?.objectMeta?.labels">-</div>
+  <aui-icon
+    *ngIf="resource"
+    [ngClass]="{ pencil: allowedUpdate, 'not-allowed-update': !allowedUpdate }"
+    (click)="showUpdate()"
+    icon="basic:pencil_s"
+  ></aui-icon>
+</ng-container>
+<ng-container *ngIf="kind === 'annotation'">
+  <alo-tags-label [tags]="resource?.objectMeta?.annotations"> </alo-tags-label>
+  <div *ngIf="!resource?.objectMeta?.annotations">-</div>
+  <aui-icon
+    *ngIf="resource"
+    [ngClass]="{ pencil: allowedUpdate, 'not-allowed-update': !allowedUpdate }"
+    (click)="showUpdate()"
+    icon="basic:pencil_s"
+  ></aui-icon>
+</ng-container>

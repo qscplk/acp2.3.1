@@ -1,0 +1,36 @@
+<div class="plain-container">
+  <ng-container *ngTemplateOutlet="label"></ng-container>
+</div>
+<div class="spacer"></div>
+<div
+  *ngIf="tagList?.length > showAllCap"
+  class="full-content-toggle"
+  [auiTooltip]="labels"
+  auiTooltipType="info"
+>
+  <div class="full-content-toggle__label">...</div>
+</div>
+
+<ng-template #label>
+  <div class="plain-container-labels-wrapper">
+    <div
+      class="plain-container__label"
+      *ngFor="let tag of tagList | slice:0:showAllCap"
+      [attr.title]="renderTag(tag)"
+    >
+      {{ renderTag(tag) }}
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #labels>
+  <div class="plain-container-labels-wrapper">
+    <div
+      class="plain-container__label"
+      *ngFor="let tag of tagList"
+      [attr.title]="renderTag(tag)"
+    >
+      {{ renderTag(tag) }}
+    </div>
+  </div>
+</ng-template>

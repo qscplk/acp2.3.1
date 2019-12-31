@@ -1,0 +1,45 @@
+:host {
+  display: block;
+}
+
+.toolbar {
+  align-items: center;
+  .flex-space {
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+}
+.project-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
+  > a {
+    padding: 4px 6px;
+    width: 28px;
+    height: 28px;
+    border-radius: 2px;
+    &:link,
+    &:visited {
+      color: #999;
+    }
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+  }
+}
+
+.header-left {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.divider {
+  border-bottom: solid 1px #555;
+  height: 0;
+  margin: 4px 8px;
+}

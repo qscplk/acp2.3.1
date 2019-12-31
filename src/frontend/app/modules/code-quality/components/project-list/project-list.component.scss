@@ -1,0 +1,29 @@
+.code-repository {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  img {
+    flex-shrink: 0;
+    margin-right: 8px;
+  }
+  span {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipse;
+    white-space: nowrap;
+  }
+}
+
+:host {
+  a {
+    &:link,
+    &:visited {
+      color: #979797;
+    }
+    &:hover {
+      color: #007cb5;
+    }
+  }
+}

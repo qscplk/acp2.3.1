@@ -1,0 +1,41 @@
+<ng-container *aloAsyncData="let task;
+    let loading = loading;
+    handler: fetchData;
+    params: identity$ | async;
+    notification: refresh$;
+">
+<aui-dialog-header>
+    {{ 'pipeline.waiting_for_input' | translate }}
+    <span *ngIf="data?.stage?.name">({{data?.stage?.name}})</span>
+</aui-dialog-header>
+<aui-dialog-content>
+    <div *ngIf="task?.input?.message"
+         class="input-message">{{task?.input?.message}}</div>
+    <alo-pipeline-parameters-input-form
+      [id]="task?.input?.id || ''"
+      [parameters]="task?.input?.parameters || []"
+      (saved)="onTriggered($event)"
+      #paramForm="alo-pipeline-parameters-input-form">
+    </alo-pipeline-parameters-input-form>
+    <div *ngIf="loading"
+         class="status-info">
+        <aui-icon icon="spinner" class="status-info__icon--loading"></aui-icon>
+        <span>{{ 'loading' | translate }}</span>
+    </div>
+    <div *ngIf="!loading && taskInputStatus === 'executed'"
+         class="status-info">
+        <aui-icon icon="exclamation_circle_s" class="status-info__icon--executed"></aui-icon>
+        <span>{{ 'pipeline.parameters_have_been_inputed' | translate }}</span>
+    </div>
+    <div *ngIf="!loading && taskInputStatus === 'error'"
+         class="status-info">
+        <aui-icon icon="exclamation_triangle_s" class="status-info__icon--error"></aui-icon>
+        <span>{{ 'retry_on_error' | translate }}</span>
+        <a (click)="refresh()">{{ 'retry' | translate }}</a>
+    </div>
+</aui-dialog-content>
+<aui-dialog-footer>
+    <button aui-button="success" [disabled]="loading || taskInputStatus!=='paused'" (click)="paramForm.submit(true)">{{ 'pipeline.process' | translate }}</button>
+    <button aui-button="danger" [disabled]="loading || taskInputStatus!=='paused'" (click)="paramForm.submit(false)">{{ 'pipeline.terminate' | translate }}</button>
+</aui-dialog-footer>
+</ng-container>

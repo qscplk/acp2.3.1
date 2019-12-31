@@ -1,0 +1,11 @@
+.form-item {
+  display: flex;
+  justify-content: space-between;
+  width: 90%;
+}
+
+.parameter-hint {
+  color: #999;
+  cursor: pointer;
+  margin-left: 8px;
+}

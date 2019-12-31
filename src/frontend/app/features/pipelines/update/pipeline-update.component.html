@@ -1,0 +1,23 @@
+<ng-container *aloPageHeaderContent>
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <span>{{ 'nav_continuous_delivery' | translate }}</span>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['../']">{{ 'pipeline.list' | translate }}</a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <ng-container>{{ 'pipeline.update' | translate }}</ng-container>
+    </ng-template>
+  </alo-breadcrumb>
+</ng-container>
+<ng-container *aloAsyncData="let pipelineConfig;
+  let loading = loading;
+  handler: getPipelineConfig;
+  params: param$ | async;">
+  <alo-pipeline-update-container
+    [name]="(param$ | async)?.name"
+    [project]="(param$ | async)?.project"
+    [pipelineConfig]="pipelineConfig"
+  ></alo-pipeline-update-container>
+</ng-container>

@@ -1,0 +1,20 @@
+<ng-container *aloPageHeaderContent>
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <span>{{ 'nav_continuous_delivery' | translate }}</span>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['../']">{{ 'pipeline.list' | translate }}</a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <ng-container>{{ 'pipeline.create_by_graph' | translate }}</ng-container>
+    </ng-template>
+  </alo-breadcrumb>
+</ng-container>
+<alo-pipeline-visual-editor
+  *ngIf="params$ | async as params"
+  [project]="params.project"
+  [name]="params.cloneName"
+  [isClone]="!!params.cloneName"
+>
+</alo-pipeline-visual-editor>

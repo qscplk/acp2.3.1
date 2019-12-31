@@ -1,0 +1,55 @@
+@import 'var';
+
+.header-icon {
+  margin: 0 8px;
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+}
+
+.header-text {
+  margin-right: 8px;
+  font-size: 16px;
+  vertical-align: middle;
+  cursor: pointer;
+  :hover {
+    background-color: #ededed;
+    border-radius: 2px;
+  }
+}
+
+.repo-info {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+
+  .repo-path {
+    display: inline-flex;
+    flex-shrink: 1;
+    overflow: hidden;
+  }
+
+  .prefix {
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.jump-icon {
+  font-size: 16px;
+  color: #999;
+  margin-left: 4px;
+  cursor: pointer;
+  :hover {
+    color: $color-primary;
+  }
+}
+
+::ng-deep {
+  .aui-tooltip.jump-tooltip {
+    border: solid 1px #d6d6d6;
+    padding: 0 8px;
+  }
+}

@@ -1,0 +1,21 @@
+.header {
+  font-size: 18px;
+}
+
+.alo-detail__field {
+  > span {
+    align-items: center;
+    display: flex;
+    .repo-icon {
+      width: 16px;
+      height: 16px;
+      margin-right: 4px;
+      flex-shrink: 0;
+    }
+    span {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}

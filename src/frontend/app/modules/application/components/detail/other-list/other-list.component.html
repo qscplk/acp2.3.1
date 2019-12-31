@@ -1,0 +1,41 @@
+
+<aui-table
+  auiSort
+  [dataSource]="items"
+  [trackBy]="itemIdentity"
+  [active]="sort.active"
+  [direction]="sort.direction"
+  (sortChange)="sortChange($event)"
+>
+  <ng-container auiTableColumnDef="name">
+    <aui-table-header-cell
+      *auiTableHeaderCellDef
+      aui-sort-header
+    >
+      {{ 'name' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      {{ item.name }}
+    </aui-table-cell>
+  </ng-container>
+  <ng-container auiTableColumnDef="kind">
+    <aui-table-header-cell
+      *auiTableHeaderCellDef
+      aui-sort-header
+    >
+      {{ 'kind' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      {{ item.kind }}
+    </aui-table-cell>
+  </ng-container>
+  <aui-table-header-row
+    *auiTableHeaderRowDef="columns"
+  ></aui-table-header-row>
+  <aui-table-row
+    *auiTableRowDef="let row; columns: columns;"
+  ></aui-table-row>
+</aui-table>
+<alo-no-data *ngIf="items && items.length===0"
+  [resourceName]="'application.others' | translate"
+></alo-no-data>

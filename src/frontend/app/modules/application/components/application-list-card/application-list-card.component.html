@@ -1,0 +1,174 @@
+<div class="card-container">
+  <div class="app-info">
+    <div
+      class="row-image"
+      (click)="toggleResourceList()"
+    >
+      <img
+        *ngIf="displayResource; else elseImgBlock"
+        src="icons/app-core/application-Unfold.svg"
+        alt="devops"
+      >
+      <ng-template #elseImgBlock>
+        <img src="icons/app-core/application-PackUp.svg" alt="devops" >
+      </ng-template>
+    </div>
+    <div class="app-name">
+      <a
+        href="javascript:void(0)"
+        [routerLink]="['./', appInfo.name]"
+      >
+        {{appInfo.name}}
+      </a>
+      <div
+        *ngIf="appInfo.displayName"
+        class="display-name"
+      >{{appInfo.displayName}}</div>
+    </div>
+    <div fxFlex></div>
+    <div class="app-status">
+      <div class="status-gauge-bar">
+        <alo-status-gauge-bar [statusInfo]="appInfo.appStatus"></alo-status-gauge-bar>
+      </div>
+      <span
+        (click)="toggleResourceList()"
+        [ngClass]="{'aviliable-data': appInfo.appStatus.total>0}"
+      >{{appInfo.appStatus.total}}</span>
+    </div>
+    <div
+      *ngIf="addressesNum>0; else elseLinkBlock"
+      class="app-links"
+      style="cursor: pointer;"
+      [auiTooltip]="links"
+      auiTooltipType="info"
+      auiTooltipTrigger="click"
+      auiTooltipPosition="bottom end"
+    >
+      <aui-icon
+        icon="basic:link"
+        [title]="'application.address' | translate"
+      ></aui-icon>
+      <span class="aviliable-data">
+        {{addressesNum}}
+      </span>
+    </div>
+    <ng-template #elseLinkBlock>
+      <div class="app-links">
+        <aui-icon
+          icon="basic:link"
+          [title]="'application.address' | translate"
+        ></aui-icon>
+        <span [title]="'application.no_address' | translate">{{addressesNum}}</span>
+      </div>
+    </ng-template>
+  </div>
+  <div
+    class="resource-list-container"
+    *ngIf="displayResource"
+    [ngStyle]="{'overflow-y':appInfo.resourceList.length > 4 ? 'scroll' : ''}"
+  >
+    <div class="resource-list">
+      <div
+        class="resource-list-item"
+        *ngFor="let item of appInfo.resourceList; trackBy: trackByFn"
+      >
+        <div class="resource-icon-container">
+          <alo-k8s-resource-icon [resourceKind]="item.resourceKind"></alo-k8s-resource-icon>
+        </div>
+        <div class="resoure-name">
+          <a
+            href="javascript:void(0)"
+            [routerLink]="['./', appInfo.name, item.typeMeta.kind, item.objectMeta.name]"
+          >
+            {{item.objectMeta.name}}
+          </a>
+        </div>
+        <div class="resoure-status">
+          <alo-status-icon [status]="statusMap(item.status)"></alo-status-icon>
+          <span>{{getResoureStatus(item.podInfo.current,
+            item.podInfo.desired)}}</span>
+        </div>
+        <div fxFlex></div>
+        <div class="resoure-images">
+          <div class="image-title">{{ 'image' | translate }}:</div>
+          <div class="image-info">
+            <span
+              [title]="item.containerImages[0]"
+              class="copy-item"
+              [auiTooltipCopy]="item.containerImages[0]"
+            >{{ displayImageAddr(item.containerImages[0]) }}</span><br>
+            <ng-container *ngIf="item.containerImages.length>1">
+              {{ 'total' | translate }}
+              <span
+                class="aviliable-data"
+                [auiTooltip]="images"
+                auiTooltipType="info"
+                auiTooltipTrigger="click"
+                auiTooltipPosition="bottom"
+                (click)="displayImges(item.containerImages)"
+              >
+                {{ item.containerImages.length }}
+              </span>
+              {{ 'application.image_num' | translate }}
+            </ng-container>
+          </div>
+        </div>
+        <div>
+          <alo-menu-trigger [menu]="resourceActionsMenu"></alo-menu-trigger>
+          <aui-menu #resourceActionsMenu>
+            <aui-menu-item
+              [disabled]="item.resourceKind !== 'deployments'"
+              [routerLink]="['./', appInfo.name, item.typeMeta.kind, item.objectMeta.name, 'update']"
+            >
+              {{ 'update' | translate }}
+            </aui-menu-item>
+          </aui-menu>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #images>
+  <div class="tooltip-container">
+    <div class="tooltip-list">
+      <ul>
+        <li
+          *ngFor="let item of selectedImages"
+          [auiTooltipCopy]="item"
+          class="copy-item"
+        >{{item}}</li>
+      </ul>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #links>
+  <div class="tooltip-container">
+    <span
+      class="addresses-title"
+      *ngIf="appInfo.visitAddresses.external.length>0"
+    >{{ 'application.public_network_access' | translate}}</span>
+    <div class="tooltip-list">
+      <ul class="external-link">
+        <li *ngFor="let item of appInfo.visitAddresses.external">
+          <a
+            [href]="item"
+            target="_blank"
+          >{{item}}</a>
+        </li>
+      </ul>
+    </div>
+    <span
+      class="addresses-title"
+      *ngIf="appInfo.visitAddresses.internal.length>0"
+    >{{ 'application.cluster_access' | translate}}</span>
+    <div class="tooltip-list">
+      <ul>
+        <li *ngFor="let item of appInfo.visitAddresses.internal">
+          <span>{{item}}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</ng-template>

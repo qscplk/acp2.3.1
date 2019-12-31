@@ -1,0 +1,70 @@
+<aui-page>
+  <ng-container *auiPageHeader>
+    <div class="header-left">
+      <alo-logo></alo-logo>
+      <div class="project-actions">
+        <a
+          [routerLink]="['/home/projects']"
+          title="{{ 'go_project_list' | translate }}"
+        >
+          <aui-icon icon="basic:project_s" size="16px"></aui-icon>
+        </a>
+        <acl-project-select
+          [selected]="currentProject"
+          (selectedChange)="projectSwitchHandle($event)"
+        ></acl-project-select>
+      </div>
+    </div>
+    <alo-global-actions></alo-global-actions>
+  </ng-container>
+  <div *auiPageSider>
+    <ng-container *ngIf="{
+      activatedKey: activated$ | async | pure: getActivatedKey,
+      configs: configs$ | async | pure:filterEnabled | async,
+      theme: themeService.navTheme$ | async,
+      currentNamespace: currentNamespace$ | async
+    } as context">
+      <ng-container *ngIf="context.configs | pure:global as globalConfigs">
+        <aui-platform-nav
+          *ngIf="globalConfigs.length"
+          [activatedKey]="context.activatedKey"
+          [items]="globalConfigs"
+          [hideMainPanelToggle]="true"
+          [theme]="context.theme"
+          (activatedItemChange)="handleActivatedNavItemChange($event)"
+        >
+        </aui-platform-nav>
+      </ng-container>
+      <ng-container *ngIf="context.configs | pure:namespaced as namespacedConfigs">
+        <div *ngIf="namespacedConfigs.length" class="divider"></div>
+        <acl-namespace-select
+          *ngIf="namespacedConfigs.length"
+          [projectName]="currentProject"
+          [selected]="context.currentNamespace"
+          (selectedChange)="namespaceSwitchHandle($event)"
+        ></acl-namespace-select>
+        <aui-platform-nav
+          *ngIf="namespacedConfigs.length"
+          [activatedKey]="context.activatedKey"
+          [items]="namespacedConfigs"
+          [hideMainPanelToggle]="true"
+          [theme]="context.theme"
+          (activatedItemChange)="handleActivatedNamespacedNavItemChange($event, context.currentNamespace)"
+        ></aui-platform-nav>
+      </ng-container>
+    </ng-container>
+  </div>
+  <div *auiPageToolbar>
+    <ng-container
+      *cdkPortalOutlet="(pageHeaderContentTemplate$ | async)"
+    ></ng-container>
+    <div class="global-loader" [class.loading]="showLoadingBar$ | async"></div>
+  </div>
+  <div
+    *auiPageContent
+    class="layout-page-content"
+    [@routerTransition]="getPage(outlet)"
+  >
+    <router-outlet #outlet="outlet"></router-outlet>
+  </div>
+</aui-page>

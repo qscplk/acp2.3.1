@@ -1,0 +1,49 @@
+@import 'var';
+
+:host {
+  display: flex;
+  overflow: hidden;
+  height: 289px;
+  flex-direction: column;
+
+  ::ng-deep aui-tag {
+    display: block;
+    cursor: pointer;
+    height: 20px;
+    + aui-tag .aui-tag--mini {
+      margin-left: 4px;
+    }
+    > div:hover {
+      background-color: $menu-item-primary-bg;
+      border-color: #e5f5fc;
+    }
+  }
+}
+
+.report-item {
+  &__body {
+    > img {
+      flex-shrink: 0;
+      margin-right: 4px;
+      width: 16px;
+      height: 16px;
+    }
+    > a {
+      flex-shrink: 1;
+      min-width: 0;
+      > div {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+  &__footer {
+    > div {
+      flex-grow: 0;
+      &.commit-id {
+        cursor: pointer;
+      }
+    }
+  }
+}

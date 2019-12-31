@@ -1,0 +1,143 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  labels:
+    app.alauda.io/name: diablo.alauda-system
+  name: diablo
+  namespace: alauda-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.alauda.io/name: diablo.alauda-system
+  template:
+    metadata:
+      labels:
+        app.alauda.io/name: diablo.alauda-system
+    spec:
+      initContainers:
+        - name: static
+          image: index.alauda.cn/alaudak8s/diablo-clone-front:v1.9-b.1
+          env:
+            - name: SHARED_FOLDER
+              value: /static
+            - name: STATIC_FILES
+              value: /diablo/public/en
+          command:
+            - sh
+            - /config/copy_static.sh
+          volumeMounts:
+            - name: shared
+              mountPath: /static
+            - name: config-volume
+              mountPath: /config
+      containers:
+        - name: alauda-console
+          image: index.alauda.cn/alaudak8s/alauda-console:v1.9-b.1
+          imagePullPolicy: Always
+          env:
+            - name: TIMESTAMP
+              value: '20190611'
+            - name: SHARED_FOLDER
+              value: /static
+            - name: 'label_base_domain'
+              value: 'alauda.io'
+            - name: SYNC_TKE
+              value: 'true'
+            - name: LOGO_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: ui-config
+                  key: LOGO_URL
+          args:
+            - '--log-level=debug'
+            - '--log-disable-color'
+            - '--log-enable-caller'
+            - '--path-prefix=/console-devops'
+            - '--assets-host-path=$(SHARED_FOLDER)'
+            - '--oidc-issuer-url=https://129.28.182.197/dex'
+            - '--oidc-client-id=alauda-auth'
+            - '--oidc-client-secret=ZXhhbXBsZS1hcHAtc2VjcmV0'
+            - '--oidc-redirect-url=http://129.28.182.197/console-devops/'
+            - '--api-address=https://129.28.182.197'
+          volumeMounts:
+            - name: shared
+              mountPath: /static
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /_ping
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /healthz
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 250m
+              memory: 256Mi
+      imagePullSecrets:
+        - name: alaudak8s
+      volumes:
+        - name: config-volume
+          configMap:
+            name: diablo
+        - name: shared
+          emptyDir: {}
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: diablo
+  namespace: alauda-system
+spec:
+  selector:
+    app.alauda.io/name: diablo.alauda-system
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: diablo
+  namespace: alauda-system
+  annotations:
+    kubernetes.io/ingress.class: ''
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /console-devops/
+            backend:
+              serviceName: diablo
+              servicePort: 8080
+          - path: /console-devops
+            backend:
+              serviceName: diablo
+              servicePort: 8080
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: diablo
+  namespace: alauda-system
+data:
+  SYNC_TKE: 'false'
+  LOGO_URL: '/console-ace/'
+  copy_static.sh: |-
+    SHARED_FOLDER="${SHARED_FOLDER:-/shared}"
+    STATIC_FILES="${STATIC_FILES:-/files}"
+    env
+    cp -rv $STATIC_FILES/* $SHARED_FOLDER

@@ -1,0 +1,27 @@
+@import 'var';
+
+.days {
+  display: flex;
+  flex-direction: column;
+  .day-items {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+.time-container {
+  display: flex;
+  flex-flow: wrap;
+  margin-top: 18px;
+  align-items: center;
+  div:not(:first-of-type) {
+    margin: 0 4px;
+  }
+}
+.errors {
+  color: $color-error;
+  font-size: 12px;
+  &.least_time {
+    line-height: 40px;
+  }
+}

@@ -1,0 +1,28 @@
+@import 'var';
+
+.tooltip-container {
+  .tooltip-list {
+    margin-left: 30px;
+    padding: 10px 20px 10px 0;
+    font-size: 14px;
+    color: black;
+    a {
+      cursor: pointer;
+      color: $color-primary;
+      &:hover {
+        color: #0079c2;
+      }
+    }
+  }
+}
+.aviliable-data {
+  cursor: pointer;
+  color: #24a7e3;
+  &:hover {
+    background-color: #e5f5fc;
+  }
+}
+.address-total {
+  line-height: 14px;
+  color: gray;
+}

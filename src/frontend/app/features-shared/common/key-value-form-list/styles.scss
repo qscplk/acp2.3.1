@@ -1,0 +1,20 @@
+.key-value-form-item-group {
+  background: #fff;
+  padding: 12px;
+}
+
+:host::ng-deep {
+  .alo-form-table input.aui-input.aui-input--medium {
+    height: 32px;
+    width: 40%;
+  }
+}
+
+aui-code-editor {
+  height: 200px;
+}
+
+textarea {
+  font-family: monospace;
+  height: auto;
+}

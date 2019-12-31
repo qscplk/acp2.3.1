@@ -1,0 +1,69 @@
+<aui-dialog-header>{{ 'application.select_image' | translate }}</aui-dialog-header>
+<aui-dialog-content>
+  <form
+    #form="ngForm"
+    auiForm
+    auiFormLabelWidth="100px"
+  >
+    <aui-form-item>
+      <label auiFormItemLabel>{{'image' | translate}}</label>
+      <div class="addr-tag-container">
+        <input
+          auiFormItemControl
+          name="rpAddr"
+          #rpAddr="ngModel"
+          aui-input
+          required
+          readonly
+          [(ngModel)]="imageParams.repository_address"
+        >
+        <div class="cut-off">:</div>
+        <ng-container *ngIf="checkRepositories(repositories$ |async); else tagBlock">
+          <aui-select
+            auiFormItemControl
+            name="tag"
+            #tag="ngModel"
+            [(ngModel)]="imageParams.tag"
+            allowCreate="true"
+            filterable="true"
+            [placeholder]="'application.selecte_or_input_image_tag' | translate"
+          >
+            <ng-container *ngIf="tagOptions">
+              <aui-option
+                *ngFor="let tag of tagOptions"
+                [value]="tag.name"
+              >{{tag.name}}</aui-option>
+            </ng-container>
+          </aui-select>
+        </ng-container>
+        <ng-template #tagBlock>
+          <input
+            auiFormItemControl
+            aui-input
+            name="rpTag"
+            #rpTag="ngModel"
+            [(ngModel)]="imageParams.tag"
+            [placeholder]="'application.selecte_or_input_image_tag' | translate"
+          >
+        </ng-template>
+      </div>
+      <div
+        auiFormItemError
+        *ngIf="rpAddr.errors?.required"
+      >{{ 'required' | translate }}</div>
+    </aui-form-item>
+  </form>
+</aui-dialog-content>
+<aui-dialog-footer>
+  <div>
+    <button
+      aui-button="primary"
+      (click)="save()"
+    >{{
+      'confirm' | translate }}</button>
+    <button
+      aui-button
+      auiDialogClose
+    >{{ 'cancel' | translate }}</button>
+  </div>
+</aui-dialog-footer>

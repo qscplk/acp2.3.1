@@ -1,0 +1,84 @@
+<aui-card>
+  <div auiCardHeader>
+    <ul class="alo-steps">
+      <li class="alo-steps__step alo-steps__step--active">
+        <span
+          class="alo-steps__icon"
+          [class.alo-steps__icon--active]="step === 'bindAccount'"
+          [class.alo-steps__icon--complete]="step === 'assignRepository'"
+        >
+          <span *ngIf="step === 'bindAccount'">1</span>
+          <aui-icon
+            icon="check_s"
+            *ngIf="step === 'assignRepository'"
+          ></aui-icon>
+        </span>
+        <span>{{ 'code.bind_account' | translate }}</span>
+      </li>
+      <li class="alo-steps__step">
+        <span
+          class="alo-steps__icon"
+          [class.alo-steps__icon--active]="step === 'assignRepository'"
+        >
+          <span>2</span>
+        </span>
+        <span>{{ 'code.assign_repository' | translate }}</span>
+      </li>
+    </ul>
+  </div>
+  <alo-code-binding-basic-edit
+    [hidden]="step !== 'bindAccount'"
+    [service]="service"
+    [namespace]="namespace"
+    (statusChange)="onBindingAccountStatusChange($event)"
+    (saved)="nextStep($event)"
+    #step1="alo-code-binding-basic-edit"
+  ></alo-code-binding-basic-edit>
+  <aui-inline-alert type="success" *ngIf="step === 'assignRepository'">
+    <span>{{ 'code.bind_account_succ' | translate }}</span>
+  </aui-inline-alert>
+  <alo-code-repository-assign
+    [hidden]="step !== 'assignRepository'"
+    [namespace]="namespace"
+    [name]="codeBinding"
+    (saved)="nextStep($event)"
+    #step2="alo-code-repository-assign"
+  ></alo-code-repository-assign>
+  <div
+    auiCardFooter
+    class="form-actions"
+  >
+    <button
+      *ngIf="step === 'bindAccount'"
+      aui-button="primary"
+      (click)="step1.submit()"
+      [disabled]="['loading', 'saving'].includes(status.bindingAccount)"
+      [loading]="status.bindingAccount === 'saving'"
+    >
+      {{ 'code.bind_account' | translate }}
+    </button>
+    <button
+      *ngIf="step === 'assignRepository'"
+      aui-button="primary"
+      (click)="step2.submit()"
+      [disabled]="step2.loading || step2.saving || step2.hasError"
+      [loading]="step2.saving"
+    >
+      {{ 'code.assign_repository' | translate }}
+    </button>
+    <button
+      *ngIf="step === 'bindAccount'"
+      aui-button
+      (click)="goBack()"
+    >
+      {{ 'cancel' | translate }}
+    </button>
+    <button
+      *ngIf="step === 'assignRepository'"
+      aui-button
+      (click)="goToDetail()"
+    >
+      {{ 'cancel' | translate }}
+    </button>
+  </div>
+</aui-card>

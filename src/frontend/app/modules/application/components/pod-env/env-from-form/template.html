@@ -1,0 +1,23 @@
+<aui-multi-select (blur)="onBlur()"
+                  [filterable]="true"
+                  [filterFn]="refObjFilterFn"
+                  [trackFn]="refObjTrackByFn"
+                  [loading]="!(configMaps$ | async) || !(secrets$ | async)"
+                  [formControl]="form">
+  <aui-option-group *ngIf="(configMaps$ | async)?.length > 0">
+    <div auiOptionGroupTitle>{{ 'application.configmap' | translate }}</div>
+    <aui-option *ngFor="let configMap of configMaps$ | async"
+                [value]="getRefObj(configMap)">
+      {{ configMap.objectMeta.name }}
+    </aui-option>
+  </aui-option-group>
+
+  <aui-option-group *ngIf="(secrets$ | async)?.length > 0">
+    <div auiOptionGroupTitle>{{ 'application.secret' | translate }}</div>
+    <aui-option *ngFor="let secret of secrets$ | async"
+                [value]="getRefObj(secret)">
+      {{ secret.objectMeta.name }}
+    </aui-option>
+  </aui-option-group>
+  <aui-option-placeholder>{{ 'no_data' | translate }}</aui-option-placeholder>
+</aui-multi-select>

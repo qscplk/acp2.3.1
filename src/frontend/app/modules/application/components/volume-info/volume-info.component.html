@@ -1,0 +1,59 @@
+<div class="volume-info-container">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <th [style.flex]="1">{{ 'kind' | translate }}</th>
+      <th [style.flex]="2">{{ 'name' | translate }}/{{ 'path' | translate }}</th>
+      <th [style.flex]="2">{{ 'application.container_path' | translate }}</th>
+      <th *ngIf="canAction" class="action"></th>
+    </tr>
+    <ng-container *ngFor="let item of data;let i = index;">
+      <tr *ngIf="item.type !== 'PersistentVolumeClaim' &&
+        item.volumeMountInfos[0].subPath;else elseBlock">
+        <td [style.flex]="1">{{getTypetranlate(item.type)}}</td>
+        <td colspan="2" [style.flex]="4">
+          {{item.hostPath || item.name}}
+          <table border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <th [style.flex]="1">{{ 'key' | translate }}</th>
+              <th [style.flex]="1">{{ 'application.file_path' | translate }}</th>
+            </tr>
+            <tr *ngFor="let volumeMountInfo of item.volumeMountInfos">
+              <td [style.flex]="1">{{volumeMountInfo.subPath}}</td>
+              <td [style.flex]="1">{{volumeMountInfo.mountPath}}</td>
+            </tr>
+          </table>
+        </td>
+        <td *ngIf="canAction" class="action">
+          <button aui-button square="true" (click)="editVolumeMount(i)">
+            <aui-icon icon="basic:pencil_edit"></aui-icon>
+          </button>
+          <button aui-button square="true" (click)="deleteVolumeMount(i)">
+            <aui-icon icon="basic:minus_circle"></aui-icon>
+          </button>
+        </td>
+      </tr>
+      <ng-template #elseBlock>
+        <tr>
+          <td class="volume-type" [style.flex]="1">{{getTypetranlate(item.type)}}</td>
+          <td [style.flex]="2">
+            {{item.hostPath || item.name || item.resourceName}}
+            <div *ngIf="item.volumeMountInfos && item.volumeMountInfos[0].subPath">{{'subpath'
+              | translate}}:{{item.volumeMountInfos[0].subPath}}</div>
+          </td>
+          <td [style.flex]="2">{{item.volumeMountInfos[0].mountPath}}</td>
+          <td *ngIf="canAction" class="action">
+            <button aui-button square="true" (click)="editVolumeMount(i)">
+              <aui-icon icon="basic:pencil_edit"></aui-icon>
+            </button>
+            <button aui-button square="true" (click)="deleteVolumeMount(i)">
+              <aui-icon icon="basic:minus_circle"></aui-icon>
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+    </ng-container>
+  </table>
+</div>
+<alo-no-data *ngIf="data && data.length === 0"
+  [resourceName]="'volume' | translate"
+></alo-no-data>

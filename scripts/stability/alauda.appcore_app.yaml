@@ -1,0 +1,114 @@
+apiVersion: app.k8s.io/v1beta1
+kind: Application
+metadata:
+  clusterName: ''
+  name: ${NAME}
+  namespace: ${PROJECT_NAME}
+spec:
+  assemblyPhase: Succeeded
+  componentKinds:
+    - group: apps
+      kind: Deployment
+    - group: ''
+      kind: Service
+    - group: ''
+      kind: ConfigMap
+    - group: ''
+      kind: Secret
+  descriptor: {}
+  selector:
+    matchLabels:
+      app.alauda.io/name: ${NAME}.${PROJECT_NAME}
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: ${LABEL}
+    app.alauda.io/name: ${NAME}.${PROJECT_NAME}
+    alauda.test: 'true'
+  name: ${NAME}
+  namespace: ${PROJECT_NAME}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ${LABEL}
+        app.alauda.io/name: ${NAME}.${PROJECT_NAME}
+    spec:
+      containers:
+        - image: ${IMAGE}
+          imagePullPolicy: IfNotPresent
+          name: qatest
+          resources:
+            requests:
+              cpu: 10m
+              memory: 10Mi
+            limits:
+              cpu: 50m
+              memory: 50Mi
+          ports:
+            - name: http
+              containerPort: 30300
+            - name: ssh
+              containerPort: 22
+          env:
+            - name: HTTP_PORT
+              value: '30603'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${NAME}
+  namespace: ${PROJECT_NAME}
+  labels:
+    app: ${LABEL}
+    app.alauda.io/name: ${NAME}.${PROJECT_NAME}
+    alauda.test: 'true'
+spec:
+  type: NodePort
+  ports:
+    - name: ssh
+      port: 22
+      protocol: TCP
+      targetPort: 22
+    - name: http
+      port: 30301
+      protocol: TCP
+      targetPort: 30301
+  selector:
+    app: ${LABEL}
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: ${NAME}
+  namespace: ${PROJECT_NAME}
+  labels:
+    app: ${LABEL}
+    app.alauda.io/name: ${NAME}.${PROJECT_NAME}
+    alauda.test: 'true'
+data:
+  app.ini: |
+    ; This file lists the default values used by autogitea
+    ; Copy required sections to your own app.ini (default is custom/conf/app.ini)
+    APP_NAME = autogitea: Git with a cup of tea
+    RUN_USER = git
+    RUN_MODE = dev
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ${NAME}
+  namespace: ${PROJECT_NAME}
+  labels:
+    deploy: ${LABEL}
+    app.alauda.io/name: ${NAME}.${PROJECT_NAME}
+    alauda.test: 'true'
+  annotations:
+    pod.alpha.kubernetes.io/initialized: 'true'
+type: Opaque
+data:
+  username: YWRtaW4=
+  password: MWYyZDFlMmU2N2Rm

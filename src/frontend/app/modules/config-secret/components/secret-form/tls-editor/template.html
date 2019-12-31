@@ -1,0 +1,61 @@
+<form
+  auiForm
+  auiFormLabelWidth="150px"
+  [auiFormEmptyAddon]="true"
+>
+  <!-- Input row -->
+
+  <div class="tls-form-item-group">
+    <aui-form-item
+      class="ca"
+      [formGroup]="form"
+    >
+      <label auiFormItemLabel>
+        {{ 'configsecret.ca' | translate }}
+      </label>
+      <textarea
+        (blur)="onBlur()"
+        auiFormItemControl
+        aui-input
+        required
+        formControlName="tls.crt"
+      ></textarea>
+
+      <button
+        aui-button
+        class="import"
+        size="mini"
+        [plain]="true"
+        (click)="fileUploadInput.click()"
+      >
+        <aui-icon icon="import"></aui-icon>
+        {{ 'import' | translate }}
+      </button>
+
+    </aui-form-item>
+
+    <aui-form-item [formGroup]="form">
+      <label auiFormItemLabel>
+        {{ 'configsecret.private_key' | translate }}
+      </label>
+      <textarea
+        auiFormItemControl
+        aui-input
+        required
+        formControlName="tls.key"
+        (blur)="onBlur()"
+      >
+        </textarea>
+    </aui-form-item>
+  </div>
+
+</form>
+
+<input
+  #fileUploadInput
+  hidden
+  (change)="onImport($event)"
+  type="file"
+  multiple
+  name="files[]"
+/>

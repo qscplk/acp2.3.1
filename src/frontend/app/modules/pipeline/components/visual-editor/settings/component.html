@@ -1,0 +1,186 @@
+<div class="side-form__header">
+  <span>{{ 'pipeline_settings' | translate }}</span>
+</div>
+<form
+  *ngIf="fg$ | async as fg"
+  class="side-form__body"
+  [formGroup]="fg"
+  auiForm
+  auiFormLabelPosition="top"
+>
+  <div [class.ng-submitted]="submitted || (edited$ | async)">
+    <div class="side-form__group">
+      <div class="side-form__group-header">
+        {{ 'basic_info' | translate }}
+      </div>
+      <aui-form-item *ngIf="!isUpdate">
+        <label auiFormItemLabel>{{ 'name' | translate }}</label>
+        <div auiFormItemControl required class="required-container full-width">
+          <input
+            aui-input
+            formControlName="name"
+            [placeholder]="nameRule.placeholder | translate"
+          />
+        </div>
+        <div
+          auiFormItemHint
+          class="error-hint"
+          [class.has-error]="!!fg.controls.name.errors"
+        >
+          {{ fg.controls.name.errors | pure: firstError | translate }}
+        </div>
+      </aui-form-item>
+      <div *ngIf="isUpdate" class="readonly-field">
+        <label>{{ 'name' | translate }}</label>
+        <div>{{ fg.value.name }}</div>
+      </div>
+      <aui-form-item>
+        <label auiFormItemLabel>{{ 'display_name' | translate }}</label>
+        <input auiFormItemControl aui-input formControlName="displayName" />
+      </aui-form-item>
+    </div>
+    <div class="side-form__group">
+      <div class="side-form__group-header">
+        {{ 'env_settings' | translate }}
+      </div>
+      <aui-form-item *ngIf="!isUpdate">
+        <label auiFormItemLabel>{{ 'jenkins_instance' | translate }}</label>
+        <aui-select
+          required
+          auiFormItemControl
+          formControlName="jenkinsBinding"
+        >
+          <aui-option
+            *ngFor="let item of project | pure: getJenkinsBindings | async"
+            [value]="item.name"
+            [label]="item.name"
+          >
+            {{ item.name }}
+          </aui-option>
+        </aui-select>
+        <div
+          auiFormItemHint
+          class="error-hint"
+          [class.has-error]="!!fg.controls.jenkinsBinding.errors"
+        >
+          {{ fg.controls.jenkinsBinding.errors | pure: firstError | translate }}
+        </div>
+      </aui-form-item>
+      <div *ngIf="isUpdate" class="readonly-field">
+        <label>{{ 'jenkins_instance' | translate }}</label>
+        <div>{{ fg.value.jenkinsBinding }}</div>
+      </div>
+      <aui-form-item>
+        <label auiFormItemLabel>{{ 'pipeline.build_node' | translate }}</label>
+        <aui-select
+          required
+          formControlName="agent"
+          clearable
+          filterable
+          allowCreate
+          auiFormItemControl
+          [placeholder]="'pipeline.select_agent_placeholder' | translate"
+        >
+          <aui-option
+            *ngFor="
+              let label of fg.value.jenkinsBinding
+                | pure: getJenkinsAgentLabels
+                | async
+            "
+            [value]="label"
+          >
+            {{ label }}
+          </aui-option>
+          <aui-option-placeholder>
+            {{ 'no_data' | translate }}
+          </aui-option-placeholder>
+        </aui-select>
+        <div
+          auiFormItemHint
+          class="error-hint"
+          [class.has-error]="!!fg.controls.agent.errors"
+        >
+          {{ fg.controls.agent.errors | pure: firstError | translate }}
+        </div>
+      </aui-form-item>
+    </div>
+    <div class="side-form__group">
+      <div class="side-form__group-header">
+        {{ 'pipeline.trigger' | translate }}
+      </div>
+      <div class="trigger-box" [class.enabled]="fg.value.codeChangeEnabled">
+        <div class="trigger-box__header">
+          <span>{{ 'pipeline.code_change_scan_trigger' | translate }}</span>
+          <aui-checkbox formControlName="codeChangeEnabled">
+            {{ 'enable' | translate }}
+          </aui-checkbox>
+        </div>
+        <div class="trigger-box__body">
+          <aui-form-item>
+            <label auiFormItemLabel>
+              {{ 'pipeline.trigger_rules' | translate }}
+            </label>
+            <aui-select
+              auiFormItemControl
+              formControlName="codeChangePeriodicCheck"
+            >
+              <aui-option
+                *ngFor="let item of codeChangeOptions"
+                [value]="item.value"
+                [label]="item.name | translate"
+              >
+                {{ item.name | translate }}
+              </aui-option>
+            </aui-select>
+            <div auiFormItemHint>{{ 'pipeline.trigger_tips' | translate }}</div>
+          </aui-form-item>
+        </div>
+      </div>
+      <div class="trigger-box" [class.enabled]="fg.value.cronEnabled">
+        <div class="trigger-box__header">
+          <span>{{ 'pipeline.cron_trigger' | translate }}</span>
+          <aui-checkbox formControlName="cronEnabled">
+            {{ 'enable' | translate }}
+          </aui-checkbox>
+        </div>
+        <div class="trigger-box__body">
+          <aui-form-item>
+            <label auiFormItemLabel>
+              {{ 'pipeline.trigger_cron' | translate }}
+            </label>
+            <input aui-input formControlName="cronRule" />
+          </aui-form-item>
+        </div>
+      </div>
+    </div>
+    <div class="side-form__group">
+      <div class="side-form__group-header">
+        {{ 'pipeline.run_policy' | translate }}
+      </div>
+      <aui-form-item>
+        <aui-radio-group formControlName="runPolicy">
+          <aui-radio-button value="Serial">
+            {{ 'pipeline.serial' | translate }}
+          </aui-radio-button>
+          <aui-radio-button value="Parallel">
+            {{ 'pipeline.parallel' | translate }}
+          </aui-radio-button>
+        </aui-radio-group>
+        <div auiFormItemAddon>
+          <aui-icon
+            icon="basic:question"
+            class="field-description"
+            [auiTooltip]="runPolicyDescription"
+          ></aui-icon>
+        </div>
+      </aui-form-item>
+    </div>
+  </div>
+</form>
+
+<ng-template #runPolicyDescription>
+  <ul class="run-policy-description">
+    <li>{{ 'pipeline.run_policy_serial_help' | translate }}</li>
+    <li>{{ 'pipeline.run_policy_parallel_help' | translate }}</li>
+  </ul>
+</ng-template>

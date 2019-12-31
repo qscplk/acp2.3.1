@@ -1,0 +1,76 @@
+<aui-card>
+  <div auiCardHeader>{{ 'base_info' | translate }}</div>
+  <div auiCardBody class="basic-info-container">
+    <div class="base-body base-body-left">
+      <div class="field full">
+        <label>{{ 'name' | translate }}</label>
+        <span>{{ result.objectMeta.name || '-' }}</span>
+      </div>
+      <div class="field full">
+        <label>{{ 'kind' | translate }}</label>
+        <alo-k8s-resource-icon
+          [resourceKind]="data.kind"
+        ></alo-k8s-resource-icon>
+        <span>{{ result.typeMeta.kind || '-' }}</span>
+      </div>
+      <div class="field full">
+        <label>{{ 'update_strategy' | translate }}</label>
+        <span>{{ result.updateStrategy.type }}</span>
+      </div>
+      <div class="field full">
+        <label>{{ 'label' | translate }}</label>
+        <alo-resource-labels-field
+          [resource]="result"
+          [kind]="'label'"
+          [allowedUpdate]="allowedUpdate"
+          (updated)="updateLabels()"
+        ></alo-resource-labels-field>
+      </div>
+      <div class="field full">
+        <label>{{ 'annotations' | translate }}</label>
+        <alo-resource-labels-field
+          [resource]="result"
+          [kind]="'annotation'"
+          [allowedUpdate]="allowedUpdate"
+          (updated)="updateAnnotations()"
+        ></alo-resource-labels-field>
+      </div>
+      <div class="field full" *ngIf="!isEmptyNetwork('external')">
+        <label>{{ 'application.public_network_access' | translate }}</label>
+        <alo-visit-addresses
+          [type]="'external'"
+          [visitAddresses]="result.visitAddresses"
+        ></alo-visit-addresses>
+      </div>
+      <div class="field full" *ngIf="!isEmptyNetwork('internal')">
+        <label>{{ 'application.cluster_access' | translate }}</label>
+        <alo-visit-addresses
+          [type]="'internal'"
+          [visitAddresses]="result.visitAddresses"
+        ></alo-visit-addresses>
+      </div>
+      <div class="field full">
+        <label>{{ 'create_at' | translate }}</label>
+        <span>{{ result.objectMeta.creationTimestamp | aclStandardTime }}</span>
+      </div>
+    </div>
+    <div class="base-body base-body-right">
+      <alo-pods-scaler
+        [scaling]="scaling"
+        [kind]="data.kind"
+        [podInfo]="result.podInfo"
+        [errorMessages]="errorMessages"
+        [allowedUpdate]="allowedUpdate"
+        (desiredChange)="onDesiredChange($event)"
+      ></alo-pods-scaler>
+    </div>
+  </div>
+  <alo-k8s-resource-auto-scaling-info
+    *ngIf="isAutoScaling"
+    [horizontalPodAutoscaler]="autoScalingSetting"
+    [isContainersRequestsEmpty]="isContainersRequestsEmpty"
+    [allowedUpdate]="allowedUpdate"
+    (updated)="hpaUpdated()"
+    (deleted)="hpaDeleted()"
+  ></alo-k8s-resource-auto-scaling-info>
+</aui-card>

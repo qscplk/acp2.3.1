@@ -1,0 +1,47 @@
+<ng-container *aloAsyncData="let data; let loading = loading; let error = error; handler: fetchStatus; params: project">
+  <div class="chart-header">
+    <span class="chart-header__title">{{ 'code_quality.projects' | translate }}</span>
+    <div class="chart-header__actions">
+      <button
+        class="redirect"
+        aui-button
+        [routerLink]="['/workspace', project, 'code-quality-projects']"
+      ><aui-icon icon="angle_right"></aui-icon></button>
+    </div>
+  </div>
+  <div class="chart-subtitle">
+    {{ 'code_quality.scan_repo_count' | translate:{ count: data | pure: total } }}
+  </div>
+  <div class="chart-content" [class.sketch]="!data">
+    <div class="status-summary">
+      <alo-quality-gate-pie
+        [data]="data | pure: summary"
+      ></alo-quality-gate-pie>
+      <ul class="legends">
+        <li class="legend" *ngFor="let item of data | pure: summary">
+          <div class="title">
+            <em [style.background-color]="item.status | pure:statusColor"></em>
+            <span>{{ item.count }}</span>
+          </div>
+          <div class="description">
+            {{ 'code_quality.quality_gate' | translate }}-{{ item.status | pure:status | translate }}
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="status-by-types">
+      <div *ngFor="let metric of data | pure:metrics;">
+        <label>
+          <aui-icon [icon]="metric.icon"></aui-icon>
+          <span>{{ metric.text | translate }}</span>
+        </label>
+        <ul>
+          <li *ngFor="let level of metric.levels" class="title">
+            <alo-code-quality-icon [level]="level.key" type="level" [small]="true"></alo-code-quality-icon>
+            <span>{{ level.count }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</ng-container>

@@ -1,0 +1,71 @@
+<div
+  class="card"
+  [class.card--checked]="formValue('enabled')"
+>
+  <div class="checkbox">
+    <aui-checkbox [formControl]="form.controls.enabled"></aui-checkbox>
+  </div>
+  <div class="v-line"></div>
+  <div class="input">
+    <div class="title">
+      <aui-icon
+        [icon]="'basic:time'"
+        [ngClass]="{enabled:formValue('enabled')}"
+      ></aui-icon>
+      {{'pipeline.cron_trigger'|translate}}
+    </div>
+    <hr>
+    <div>
+      <aui-form-item>
+        <label auiFormItemLabel>
+          <span>{{'pipeline.trigger_cron'|translate}}:</span>
+        </label>
+        <button
+          aui-button="text"
+          type="button"
+          class="change_type"
+          (click)="inputTypeChange()"
+        >
+          {{(form.controls.sourceType.value === 'select'? 'pipeline.custom' : 'pipeline.select_rule')|translate}}
+        </button>
+        <input
+          *ngIf="form.controls.sourceType.value === 'input'"
+          auiFormItemControl
+          [formControl]="form.controls.cron_string"
+          aui-input
+          placeholder="{{'pipeline.cron_example'|translate}}"
+          [required]="formValue('enabled')"
+        >
+        <alo-cron-trigger-selector
+          style="min-width:0"
+          *ngIf="form.controls.sourceType.value === 'select'"
+          auiFormItemControl
+          [formControl]="form.controls.cron_object"
+          [required]="formValue('enabled')"
+          [errors]="form.controls.cron_object.errors"
+        ></alo-cron-trigger-selector>
+      </aui-form-item>
+      <div *ngIf="form.controls.sourceType.value === 'input'">
+        <span
+          *ngIf="nextTime || loading"
+          class="cron-check"
+        >
+          {{'pipeline.next_trigger_time'|translate}}
+          <span *ngIf="nextTime">{{ nextTime | aclStandardTime }}</span>
+          <span *ngIf="loading">
+            <aui-icon icon="spinner"></aui-icon>
+          </span>
+        </span>
+       <!--<span>
+          {{'pipeline.cron_detail'|translate}}
+          <a
+            target="_blank"
+            href="/devops-docs/project/pipeline/timetrigger/"
+          >
+            {{'pipeline.reference'|translate}}
+          </a>
+        </span>-->
+      </div>
+    </div>
+  </div>
+</div>

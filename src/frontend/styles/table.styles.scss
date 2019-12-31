@@ -1,0 +1,106 @@
+@import '../app/shared/mixins';
+
+.alo-form-table {
+  flex: 1;
+  width: 100%;
+  border-spacing: 0;
+  background: #fafafa;
+  margin-bottom: 12px;
+
+  alo-zero-state {
+    .zero-state-hint {
+      border-bottom: none;
+      background: #fafafa;
+      padding: 12px;
+    }
+  }
+
+  thead {
+    background: #f0f0f0;
+  }
+
+  th {
+    height: 32px;
+    text-align: left;
+
+    &[required]::before {
+      content: '*';
+      color: #ef8181;
+      margin-right: 4px;
+    }
+  }
+
+  td,
+  th {
+    vertical-align: middle;
+    padding: 4px 2px;
+
+    &:first-child {
+      padding-left: 8px;
+    }
+
+    &:last-child {
+      padding-right: 8px;
+    }
+  }
+
+  tr:first-child > td {
+    padding-top: 8px;
+  }
+
+  /* We have a convention here that the last column is the action column */
+  &__action-col {
+    text-align: center;
+    padding: 8px 4px;
+    white-space: nowrap;
+    width: 32px;
+    min-width: 32px;
+
+    aui-icon {
+      font-size: 16px;
+      color: #000;
+      cursor: pointer;
+      margin: 0 4px;
+      opacity: 0.4;
+
+      &:hover {
+        opacity: 1;
+        color: $color-primary;
+      }
+    }
+  }
+
+  &__bottom-control-buttons {
+    display: flex;
+    width: 100%;
+    border-top: none;
+
+    .aui-button {
+      flex: 1;
+      border-style: dashed;
+
+      &--default {
+        border-color: #333;
+
+        &:hover {
+          border-color: $color-primary;
+        }
+      }
+    }
+  }
+
+  &:not(.alo-form-table--no-row-separator)
+    tr.alo-form-table--row-group-start:not(:first-child)
+    td {
+    border-top: 1px dashed #e8e8e8;
+  }
+
+  .alo-table-form-error-hint {
+    color: $color-error;
+    font-size: $font-size-small;
+  }
+
+  td.alo-table-form-error-hint {
+    padding-top: 0;
+  }
+}

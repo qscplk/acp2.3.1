@@ -1,0 +1,32 @@
+:host {
+  .options-container {
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    .options-item-wrapper {
+      display: flex;
+      margin-bottom: 16px;
+      .options-item {
+        align-items: center;
+        display: flex;
+        width: 33%;
+        > label {
+          min-width: 70px;
+          margin-right: 8px;
+          text-align: right;
+        }
+        ::ng-deep {
+          aui-select {
+            width: 100%;
+          }
+          .alo-search {
+            width: 100%;
+            aui-search {
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,71 @@
+.name {
+  font-size: 20px;
+}
+.version {
+  font-size: 12px;
+  color: #333;
+  margin-left: 8px;
+}
+.stage {
+  width: 100%;
+  background-color: #fafafa;
+  display: flex;
+  overflow: hidden;
+  overflow-x: scroll;
+  acl-pipeline-status-diagram {
+    margin: 0 auto;
+  }
+}
+.title {
+  font-size: 16px;
+  color: #4d4d4d;
+  font-weight: 600;
+  margin: 20px auto 12px auto;
+}
+.params-info {
+  font-size: 14px;
+  color: #4d4d4d;
+  margin-top: 20px;
+  .description {
+    border: 1px solid #eee;
+    min-height: 44px;
+    padding: 12px 8px;
+    margin-top: -1px;
+    display: flex;
+    label {
+      flex-shrink: 0;
+      min-width: 40px;
+      align-self: center;
+      &::after {
+        content: ':';
+        margin-left: 4px;
+      }
+      margin-right: 12px;
+    }
+  }
+}
+.parameter-field {
+  margin-top: 20px;
+}
+
+.label-common {
+  color: #666;
+  border: 1px solid #eee;
+  border-radius: 2px;
+  background-color: #fafafa;
+  margin-right: 4px;
+  padding: 0 4px;
+  font-size: 12px;
+  margin-bottom: 2px;
+  display: inline-block;
+}
+
+.labels {
+  .label {
+    @extend .label-common;
+  }
+  .no-label {
+    color: #999;
+    font-size: 14px;
+  }
+}

@@ -1,0 +1,73 @@
+<alo-array-form-table
+  [noRowSeparator]="true"
+  (remove)="remove($event)"
+  [rows]="form.controls"
+>
+  <ng-container *aloArrayFormTableHeader>
+    <th>{{ 'name' | translate }}</th>
+    <th>{{ 'protocol' | translate }}</th>
+    <th>{{ 'service_port' | translate }}</th>
+    <th>{{ 'container_port' | translate }}</th>
+  </ng-container>
+
+  <!-- Input row -->
+  <ng-container
+    *aloArrayFormTableRow="let control"
+    [formGroup]="control"
+  >
+    <td>
+      <input
+        aui-input
+        formControlName="serviceName"
+        [readonly]="isUpdate"
+      >
+    </td>
+
+    <td>
+      <aui-select
+        required
+        auiFormItemControl
+        formControlName="protocol"
+      >
+        <aui-option *ngFor="let item of protocol" [value]="item">{{item}}</aui-option>
+      </aui-select>
+    </td>
+
+    <td>
+      <input
+        aui-input
+        formControlName="sourcePort"
+        type="number"
+      >
+    </td>
+
+    <td>
+      <input
+        aui-input
+        formControlName="targetPort"
+        type="number"
+      >
+    </td>
+
+  </ng-container>
+
+  <!-- Row controls -->
+  <ng-container *aloArrayFormTableFooter>
+    <button
+      aui-button="primary"
+      class="add-button"
+      *ngIf="!isSingle"
+      size="small"
+      [plain]="true"
+      (click)="add(length, false)"
+    >
+      <aui-icon icon="basic:add_circle">
+      </aui-icon>
+      {{ 'add' | translate }}
+    </button>
+  </ng-container>
+
+  <ng-container *ngIf="isSingle">
+    <ng-container *aloArrayFormTableRowControl></ng-container>
+  </ng-container>
+</alo-array-form-table>

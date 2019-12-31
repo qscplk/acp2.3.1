@@ -1,0 +1,25 @@
+<div class="side-form__header">
+  <span>{{ 'select_task' | translate }}</span>
+</div>
+<div class="side-form__body">
+  <ul class="groups" *ngIf="groups$ | async as groups">
+    <li *ngFor="let group of groups; trackBy: groupIdentity">
+      <div>{{ (group | pure: groupName | translate) || '-' }} ({{ group | pure: groupLength }})</div>
+      <ul class="tasks">
+        <ng-container *ngFor="let item of group | pure: groupTasks; trackBy: taskIdentity">
+        <li
+          *ngIf="item | pure: toTask | async as task"
+          class="task"
+          (click)="select(task)"
+        >
+          <img [src]="task.icon | pure: toIconUrl" alt="task icon"/>
+          <div>
+            <div class="task__display-name" >{{ task.displayName | pure: toCurrentLang  | async }}</div>
+            <div class="task__description">{{ task.description | pure: toCurrentLang | async }}</div>
+          </div>
+        </li>
+        </ng-container>
+      </ul>
+    </li>
+  </ul>
+</div>

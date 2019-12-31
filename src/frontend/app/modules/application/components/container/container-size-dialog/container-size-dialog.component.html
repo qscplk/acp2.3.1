@@ -1,0 +1,58 @@
+<aui-dialog-header>{{
+  (isRequest() ? 'application.update_requests' : 'application.update_limits')
+    | translate
+}}</aui-dialog-header>
+<aui-dialog-content>
+  <form #form="ngForm" auiForm auiFormLabelWidth="100px">
+    <aui-form-item>
+      <label auiFormItemLabel>CPU</label>
+      <aui-input-group auiFormItemControl name="cpu">
+        <span auiInputAddonAfter>
+          <div class="select-size">
+            <aui-select [(ngModel)]="cpuUnitValue" name="cpuUnit">
+              <aui-option
+                *ngFor="let cpuUnit of cpuUnits"
+                [value]="cpuUnit"
+                [label]="
+                  cpuUnit === 'c'
+                    ? ('application.cpu_core_unit' | translate)
+                    : cpuUnit
+                "
+              >
+                {{
+                  cpuUnit === 'c'
+                    ? ('application.cpu_core_unit' | translate)
+                    : cpuUnit
+                }}
+              </aui-option>
+            </aui-select>
+          </div>
+        </span>
+        <input aui-input type="number" name="cpuValue" [(ngModel)]="cpuValue" />
+      </aui-input-group>
+    </aui-form-item>
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'memory' | translate }}</label>
+      <aui-input-group auiFormItemControl name="cpu">
+        <span auiInputAddonAfter>
+          <div class="select-size">
+            <aui-select [(ngModel)]="memUnitValue" name="memUnit">
+              <aui-option *ngFor="let memUnit of memUnits" [value]="memUnit">{{
+                memUnit
+              }}</aui-option>
+            </aui-select>
+          </div>
+        </span>
+        <input aui-input type="number" name="memValue" [(ngModel)]="memValue" />
+      </aui-input-group>
+    </aui-form-item>
+  </form>
+</aui-dialog-content>
+<aui-dialog-footer>
+  <div>
+    <button aui-button="primary" (click)="update()" [loading]="submitting">
+      {{ 'update' | translate }}
+    </button>
+    <button aui-button auiDialogClose>{{ 'cancel' | translate }}</button>
+  </div>
+</aui-dialog-footer>

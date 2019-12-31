@@ -1,0 +1,8 @@
+<div class="field">
+  <div class="field-name">{{ 'pipeline.build_node' | translate }}</div>
+  <div class="field-value">{{ agent.agent.label || agent.agent.raw }}</div>
+</div>
+<div class="field" *ngIf="!!agent.options">
+  <div class="field-name">{{ 'pipeline.configuration_item' | translate }}</div>
+  <div class="field-value">{{ agent.options.raw }}</div>
+</div>

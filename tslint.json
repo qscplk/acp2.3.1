@@ -1,0 +1,12 @@
+{
+  "extends": ["@1stg/tslint-config/angular", "@1stg/tslint-config/eslint"],
+  "rules": {
+    "component-selector": [true, "element", "alo", "kebab-case"],
+    "directive-selector": [true, "attribute", "alo", "camelCase"],
+    "parameters-max-number": false,
+    "max-union-size": false
+  },
+  "linterOptions": {
+    "exclude": ["node_modules/**"]
+  }
+}

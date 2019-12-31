@@ -1,0 +1,42 @@
+@import 'variables';
+:host {
+  display: flex;
+  flex: 1;
+  background-color: white;
+  aui-tab-group {
+    flex: 1;
+  }
+  .size-container {
+    background-color: $white-200;
+    width: 100%;
+  }
+  .volume-container {
+    width: 100%;
+  }
+  .environment-container {
+    width: 100%;
+    background-color: $white-200;
+  }
+  input {
+    &[readonly] {
+      background-color: #f0f0f0;
+    }
+  }
+  .select-image {
+    margin-left: 5px;
+  }
+  .card-body {
+    padding-right: 30px;
+  }
+
+  ::ng-deep {
+    .aui-tab-body__content {
+      .aui-card {
+        border: unset;
+      }
+    }
+    .aui-tab-header__addon {
+      margin: 0 15px;
+    }
+  }
+}

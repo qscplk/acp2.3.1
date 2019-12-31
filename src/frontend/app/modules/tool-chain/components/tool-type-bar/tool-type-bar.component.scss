@@ -1,0 +1,29 @@
+@import 'var';
+
+.alo-tool-type-bar {
+  margin-bottom: 12px;
+  &__label {
+    padding: 0 12px;
+    height: 28px;
+    border-radius: 14px;
+    border: none;
+    outline: none;
+    color: #999999;
+    background-color: #ffffff;
+    cursor: pointer;
+
+    &.isSelected {
+      color: #ffffff;
+      background-color: $color-primary;
+    }
+
+    &[disabled] {
+      color: #cccccc;
+      cursor: not-allowed;
+    }
+  }
+
+  &__label + &__label {
+    margin-left: 8px;
+  }
+}

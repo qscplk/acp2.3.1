@@ -1,0 +1,241 @@
+<div *aloPageHeaderContent class="page-header">
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['/admin/projects']">{{ 'project.list' | translate }}</a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <a
+        [routerLink]="['/admin/projects', (identity$ | async)?.namespace]"
+        [queryParams]="{ tab: '1' }"
+      >
+        {{ (identity$ | async)?.namespace }}
+      </a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <span>{{ (identity$ | async)?.name }}</span>
+    </ng-template>
+  </alo-breadcrumb>
+</div>
+
+<acl-page-state
+  [adapter]="dataLoader"
+  (redirect)="back()"
+  [autoRedirect]="false"
+>
+  <ng-template let-data>
+    <aui-card>
+      <div auiCardHeader class="info-header">
+        <div class="header-title">
+          <img
+            class="type-icon"
+            [src]="'icons/tool-chain/jenkins.svg'"
+            alt="devops"
+          />
+          <span>{{ (identity$ | async)?.name }}</span>
+        </div>
+        <alo-menu-trigger [menu]="actionsMenu"></alo-menu-trigger>
+      </div>
+      <aui-menu #actionsMenu>
+        <aui-menu-group>
+        <acl-disabled-container [isAllowed]="(permission$ | async)?.update">
+          <aui-menu-item (click)="update()">{{
+            'update' | translate
+          }}</aui-menu-item>
+        </acl-disabled-container>
+      </aui-menu-group>
+    <aui-menu-group>
+        <acl-disabled-container [isAllowed]="(permission$ | async)?.delete">
+          <aui-menu-item
+            [disabled]="!data"
+            [divide]="true"
+            type="danger"
+            (click)="tryUnbind(data)"
+          >
+            {{ 'project.unbind' | translate }}
+          </aui-menu-item>
+        </acl-disabled-container>
+      </aui-menu-group>
+      </aui-menu>
+      <div class="alo-detail">
+        <div class="alo-detail__row">
+          <div class="alo-detail__field">
+            <label>{{ 'project.binding_integration_name' | translate }}</label>
+            <span>
+              <a
+                *ngIf="data?.service"
+                [routerLink]="['/admin/tool-chain/jenkins', data?.service]"
+              >{{ data?.service }}</a>
+            </span>
+          </div>
+          <div class="alo-detail__field">
+            <label>{{ 'secret' | translate }}</label>
+            <span>
+              <a *ngIf="data?.secret" [routerLink]="secretRoute(data?.secret)">
+                {{ secretName(data?.secret) }}
+              </a>
+              <ng-container *ngIf="!data?.secret">{{
+                'no_auth' | translate
+              }}</ng-container>
+            </span>
+          </div>
+        </div>
+        <div class="alo-detail__row">
+          <div class="alo-detail__field">
+            <label>{{ 'description' | translate }}</label>
+            <span>{{ data?.description || '-' }}</span>
+          </div>
+          <div class="alo-detail__field">
+            <label>{{ 'project.bind_at' | translate }}</label>
+            <span>{{ data?.creationTimestamp | aclStandardTime }}</span>
+          </div>
+        </div>
+      </div>
+    </aui-card>
+    <aui-card
+      *aloAsyncData="
+        let data;
+        let loading = loading;
+        let refresh = refresh;
+        handler: fetchJenkinsPipelines;
+        params: queryParams$ | async
+      "
+    >
+      <div auiCardHeader class="info-header">
+        <div>{{ 'pipeline.pipelineconfig' | translate }}</div>
+        <div class="alo-search">
+          <button aui-button [auiDropdown]="searchMenu">
+              {{ (searchBy === 'name' ? 'name' : 'display_name') | translate }}
+            <aui-icon icon="caret_down_s"></aui-icon>
+          </button>
+          <aui-search
+            [placeholder]="
+              (searchBy === 'name'
+                ? 'search_by_name_placeholder'
+                : 'search_by_display_name_placeholder') | translate
+            "
+            [searchButton]="true"
+            [searching]="loading"
+            (search)="search($event)"
+          ></aui-search>
+          <aui-menu #searchMenu>
+            <aui-menu-item
+              (click)="searchBy = 'name'"
+              [actived]="searchBy === 'name'"
+            >
+              {{ 'name' | translate }}
+            </aui-menu-item>
+            <aui-menu-item
+              (click)="searchBy='displayName'"
+              [actived]="searchBy === 'displayName'"
+            >
+              {{ 'display_name' | translate }}
+            </aui-menu-item>
+          </aui-menu>
+        </div>
+      </div>
+      <aui-table
+        auiSort
+        [dataSource]="data?.items"
+        (sortChange)="sortByChanged($event)"
+      >
+        <ng-container auiTableColumnDef="name">
+          <aui-table-header-cell
+            *auiTableHeaderCellDef
+            aui-sort-header="name"
+            start="asc"
+          >
+            {{ 'name' | translate }}
+          </aui-table-header-cell>
+          <aui-table-cell *auiTableCellDef="let item">
+            <div class="pipeline-name-container">
+              <img
+                *ngIf="item?.strategy?.template"
+                src="icons/pipeline/template.svg"
+                alt="devops"
+              />
+              <img
+                *ngIf="!item?.strategy?.template"
+                src="icons/pipeline/script.svg"
+                alt="devops"
+              />
+              <div class="pipeline-name-container_content">
+                <div
+                  [title]="item.name"
+                  class="pipeline-name-container_content_name"
+                >
+                  <span
+                    title="{{ item.name }}"
+                    class="pipeline-name-container_content_name_string"
+                  >
+                    {{ item.name }}
+                  </span>
+                  <span
+                    *ngIf="item?.status?.phase === 'Error'"
+                    class="error-hint-icon"
+                  >
+                    <aui-icon
+                      icon="exclamation_circle_s"
+                      [auiTooltip]="item?.status.message"
+                    ></aui-icon>
+                  </span>
+                </div>
+                <div *ngIf="item.displayName">{{ item?.displayName }}</div>
+              </div>
+            </div>
+          </aui-table-cell>
+        </ng-container>
+        <ng-container auiTableColumnDef="belongs_application">
+          <aui-table-header-cell *auiTableHeaderCellDef>
+            {{ 'pipeline.belongs_application' | translate }}
+          </aui-table-header-cell>
+          <aui-table-cell *auiTableCellDef="let item">{{
+            item.application || '-'
+          }}</aui-table-cell>
+        </ng-container>
+        <ng-container auiTableColumnDef="triggers">
+          <aui-table-header-cell *auiTableHeaderCellDef>{{
+            'pipeline_trigger' | translate
+          }}</aui-table-header-cell>
+          <aui-table-cell *auiTableCellDef="let item">
+            <ng-container *ngIf="item?.triggers | pure:hasEnabledTriggers; else noTriggers">
+              <ng-container *ngFor="let trigger of item.triggers">
+                <aui-icon
+                  *ngIf="trigger.enabled"
+                  margin="right"
+                  [icon]="mapTriggerIcon(trigger.type)"
+                  [auiTooltip]="getTriggerHint(trigger)"
+                ></aui-icon>
+              </ng-container>
+            </ng-container>
+            <ng-template #noTriggers>
+              <span>-</span>
+            </ng-template>
+          </aui-table-cell>
+        </ng-container>
+        <aui-table-header-row
+          *auiTableHeaderRowDef="columns"
+        ></aui-table-header-row>
+        <aui-table-row
+          *auiTableRowDef="let row; columns: columns"
+        ></aui-table-row>
+      </aui-table>
+      <alo-no-data
+        *ngIf="!(data?.items.length)"
+        [resourceName]="'pipeline.data' | translate"
+        [loading]="loading"
+        (retry)="refresh()"
+      >
+      </alo-no-data>
+      <div style="padding: 20px 0 16px;">
+        <aui-paginator
+          *ngIf="data?.total"
+          [pageIndex]="(queryParams$ | async).page"
+          [pageSize]="(queryParams$ | async).page_size"
+          [pageSizeOptions]="[20, 50, 100]"
+          [total]="data?.total"
+          (page)="pageChange($event)"
+        ></aui-paginator>
+      </div>
+    </aui-card>
+  </ng-template>
+</acl-page-state>

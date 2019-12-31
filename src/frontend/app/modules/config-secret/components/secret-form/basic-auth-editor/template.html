@@ -1,0 +1,29 @@
+<form auiForm
+      auiFormLabelWidth="150px"
+      [auiFormEmptyAddon]="true">
+    <!-- Input row -->
+    
+    <div class="basic-auth-form-item-group">
+      <aui-form-item [formGroup]="form">
+        <label auiFormItemLabel>
+          {{ 'username' | translate }}
+        </label>
+        <input (blur)="onBlur()"
+                auiFormItemControl
+                aui-input
+                required
+                formControlName="username">
+      </aui-form-item>
+      <aui-form-item [formGroup]="form">
+        <label auiFormItemLabel>
+          {{ 'password' | translate }}
+        </label>
+        <input (blur)="onBlur()"
+                auiFormItemControl
+                aui-input
+                required
+                formControlName="password">
+      </aui-form-item>
+    </div>
+  
+</form>

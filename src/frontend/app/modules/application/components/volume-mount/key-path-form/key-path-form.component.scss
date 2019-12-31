@@ -1,0 +1,65 @@
+@import 'var';
+
+$error-background-color: #ffefef;
+.key-value-form-row {
+  display: flex;
+  &:not(:last-child) {
+    margin-bottom: 16px;
+  }
+  &__input-group {
+    flex: 1;
+    margin-right: 8px;
+    transition: background 0.2s, box-shadow 0.2s;
+    &.hasError {
+      box-shadow: 0 0 0 4px $error-background-color;
+      background: $error-background-color;
+    }
+  }
+
+  &__error {
+    margin-top: 4px;
+    font-size: 12px;
+    color: $color-error;
+  }
+
+  &__control-button-group {
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+
+    .aui-button {
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border: unset;
+      background-color: unset;
+    }
+  }
+
+  .empty-input {
+    padding-right: 32px;
+  }
+}
+.add-button {
+  flex: 1;
+  padding-right: 38px;
+  button {
+    width: 100%;
+    border-style: dashed;
+  }
+}
+.table-header {
+  display: flex;
+  background-color: #f1f1f1;
+  line-height: 32px;
+  div {
+    flex: 1;
+    padding-left: 8px;
+  }
+  span {
+    width: 32px;
+    height: 32px;
+    margin-left: 8px;
+  }
+}

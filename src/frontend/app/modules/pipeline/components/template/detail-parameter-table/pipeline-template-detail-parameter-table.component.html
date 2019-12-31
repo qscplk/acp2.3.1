@@ -1,0 +1,25 @@
+<div>
+  <div class="field-name">
+    <span class="index"></span>
+    {{getValue('displayName')}}
+  </div>
+  <div>
+    <aui-table [dataSource]="parameterField?.items">
+      <ng-container auiTableColumnDef="parameter">
+        <aui-table-header-cell *auiTableHeaderCellDef>{{'parameter'|translate}}</aui-table-header-cell>
+        <aui-table-cell *auiTableCellDef="let item">{{getValue('display.name', item)}}</aui-table-cell>
+      </ng-container>
+      <ng-container auiTableColumnDef="description">
+        <aui-table-header-cell *auiTableHeaderCellDef>{{'description'|translate}}</aui-table-header-cell>
+        <aui-table-cell
+          *auiTableCellDef="let item"
+          title="{{getValue('display.description', item)}}"
+        >
+          <div>{{getValue('display.description', item) || '-'}}</div>
+        </aui-table-cell>
+      </ng-container>
+      <aui-table-header-row *auiTableHeaderRowDef="columns"></aui-table-header-row>
+      <aui-table-row *auiTableRowDef="let row; columns: columns;"></aui-table-row>
+    </aui-table>
+  </div>
+</div>

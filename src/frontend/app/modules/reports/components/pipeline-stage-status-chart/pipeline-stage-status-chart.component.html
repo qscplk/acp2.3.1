@@ -1,0 +1,90 @@
+<div class="chart-header">
+  <span class="chart-header__title">{{ 'reports.pipeline_stage_status' | translate }}</span>
+  <div class="chart-header__actions">
+    <button
+      class="range-switch"
+      aui-button="text"
+      size="small"
+      [disabled]="params.range === '-25h'"
+      (click)="onRangeChange('-25h')"
+    >24 {{ 'hour' | translate }}</button>
+    <button
+      class="range-switch"
+      aui-button="text"
+      size="small"
+      [disabled]="params.range === '-169h'"
+      (click)="onRangeChange('-169h')"
+    >7 {{ 'day' | translate }}</button>
+    <button
+      class="range-switch"
+      aui-button="text"
+      size="small"
+      [disabled]="params.range === '-337h'"
+      (click)="onRangeChange('-337h')"
+    >14 {{ 'day' | translate }}</button>
+    <!--<aui-select-->
+      <!--class="applications-select"-->
+      <!--size="mini"-->
+      <!--[value]="params.app"-->
+      <!--(valueChange)="onAppChange($event)"-->
+      <!--[loading]="!(applications$ | async)"-->
+    <!--&gt;-->
+      <!--<aui-option [value]="'__all'" [label]="'reports.all_pipelines' | translate">-->
+        <!--{{ 'reports.all_pipelines' | translate }}-->
+      <!--</aui-option>-->
+      <!--<aui-option-->
+        <!--*ngFor="let app of applications$ | async"-->
+        <!--[value]="app.name"-->
+        <!--[label]="app.name"-->
+      <!--&gt;{{ app.name }}</aui-option>-->
+    <!--</aui-select>-->
+  </div>
+</div>
+<ng-container *aloAsyncData="let stages; handler: fetchPipelineStageStatus; params: params">
+  <div class="chart-subtitle">
+    {{ 'reports.stages_top' | translate: { total: stages?.data.length || 0 } }}
+  </div>
+  <div class="stages-chart">
+    <div class="stages-chart__background">
+      <div class="stages-chart__line"></div>
+    </div>
+    <div class="stages-chart__surface" *ngIf="stages">
+      <div
+        *ngFor="let item of stages.data; trackBy: tracker"
+        [@stage]
+        class="stages-chart__stage"
+        [style.left]="(100 * (item.index + 0.5) / stages.data.length) + '%'"
+      >
+        <div
+          class="stages-chart__stage-name"
+          [auiTooltip]="stageTooltip"
+          [style.color]="stageFg(item)"
+          [style.border-color]="stageFg(item)"
+          [style.background-color]="stageBg(item)"
+        ><span>{{ item.name }}</span></div>
+        <ng-template #stageTooltip>
+          <div class="stage-tooltip">
+            <div class="stage-tooltip__name">{{ item.name }}</div>
+            <div class="stage-tooltip__total">{{ 'reports.execute_total' | translate }}: {{ item.total }}</div>
+            <div class="stage-tooltip__succ">{{ 'reports.succ' | translate }}: {{ item.succ }}</div>
+            <div class="stage-tooltip__failed">{{ 'reports.failed' | translate }}: {{ item.failed }}</div>
+            <svg width="48" height="48" class="stage-tooltip__chart">
+              <g transform="translate(24, 24)">
+                <circle cx="0" cy="0" r="21.5" stroke="#979797" stroke-width="3" />
+                <path stroke="none" fill="#0abf5b" [attr.d]="arc(item)"/>
+                <text
+                  text-anchor="middle"
+                  alignment-baseline="middle"
+                  fill="#fff"
+                  stroke="none"
+                >{{ percent(item) }}%</text>
+              </g>
+            </svg>
+          </div>
+        </ng-template>
+        <div class="stages-chart__stage-node"></div>
+        <div class="stages-chart__stage-info">{{ item.succ }}/{{ item.total }}</div>
+      </div>
+    </div>
+  </div>
+</ng-container>

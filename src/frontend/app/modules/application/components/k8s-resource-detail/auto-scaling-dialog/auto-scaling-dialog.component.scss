@@ -1,0 +1,56 @@
+@import 'var';
+
+:host {
+  .replicas-wrapper {
+    display: flex;
+    flex: 1;
+    padding: 8px;
+    background-color: #fafafa;
+    aui-input-group {
+      flex: 1;
+      &:first-child {
+        margin-right: 8px;
+      }
+    }
+  }
+  .rule-settings-wrapper {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 4px 8px;
+    background-color: #fafafa;
+    .rule-item {
+      display: flex;
+      align-items: center;
+      padding: 4px 0;
+      aui-checkbox {
+        margin-right: 8px;
+        min-width: 77px;
+      }
+      aui-input-group {
+        flex: 1;
+      }
+    }
+  }
+  .max-replicas::before {
+    content: '*';
+    color: $color-error;
+  }
+  ::ng-deep {
+    form {
+      > :last-child {
+        .aui-form-item {
+          margin-bottom: 0px;
+        }
+      }
+      .aui-form-item {
+        &__addon-wrapper {
+          width: 25px;
+        }
+      }
+    }
+  }
+}
+.tooltip-container {
+  margin-left: 16px;
+}

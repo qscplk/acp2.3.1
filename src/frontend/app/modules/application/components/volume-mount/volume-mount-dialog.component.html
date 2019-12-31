@@ -1,0 +1,167 @@
+<aui-dialog-header>{{ title }}</aui-dialog-header>
+<aui-dialog-content>
+  <form #form="ngForm" auiForm [auiFormLabelWidth]="translate.locale === 'en' ? '140px' : '100px'">
+    <aui-form-item>
+      <label auiFormItemLabel>{{'type'|translate}}</label>
+      <span *ngIf="data.isEdit && data.editData; else typeSelectBlock"
+        auiFormItemControl>
+        {{ getTypeTranslate(data.editData.type) }}
+      </span>
+      <ng-template #typeSelectBlock>
+        <aui-radio-group name="type" [(ngModel)]="selectedType" (ngModelChange)="typechange($event)">
+          <aui-radio-button value="PersistentVolumeClaim">{{
+            'persistent_volume_claim' | translate}}</aui-radio-button>
+          <aui-radio-button value="ConfigMap">{{ 'application.configmap' |
+            translate}}</aui-radio-button>
+          <aui-radio-button value="Secret">{{ 'application.secret' |
+            translate}}</aui-radio-button>
+          <aui-radio-button value="HostPath">{{ 'hostpath' | translate}}</aui-radio-button>
+        </aui-radio-group>
+      </ng-template>
+    </aui-form-item>
+    <!-- PVC -->
+    <ng-container [ngSwitch]="selectedType">
+      <ng-container *ngSwitchCase="'PersistentVolumeClaim'">
+        <aui-form-item>
+          <label auiFormItemLabel>{{'persistent_volume_claim' | translate}}</label>
+          <aui-select auiFormItemControl name="PVC" #PVC="ngModel" required
+            [(ngModel)]="pvcParams.pvc" [loading]="loading">
+            <aui-option *ngFor="let option of pvcOptions" [value]="option.objectMeta.name">{{option.objectMeta.name}}</aui-option>
+          </aui-select>
+          <div
+            auiFormItemError
+            *ngIf="PVC.errors?.required"
+          >{{ 'required' | translate }}</div>
+        </aui-form-item>
+        <aui-form-item>
+          <label auiFormItemLabel>{{'subpath' | translate}}</label>
+          <input auiFormItemControl name="subpath" #subpath="ngModel" aui-input
+            [(ngModel)]="pvcParams.subpath">
+        </aui-form-item>
+        <aui-form-item>
+          <label auiFormItemLabel>{{'application.container_path' | translate}}</label>
+          <input auiFormItemControl name="containerpath" #containerpath="ngModel"
+            aui-input required [(ngModel)]="pvcParams.containerpath">
+          <div
+            auiFormItemError
+            *ngIf="containerpath.errors?.required"
+          >{{ 'required' | translate }}</div>
+        </aui-form-item>
+      </ng-container>
+      <!-- 配置字典 -->
+      <ng-container *ngSwitchCase="'ConfigMap'">
+        <aui-form-item>
+          <label auiFormItemLabel>{{'application.configmap' | translate}}</label>
+          <aui-select auiFormItemControl name="configmap" #configmap="ngModel"
+            required [(ngModel)]="configmapParams.configmap" (ngModelChange)="configmapChange($event)"
+            [loading]="loading">
+            <aui-option *ngFor="let option of configmapOptions" [value]="option.objectMeta.name">{{option.objectMeta.name}}</aui-option>
+          </aui-select>
+          <div
+            auiFormItemError
+            *ngIf="configmap.errors?.required"
+          >{{ 'required' | translate }}</div>
+        </aui-form-item>
+        <aui-form-item>
+          <label auiFormItemLabel>{{'application.separate_reference' |
+            translate}}</label>
+          <aui-switch auiFormItemControl name="separatereference"
+            #separatereference="ngModel" [(ngModel)]="configmapParams.separatereference"></aui-switch>
+        </aui-form-item>
+        <ng-container *ngIf="configmapParams.separatereference; else configmapElseBlock">
+          <aui-form-item>
+            <label auiFormItemLabel>{{'key' | translate}}</label>
+            <alo-key-path-form auiFormItemControl required [(ngModel)]="configmapParams.key"
+              [backgroundColor]="'#f5f5f5'" name="key" [valueText]="'path'"
+              [valueFlex]="2" [keyOptions]="configmapKeyOptions"></alo-key-path-form>
+            <div auiFormItemHint class="key-value-error-hint" *ngIf="isSubmit && checkKeyValid('ConfigMap')">{{'application.input_valid_key_value'
+              | translate}}</div>
+          </aui-form-item>
+        </ng-container>
+        <ng-template #configmapElseBlock>
+          <aui-form-item>
+            <label auiFormItemLabel>{{'application.container_path' |
+              translate}}</label>
+            <input auiFormItemControl name="containerpath" #containerpath="ngModel"
+              aui-input required [(ngModel)]="configmapParams.containerpath">
+            <div
+              auiFormItemError
+              *ngIf="containerpath.errors?.required"
+            >{{ 'required' | translate }}</div>
+          </aui-form-item>
+        </ng-template>
+      </ng-container>
+      <!-- 保密字典 -->
+      <ng-container *ngSwitchCase="'Secret'">
+        <aui-form-item>
+          <label auiFormItemLabel>{{'application.secret' | translate}}</label>
+          <aui-select auiFormItemControl name="secret" #secret="ngModel"
+            required [(ngModel)]="secretParams.secret" (ngModelChange)="secretChange($event)"
+            [loading]="loading">
+            <aui-option *ngFor="let option of secretOptions" [value]="option.objectMeta.name">{{option.objectMeta.name}}</aui-option>
+          </aui-select>
+          <div
+            auiFormItemError
+            *ngIf="secret.errors?.required"
+          >{{ 'required' | translate }}</div>
+        </aui-form-item>
+        <aui-form-item>
+          <label auiFormItemLabel>{{'application.separate_reference' |
+            translate}}</label>
+          <aui-switch auiFormItemControl name="separatereference"
+            #separatereference="ngModel" [(ngModel)]="secretParams.separatereference"></aui-switch>
+        </aui-form-item>
+        <ng-container *ngIf="secretParams.separatereference; else secretElseBlock">
+          <aui-form-item>
+            <label auiFormItemLabel>{{'key' | translate}}</label>
+            <alo-key-path-form auiFormItemControl required [(ngModel)]="secretParams.key"
+              [backgroundColor]="'#f5f5f5'" name="key" [valueText]="'path'"
+              [valueFlex]="2" [keyOptions]="secretKeyOptions"></alo-key-path-form>
+            <div auiFormItemHint class="key-value-error-hint" *ngIf="isSubmit && checkKeyValid('Secret')">{{'application.input_valid_key_value'
+              | translate}}</div>
+          </aui-form-item>
+        </ng-container>
+        <ng-template #secretElseBlock>
+          <aui-form-item>
+            <label auiFormItemLabel>{{'application.container_path' |
+              translate}}</label>
+            <input auiFormItemControl name="containerpath" #containerpath="ngModel"
+              aui-input required [(ngModel)]="secretParams.containerpath">
+            <div
+              auiFormItemError
+              *ngIf="containerpath.errors?.required"
+            >{{ 'required' | translate }}</div>
+          </aui-form-item>
+        </ng-template>
+      </ng-container>
+      <!-- 主机路径 -->
+      <ng-container *ngSwitchCase="'HostPath'">
+        <aui-form-item>
+          <label auiFormItemLabel>{{'hostpath' | translate}}</label>
+          <input auiFormItemControl name="hostpath" #hostpath="ngModel"
+            aui-input required [(ngModel)]="hostpathParams.hostpath">
+          <div
+            auiFormItemError
+            *ngIf="hostpath.errors?.required"
+          >{{ 'required' | translate }}</div>
+        </aui-form-item>
+        <aui-form-item>
+          <label auiFormItemLabel>{{'application.container_path' | translate}}</label>
+          <input auiFormItemControl name="containerpath" #containerpath="ngModel"
+            aui-input required [(ngModel)]="hostpathParams.containerpath">
+          <div
+            auiFormItemError
+            *ngIf="containerpath.errors?.required"
+          >{{ 'required' | translate }}</div>
+        </aui-form-item>
+      </ng-container>
+    </ng-container>
+  </form>
+</aui-dialog-content>
+<aui-dialog-footer>
+  <div>
+    <button aui-button="primary" (click)="save()" [disabled]="submitting">{{
+      'add' | translate }}</button>
+    <button aui-button auiDialogClose>{{ 'cancel' | translate }}</button>
+  </div>
+</aui-dialog-footer>

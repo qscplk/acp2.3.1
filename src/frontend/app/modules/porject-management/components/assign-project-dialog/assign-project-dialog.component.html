@@ -1,0 +1,60 @@
+<aui-dialog-header>{{ 'project_management.assign_project' | translate }}</aui-dialog-header>
+
+<aui-dialog-content>
+  <aui-inline-alert type="primary">
+    {{ 'project_management.assign_project_rule_hint' | translate }}
+  </aui-inline-alert>
+
+  <form auiForm auiFormLabelWidth="150px">
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'project_management.jira_project' | translate }}</label>
+      <aui-multi-select
+        auiFormItemControl
+        required
+        filterable
+        name="project"
+        (show)="getNewOptions()"
+        [(ngModel)]="selected"
+        [trackFn]="trackByName"
+      >
+        <aui-option
+          *ngFor="let option of (options$ | async | pure: sortById)"
+          [value]="getRefObj(option)"
+          [label]="option?.metadata?.name"
+        >
+          {{ option?.metadata?.name }}
+        </aui-option>
+        <aui-option-placeholder>{{ 'no_data' | translate }}</aui-option-placeholder>
+      </aui-multi-select>
+
+      <a
+        [class.disabled-link]="!binding?.accessUrl"
+        auiFormItemAddon
+        class="jump-icon"
+        [attr.href]="binding?.accessUrl ? binding?.accessUrl : null"
+        [auiTooltip]="'project_management.create_jira_tips' | translate"
+        [auiTooltipDisabled]="binding?.accessUrl"
+        auiTooltipPosition="top"
+        target="_blank"
+      >
+        <span>{{ 'project_management.create_jira_project' | translate }}</span>
+        <aui-icon icon="basic:jump"></aui-icon>
+      </a>
+      <div
+        auiFormItemError
+        *ngIf="!selected.length"
+      >{{ 'required' | translate }}</div>
+    </aui-form-item>
+  </form>
+</aui-dialog-content>
+
+<aui-dialog-footer>
+  <button
+    aui-button="primary"
+    (click)="submit()"
+  >{{ 'update' | translate }}</button>
+  <button
+    aui-button
+    [auiDialogClose]="false"
+  >{{ 'cancel' | translate }}</button>
+</aui-dialog-footer>

@@ -1,0 +1,124 @@
+<alo-app-resource-form
+  #appResourceForm
+  *ngIf="!isManagerComponent; else manageBlock"
+  [params]="params"
+  [isMulti]="isMulti"
+  [isEdit]="isEdit"
+  [(ngModel)]="model"
+>
+  <div class="app-card" *ngIf="!isMulti">
+    <aui-card>
+      <div auiCardHeader>
+        {{ 'applications.list' | translate }}
+      </div>
+      <div>
+        <aui-form-item labelWidth="150px">
+          <label auiFormItemLabel>{{ 'application_name' | translate }}</label>
+          <input
+            auiFormItemControl
+            [(ngModel)]="appName"
+            name="applicationName"
+            #applicationName="ngModel"
+            aui-input
+            required
+            [maxlength]="validatorRule.maxLength"
+            [readOnly]="isEdit"
+            [pattern]="validatorRule.pattern"
+            [placeholder]="validatorRule.placeholder | translate: {count: validatorRule.maxLength}"
+          />
+          <div auiFormItemError *ngIf="applicationName.errors?.required">
+            {{ validatorRule.requiredError | translate }}
+          </div>
+          <div auiFormItemError *ngIf="applicationName.errors?.pattern">
+            {{ validatorRule.patternError | translate }}
+          </div>
+          <div auiFormItemError *ngIf="applicationName.errors?.maxlength">
+            {{ validatorRule.maxLengthError | translate }}
+          </div>
+        </aui-form-item>
+        <aui-form-item labelWidth="150px">
+          <label auiFormItemLabel>{{ 'display_name' | translate }}</label>
+          <input
+            auiFormItemControl
+            [(ngModel)]="displayName"
+            name="applicationDisplayName"
+            #applicationDisplayName="ngModel"
+            aui-input
+            maxlength="63"
+          />
+        </aui-form-item>
+      </div>
+    </aui-card>
+  </div>
+</alo-app-resource-form>
+
+<ng-template #manageBlock>
+  <alo-multi-compute-component
+    #multiComputeComponent
+    [params]="params"
+    [appName]="appName"
+    [displayName]="displayName"
+    [components]="componentList"
+    [displayModel]="displayModel"
+    [isEdit]="isEdit"
+    (editComponent)="editComponent($event)"
+    (deleteComponent)="deleteComponent($event)"
+    (addComponent)="openSelectImageDialog()"
+  ></alo-multi-compute-component>
+</ng-template>
+
+<div class="mutate-buttons">
+  <div class="actions">
+    <ng-container *ngIf="!isMulti && !isManagerComponent">
+      <button aui-button="primary" [plain]="true" (click)="previewApp()">
+        <aui-icon icon="basic:eye_s"></aui-icon>
+        {{ 'application.preview_app' | translate }}
+      </button>
+      <button
+        aui-button="primary"
+        [plain]="true"
+        (click)="addComputeComponent()"
+      >
+        <aui-icon icon="basic:plus"></aui-icon>
+        {{ 'application.add_compute_component' | translate }}
+      </button>
+    </ng-container>
+    <ng-container *ngIf="isMulti && !isManagerComponent">
+      <section>
+        <aui-checkbox [(ngModel)]="isContinueToAdd">{{
+          'application.continue_to_add_the_next_one' | translate
+        }}</aui-checkbox>
+      </section>
+      <span class="total-component"
+        >{{ 'application.already_added' | translate }}:{{
+          totalComponentNum
+        }}</span
+      >
+    </ng-container>
+  </div>
+  <div>
+    <ng-container *ngIf="!isMulti || isManagerComponent">
+      <ng-container *ngIf="isEdit; else createButtonBlock">
+        <button aui-button="primary" [loading]="submitting" (click)="update()">
+          {{ 'update' | translate }}
+        </button>
+      </ng-container>
+      <ng-template #createButtonBlock>
+        <button aui-button="primary" [loading]="submitting" (click)="create()">
+          {{ 'create' | translate }}
+        </button>
+      </ng-template>
+      <button aui-button (click)="cancelCreate()">
+        {{ 'cancel' | translate }}
+      </button>
+    </ng-container>
+    <ng-container *ngIf="isMulti && !isManagerComponent">
+      <button aui-button="primary" [loading]="submitting" (click)="save()">
+        {{ 'save' | translate }}
+      </button>
+      <button aui-button (click)="cancelEdit()">
+        {{ 'cancel' | translate }}
+      </button>
+    </ng-container>
+  </div>
+</div>

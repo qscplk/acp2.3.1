@@ -1,0 +1,49 @@
+<form auiForm
+      auiFormLabelWidth="150px"
+      [auiFormEmptyAddon]="true">
+    <!-- Input row -->
+    
+    <div class="dockerconfig-form-item-group">
+      <aui-form-item [formGroup]="form">
+        <label auiFormItemLabel>
+          {{ 'configsecret.docker_address' | translate }}
+        </label>
+        <input (blur)="onBlur()"
+                auiFormItemControl
+                aui-input
+                required
+                formControlName="dockerServiceAddress">
+      </aui-form-item>
+      <aui-form-item [formGroup]="form">
+        <label auiFormItemLabel>
+          {{ 'username' | translate }}
+        </label>
+        <input (blur)="onBlur()"
+                auiFormItemControl
+                aui-input
+                required
+                formControlName="username">
+      </aui-form-item>
+      <aui-form-item [formGroup]="form">
+        <label auiFormItemLabel>
+          {{ 'password' | translate }}
+        </label>
+        <input (blur)="onBlur()"
+                auiFormItemControl
+                aui-input
+                required
+                formControlName="password">
+      </aui-form-item>
+      <aui-form-item [formGroup]="form">
+        <label auiFormItemLabel>
+          {{ 'email' | translate }}
+        </label>
+        <input (blur)="onBlur()"
+                auiFormItemControl
+                aui-input
+                required
+                formControlName="email">
+      </aui-form-item>
+    </div>
+  
+</form>

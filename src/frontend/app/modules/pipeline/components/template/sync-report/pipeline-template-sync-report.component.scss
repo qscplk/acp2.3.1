@@ -1,0 +1,17 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  .results {
+    color: #999;
+    font-size: 14px;
+    .field {
+      margin: 0 4px;
+    }
+  }
+  margin-bottom: 12px;
+}
+.template-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

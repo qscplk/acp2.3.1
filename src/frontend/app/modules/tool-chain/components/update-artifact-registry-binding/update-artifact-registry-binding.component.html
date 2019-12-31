@@ -1,0 +1,27 @@
+<aui-dialog-header>
+  {{ 'update' | translate }}
+</aui-dialog-header>
+<aui-dialog-content>
+  <alo-artifact-registry-binding-form
+    #form=artifact-registry-binding-form
+    [binding]="data"
+    (saved)="saved($event)"
+    (statusChange)="statusChange($event)"
+  >
+  </alo-artifact-registry-binding-form>
+</aui-dialog-content>
+<aui-dialog-footer>
+  <div>
+    <button
+      aui-button="primary"
+      (click)="submit()"
+      [loading]="loading"
+      [disabled]="loading"
+    >
+      {{ 'update' | translate }}
+    </button>
+    <button aui-button [auiDialogClose]="null" [disabled]="loading">
+      {{ 'cancel' | translate }}
+    </button>
+  </div>
+</aui-dialog-footer>

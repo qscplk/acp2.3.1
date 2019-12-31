@@ -1,0 +1,22 @@
+<aui-dialog-header>
+  <span>
+    <span>{{ config.name }} </span>
+    <span>{{ 'pipeline.scan_logs' | translate }}</span>
+  </span>
+</aui-dialog-header>
+<aui-dialog-content>
+  <div
+    class="logs-content"
+    *aloAsyncData="let loading;
+    handler: fetchLogs;
+    pullIn: more ? 2000 : 0"
+  >
+    <alo-log-view
+      [logs]="text"
+      [paginated]="false"
+      [pullEnabled]="true"
+      [pullToggleEnabled]="false"
+      [dialogEmbedded]="true"
+    ></alo-log-view>
+  </div>
+</aui-dialog-content>

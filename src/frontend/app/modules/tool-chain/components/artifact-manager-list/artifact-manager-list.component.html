@@ -1,0 +1,73 @@
+<ng-container *ngIf="managers">
+  <div class="manager" *ngFor="let manager of managers">
+    <div class="manager-head">
+      <span class="manager-head--logo">
+        <img
+          class="type-icon"
+          [src]="'icons/tool-chain/' + manager.type.toLowerCase() + '.svg'"
+          [alt]="manager.type"
+        />
+      </span>
+      <span class="manager-head--name">
+        {{ manager.name }}
+      </span>
+      <span
+        *ngIf="manager.status.phase === 'Error'"
+        class="manager-head--warning"
+        [auiTooltip]="manager.status.message"
+      >
+        <aui-icon icon="exclamation_circle_s"></aui-icon>
+      </span>
+      <span
+        class="manager-head--hint"
+        [auiTooltip]="nexusTipTemplate"
+        [auiTooltipType]="'info'"
+        [auiTooltipContext]="{ manager: manager }"
+      >
+        <aui-icon icon="basic:question"></aui-icon>
+      </span>
+      <aui-tag type="info" [round]="true" size="mini">
+        {{ snakeCase(manager.toolType) | translate }}
+      </aui-tag>
+      <a
+        href="javascript:void(0);"
+        class="manager-head--detail-link"
+        (click)="cardClick.emit(manager)"
+      >
+        {{ 'tool_chain.detail' | translate }}
+        <aui-icon icon="angle_right"></aui-icon>
+      </a>
+    </div>
+    <div class="manager-body">
+      <alo-service-list
+        *ngIf="manager.registries && manager.registries.length"
+        [services]="manager.registries"
+        [showTag]="showTag"
+        (cardClick)="cardClick.emit($event)"
+      ></alo-service-list>
+    </div>
+    <div
+      class="no-registries"
+      *ngIf="!manager.registries || !manager.registries.length"
+    >
+      <ng-container
+        *ngTemplateOutlet="
+          nexusTipTemplate;
+          context: {
+            manager: manager
+          }
+        "
+      >
+      </ng-container>
+    </div>
+  </div>
+</ng-container>
+<ng-template #nexusTipTemplate let-manager="manager">
+  <div>
+    {{ 'tool_chain.nexus_tip_before' | translate }}
+    <a href="javascript:void(0);" (click)="cardClick.emit(manager)">{{
+      'tool_chain.nexus_tip_link' | translate
+    }}</a>
+    {{ 'tool_chain.nexus_tip_after' | translate }}
+  </div>
+</ng-template>

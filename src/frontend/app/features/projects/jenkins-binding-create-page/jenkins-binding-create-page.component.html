@@ -1,0 +1,164 @@
+<div
+  *aloPageHeaderContent
+  class="page-header"
+>
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['/admin/projects']">{{ 'project.list' |
+        translate }}</a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['/admin/projects', project$ | async]" [queryParams]="{ tab: '1' }">
+        {{ project$ | async }}
+      </a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <span>
+        {{ 'project.bind_continuous_integration' | translate }}
+        ({{ service$ | async }})
+      </span>
+    </ng-template>
+  </alo-breadcrumb>
+</div>
+<div class="title">
+</div>
+<aui-card>
+  <div auiCardHeader>
+    {{ 'bind' | translate }}
+  </div>
+  <form
+    #form="ngForm"
+    auiForm
+    auiFormLabelWidth="150px"
+    [auiFormEmptyAddon]="true"
+  >
+    <aui-section>
+      <div auiSectionTitle>{{ 'base_info' | translate }}</div>
+      <aui-form-item>
+        <label auiFormItemLabel>{{ 'name' | translate }}</label>
+        <input
+          aui-input
+          auiFormItemControl
+          #name="ngModel"
+          [(ngModel)]="formData.name"
+          name="name"
+          required
+          [maxlength]="nameRule.maxLength"
+          [pattern]="nameRule.pattern"
+          [placeholder]="nameRule.placeholder | translate"
+        >
+        <div
+          auiFormItemError
+          *ngIf="name.errors?.required"
+        >{{ nameRule.requiredError | translate }}</div>
+        <div
+          auiFormItemError
+          *ngIf="name.errors?.pattern"
+        >{{ nameRule.patternError | translate }}</div>
+      </aui-form-item>
+      <aui-form-item>
+        <label auiFormItemLabel>{{ 'description' | translate }}</label>
+        <textarea
+          aui-input
+          auiFormItemControl
+          name="description"
+          [(ngModel)]="formData.description"
+        ></textarea>
+      </aui-form-item>
+    </aui-section>
+    <aui-section>
+      <div auiSectionTitle>{{ 'auth' | translate }}</div>
+      <aui-form-item>
+        <label auiFormItemLabel>{{ 'auth_type' | translate }}</label>
+        <aui-radio-group
+          auiFormItemControl
+          value="token"
+        >
+          <aui-radio-button value="token">Token</aui-radio-button>
+        </aui-radio-group>
+      </aui-form-item>
+      <aui-form-item>
+        <label auiFormItemLabel>{{ 'secret' | translate }}</label>
+        <aui-select
+          auiFormItemControl
+          name="secret"
+          #secret="ngModel"
+          [(ngModel)]="formData.secret"
+          required
+          filterable
+          [placeholder]="'please_select_secret' | translate"
+        >
+          <aui-option-group class="secret-group">
+            <div
+              auiOptionGroupTitle
+              class="secret-group__title"
+            >
+              <img src="icons/secret-public.svg" alt="devops" />
+              <span>{{ 'secret.global' | translate }}</span>
+            </div>
+            <aui-option
+              *ngFor="let item of (secrets$ | async)?.public"
+              [value]="secretToValue(item)"
+              [label]="item.name"
+            >
+              <span>{{ item.name }}</span>
+              <span
+                class="secret-group__display-name"
+                *ngIf="!!item.displayName"
+              >({{ item.displayName }})</span>
+            </aui-option>
+          </aui-option-group>
+          <aui-option-group class="secret-group">
+            <div
+              auiOptionGroupTitle
+              class="secret-group__title"
+            >
+              <img src="icons/secret-private.svg" alt="devops" />
+              <span>{{ 'secret.private' | translate }}</span>
+            </div>
+            <aui-option
+              *ngFor="let item of (secrets$ | async)?.private"
+              [value]="secretToValue(item)"
+              [label]="item.name"
+            >
+              <span>{{ item.name }}</span>
+              <span
+                class="secret-group__display-name"
+                *ngIf="!!item.displayName"
+              >({{ item.displayName }})</span>
+            </aui-option>
+          </aui-option-group>
+          <aui-option-placeholder>{{ 'no_available_secrets' |
+            translate }}</aui-option-placeholder>
+        </aui-select>
+        <button
+          aui-button
+          type="button"
+          class="add-secret"
+          (click)="addSecret()"
+        >{{ 'add_secret' | translate }}</button>
+        <div
+          auiFormItemError
+          *ngIf="secret.errors?.required"
+        >{{ 'required' | translate }}</div>
+      </aui-form-item>
+    </aui-section>
+  </form>
+
+  <div
+    auiCardFooter
+    class="actions"
+  >
+    <button
+      aui-button="primary"
+      [loading]="loading"
+      [disabled]="loading"
+      (click)="onSubmit()"
+    >{{ 'binding_account' | translate }}</button>
+    <button
+      aui-button
+      [disabled]="loading"
+      (click)="cancel()"
+    >{{ 'cancel' | translate }}</button>
+  </div>
+</aui-card>

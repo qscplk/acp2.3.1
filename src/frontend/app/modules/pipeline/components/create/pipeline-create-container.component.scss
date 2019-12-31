@@ -1,0 +1,31 @@
+@import 'var';
+
+.alo-pipeline-create {
+  &--no_jenkins {
+    margin: 20px 0;
+  }
+  &__basic {
+    &__trigger__hint {
+      color: #333;
+      font-size: 14px;
+      line-height: 20px;
+    }
+    .document {
+      color: $color-primary;
+      cursor: pointer;
+    }
+  }
+
+  &__footer__container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    acl-disabled-container + .aui-button {
+      margin-left: 8px;
+    }
+  }
+}

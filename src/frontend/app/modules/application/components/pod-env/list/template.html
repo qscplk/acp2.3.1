@@ -1,0 +1,82 @@
+<ng-container *ngFor="let container of containers; let index = index">
+  <div class="container-title" *ngIf="containers.length > 1">
+    {{ container.name }}
+  </div>
+  <!-- 环境变量 -->
+  <aui-card>
+    <div auiCardHeader>
+      {{ 'env' | translate }}
+      <div style="flex: 1"></div>
+      <button *ngIf="!noUpdate" aui-button="text" [disabled]="!allowedUpdate" (click)="editEnv(container)">
+        <aui-icon icon="basic:pencil_s"></aui-icon>
+      </button>
+    </div>
+
+    <aui-table [dataSource]="container.env" *ngIf="isEnvEmpty(container)">
+      <ng-container [auiTableColumnDef]="'name'">
+        <aui-table-header-cell *auiTableHeaderCellDef>
+          {{ 'name' | translate }}
+        </aui-table-header-cell>
+        <aui-table-cell *auiTableCellDef="let item">
+          {{ item.name }}
+        </aui-table-cell>
+      </ng-container>
+
+      <ng-container [auiTableColumnDef]="'config_value'">
+        <aui-table-header-cell *auiTableHeaderCellDef>
+          {{ 'value' | translate }}
+        </aui-table-header-cell>
+        <aui-table-cell *auiTableCellDef="let item">
+          <ng-container [ngSwitch]="envVarViewMode(item)">
+            <ng-container *ngSwitchCase="'value'">
+              {{ item.value }}
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'yaml'">
+              <pre auiCodeColorize="yaml" [innerHTML]="getYaml(item.valueFrom)"></pre>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'valueFrom'">
+              <aui-tag size="small">
+                  <a [title]="(envVarResource(item).kind | lowercase | translate) + ' ' + 
+                   envVarResource(item).name + ': ' + envVarResource(item).key">
+                   {{ envVarResource(item).kind | lowercase | translate }} {{ envVarResource(item).name
+                  }}: {{ envVarResource(item).key }}
+                </a>
+              </aui-tag>
+            </ng-container>
+          </ng-container>
+
+        </aui-table-cell>
+      </ng-container>
+
+      <aui-table-header-row *auiTableHeaderRowDef="envListColumnDefs"></aui-table-header-row>
+      <aui-table-row *auiTableRowDef="let row; columns: envListColumnDefs"></aui-table-row>
+    </aui-table>
+    <alo-no-data *ngIf="!isEnvEmpty(container)" [resourceName]="'env' | translate">
+    </alo-no-data>
+  </aui-card>
+
+  <!-- 配置引用 -->
+  <aui-card>
+    <div auiCardHeader>
+      {{ 'env_from' | translate }}
+      <div style="flex: 1"></div>
+      <button *ngIf="!noUpdate" aui-button="text" [disabled]="!allowedUpdate" (click)="editEnvFrom(container)">
+        <aui-icon icon="basic:pencil_s"></aui-icon>
+      </button>
+    </div>
+    <div class="env-from-tags">
+      <aui-tag size="small" *ngFor="let item of container.envFrom">
+        <a [title]="(envFromResource(item).kind | lowercase | translate) + ' ' + envFromResource(item).name">
+          {{ envFromResource(item).kind | lowercase | translate }} {{ envFromResource(item).name
+          }}
+        </a>
+      </aui-tag>
+    </div>
+    <alo-no-data *ngIf="!container.envFrom || container.envFrom.length === 0" [resourceName]="'env_from' | translate">
+    </alo-no-data>
+
+  </aui-card>
+
+</ng-container>

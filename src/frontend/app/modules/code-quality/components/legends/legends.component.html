@@ -1,0 +1,9 @@
+<div class="legends">
+  <div class="legends__column" *ngFor="let column of columns">
+    <div class="legends__title">{{ column.text | translate }}</div>
+    <div class="legends__level" *ngFor="let level of column.levels">
+      <alo-code-quality-icon [type]="column.type" [level]="level.value" [small]="true"></alo-code-quality-icon>
+      <span>{{ level.text | translate }}</span>
+    </div>
+  </div>
+</div>

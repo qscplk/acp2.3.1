@@ -1,0 +1,12 @@
+<aui-dialog-header>{{ 'application.update_container' | translate }}</aui-dialog-header>
+<aui-dialog-content>
+  {{ 'application.container_update_tip' | translate:{ name: data.resourceName } }}
+</aui-dialog-content>
+<aui-dialog-footer>
+  <button aui-button="primary" [loading]="saving" (click)="save()">
+    {{ 'sure' | translate }}
+  </button>
+  <button aui-button [auiDialogClose]="null">
+    {{ 'cancel' | translate }}
+  </button>
+</aui-dialog-footer>

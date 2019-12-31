@@ -1,0 +1,75 @@
+<aui-card>
+  <div auiCardHeader>
+    <ul class="alo-steps">
+      <li class="alo-steps__step alo-steps__step--active">
+        <span
+          class="alo-steps__icon"
+          [class.alo-steps__icon--active]="step === 'bindAccount'"
+          [class.alo-steps__icon--complete]="step === 'assignRepository'"
+        >
+          <span *ngIf="step === 'bindAccount'">1</span>
+          <aui-icon
+            icon="check_s"
+            *ngIf="step === 'assignRepository'"
+          ></aui-icon>
+        </span>
+        <span>{{ 'registry.bind_account' | translate }}</span>
+      </li>
+      <li class="alo-steps__step">
+        <span
+          class="alo-steps__icon"
+          [class.alo-steps__icon--active]="step === 'assignRepository'"
+        >
+          <span>2</span>
+        </span>
+        <span>{{ 'registry.assign_image_repository' | translate }}</span>
+      </li>
+    </ul>
+  </div>
+  <alo-bind-account-form
+    #step1
+    [hidden]="step !== 'bindAccount'"
+    [service]="service"
+    [namespace]="namespace"
+    (statusChange)="loading = $event"
+    (bound)="accountBound($event)"
+  ></alo-bind-account-form>
+  <alo-distribute-registry-form
+    #step2
+    [hidden]="step !== 'assignRepository'"
+    [namespace]="namespace"
+    [binding]="binding"
+    (statusChange)="loading = $event"
+    (assigned)="repoAssigned()"
+  ></alo-distribute-registry-form>
+  <div
+    auiCardFooter
+    class="actions"
+  >
+    <button
+      *ngIf="step === 'bindAccount'"
+      aui-button="primary"
+      [loading]="loading"
+      [disabled]="loading"
+      (click)="step1.submit()"
+    >
+      {{ 'registry.bind_account' | translate }}
+    </button>
+    <button
+      *ngIf="step === 'assignRepository'"
+      aui-button="primary"
+      [loading]="loading"
+      [disabled]="loading"
+      (click)="step2.submit()"
+    >
+      {{ 'registry.assign_image_repository' | translate }}
+    </button>
+    <button
+      aui-button
+      [disabled]="loading"
+      (click)="cancel()"
+    >
+      {{ 'cancel' | translate }}
+    </button>
+  </div>
+</aui-card>

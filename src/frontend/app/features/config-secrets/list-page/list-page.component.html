@@ -1,0 +1,65 @@
+<ng-container *aloPageHeaderContent>
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <span>
+        {{ 'nav_config' | translate }}
+      </span>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <span>
+        {{ 'nav_secret' | translate }}
+      </span>
+    </ng-template>
+  </alo-breadcrumb>
+</ng-container>
+<aui-card
+  *aloAsyncData="
+    let secrets;
+    let loading = loading;
+    let error = error;
+    let refetch = refetch;
+    params: params$ | async;
+    handler: fetchSecrets;
+  "
+>
+  <div class="list-header">
+    <acl-disabled-container [isAllowed]="(permissions$ | async)?.create">
+      <button
+        aui-button="primary"
+        (click)="createSecret()"
+        [disabled]="!(creatable$ | async)">
+        {{ 'configsecret.create' | translate }}
+      </button>
+    </acl-disabled-container>
+    <div class="alo-search">
+      <aui-search
+        [keyword]="keywords$ | async"
+        [placeholder]="'search_by_name_placeholder' | translate"
+        [searchButton]="true"
+        (search)="search($event)"
+      ></aui-search>
+    </div>
+  </div>
+  <div>
+    <alo-configsecret-list
+      [params]="params$ | async"
+      [data]="secrets?.items || []"
+      [permissions]="permissions$ | async"
+      (updated)="refetch()"
+      (sortChange)="onSort($event)">
+    </alo-configsecret-list>
+    <alo-no-data
+      *ngIf="!secrets || secrets.total === 0"
+      [resourceName]="'configsecret.list' | translate"
+    ></alo-no-data>
+    <aui-paginator
+      *ngIf="secrets?.total"
+      [pageIndex]="(params$ | async).pageIndex"
+      [pageSize]="(params$ | async).itemsPerPage"
+      [pageSizeOptions]="[20, 50, 100]"
+      [length]="secrets.total"
+      (currentPageChange)="currentPageChange($event)"
+      (pageSizeChange)="pageSizeChange($event)"
+    ></aui-paginator>
+  </div>
+</aui-card>

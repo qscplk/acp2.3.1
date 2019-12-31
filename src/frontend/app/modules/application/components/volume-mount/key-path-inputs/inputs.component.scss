@@ -1,0 +1,17 @@
+:host {
+  display: flex;
+  flex: 1;
+}
+
+input {
+  &:first-child {
+    margin-right: 6px;
+  }
+  &[readonly] {
+    border: dashed 1px #aaa;
+  }
+}
+
+aui-select {
+  padding-right: 4px;
+}

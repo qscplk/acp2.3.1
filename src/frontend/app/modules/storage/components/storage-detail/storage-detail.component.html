@@ -1,0 +1,50 @@
+<aui-card>
+  <div auiCardHeader class="base-header">
+    <div class="title">
+      <span>{{ params.name || '-' }}</span>
+    </div>
+  </div>
+  <div class="alo-detail">
+    <div class="alo-detail__row">
+      <div class="alo-detail__field">
+        <label>{{ 'display_name' | translate }}</label>
+        <span>{{ data?.displayName || '-' }}</span>
+      </div>
+      <div class="alo-detail__field">
+        <label>{{ 'storage.storageclasses' | translate }}</label>
+        <span>{{ data?.storageClass }}</span>
+      </div>
+    </div>
+    <div class="alo-detail__row">
+      <div class="alo-detail__field">
+        <label>{{ 'status' | translate }}</label>
+        <span [ngSwitch]="data?.status">
+          <span *ngSwitchCase="'Bound'"
+            ><alo-status-icon status="success"></alo-status-icon
+            >{{ 'available' | translate }}
+          </span>
+          <span *ngSwitchDefault
+            ><alo-status-icon status="failed"></alo-status-icon>
+            {{ 'unavailable' | translate }}
+          </span>
+        </span>
+      </div>
+      <div class="alo-detail__field">
+        <label>{{ 'storage.accessMode' | translate }}</label>
+        <span>{{ getAccessModesDisplayname(data?.accessModes) }}</span>
+      </div>
+    </div>
+    <div class="alo-detail__row">
+      <div class="alo-detail__field">
+        <label>{{ 'size' | translate }}</label>
+        <span>{{ data?.capacity?.storage || '-' }}</span>
+      </div>
+    </div>
+    <div class="alo-detail__row">
+      <div class="alo-detail__field">
+        <label>{{ 'create_at' | translate }}</label>
+        <span>{{ data?.objectMeta.creationTimestamp | aclStandardTime }}</span>
+      </div>
+    </div>
+  </div>
+</aui-card>

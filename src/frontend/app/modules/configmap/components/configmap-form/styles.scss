@@ -1,0 +1,16 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  ::ng-deep {
+    .aui-card {
+      &__content {
+        margin-top: 16px;
+      }
+    }
+  }
+}
+
+alo-key-value-form-list {
+  flex: 1;
+}

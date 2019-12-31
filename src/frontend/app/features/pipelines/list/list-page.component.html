@@ -1,0 +1,139 @@
+<ng-container *ngIf="(params$ | async) as params">
+  <alo-breadcrumb *aloPageHeaderContent>
+    <ng-template aloBreadcrumbItem> <span>{{ 'nav_continuous_delivery' | translate }}</span> </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <span>{{ 'pipeline._' + params.category | translate }}</span>
+    </ng-template>
+  </alo-breadcrumb>
+  <aui-tab-group>
+    <aui-tab>
+      <span *auiTabLabel>{{ 'pipeline.list' | translate }}</span>
+      <aui-card
+            *aloAsyncData="
+        let pipelineList;
+        let error = error;
+        let loading = loading;
+        let refetch = refetch;
+        handler: findPipelines;
+        params: params;
+        pullIn: 10 * 1000;
+        notification: forceReload$;
+      "
+      >
+        <div class="list-header">
+          <acl-disabled-container [isAllowed]="(pipelineConfigPermissions$ | async)?.create">
+            <button
+              aui-button="primary"
+              (click)="modeSelect()"
+            >
+              {{ 'pipeline.create_pipeline_' + params.category | translate }}
+            </button>
+          </acl-disabled-container>
+          <div class="alo-search">
+            <!--<aui-select
+              [value]="params.appFilter"
+              (valueChange)="appFilterChanged($event)"
+            >
+              <aui-option-group>
+                <aui-option
+                  value="all"
+                  [label]="appValueLabel"
+                  [labelContext]="{ text: ('pipeline.all_applications' | translate) }"
+                >
+                  {{ 'pipeline.all_applications' | translate }}
+                </aui-option>
+              </aui-option-group>
+              <aui-option-group>
+                <aui-option
+                  *ngFor="let item of applications$ | async;"
+                  [value]="item.name"
+                  [label]="appValueLabel"
+                  [labelContext]="{ text: item.name }"
+                >{{ item.name }}</aui-option>
+              </aui-option-group>
+            </aui-select>-->
+            <button aui-button [auiDropdown]="searchMenu">
+              {{ (searchBy === 'displayName' ? 'display_name' : 'name') | translate }}
+              <aui-icon icon="caret_down_s"></aui-icon>
+            </button>
+            <aui-search
+                    [keyword]="keywords"
+                    [placeholder]="
+              (searchBy === 'name'
+                ? 'search_by_name_placeholder'
+                : 'search_by_display_name_placeholder') | translate
+            "
+                    [searchButton]="true"
+                    [searching]="loading"
+                    (search)="search($event)"
+            ></aui-search>
+            <aui-menu #searchMenu>
+              <aui-menu-item
+                      (click)="searchBy = 'name'"
+                      [actived]="searchBy === 'name'"
+              >
+                {{ 'name' | translate }}
+              </aui-menu-item>
+              <aui-menu-item
+                      (click)="searchBy = 'displayName'"
+                      [actived]="searchBy === 'displayName'"
+              >
+                {{ 'display_name' | translate }}
+              </aui-menu-item>
+            </aui-menu>
+          </div>
+        </div>
+        <div>
+          <alo-pipeline-list
+                  [pipelines]="pipelineList?.items"
+                  [project]="params.project"
+                  [category]="params.category"
+                  [permissions]="permissions$ | async"
+                  [sort]="{ active: params.sort, direction: params.direction }"
+                  (sortChange)="sortByChanged($event)"
+                  (started)="onPipelineStarted($event)"
+                  (deleted)="refetch()"
+          >
+          </alo-pipeline-list>
+          <alo-no-data
+                  *ngIf="!pipelineList?.items?.length || pipelineList?.errors?.length"
+                  [resourceName]="'pipelines' | translate"
+                  [loading]="loading"
+                  [error]="error || (pipelineList && pipelineList.errors)"
+                  (retry)="refetch()"
+          >
+          </alo-no-data>
+          <aui-paginator
+                  *ngIf="pipelineList?.total"
+                  [currentPage]="params.pageIndex + 1"
+                  [pageSize]="params.itemsPerPage"
+                  [pageSizeOptions]="[20, 50, 100]"
+                  [total]="pipelineList?.total"
+                  (currentPageChange)="currentPageChange($event)"
+                  (pageSizeChange)="pageSizeChange($event)"
+          ></aui-paginator>
+        </div>
+      </aui-card>
+    </aui-tab>
+
+    <aui-tab>
+      <div *auiTabLabel class="waiting-title">
+        <span>{{ 'pipeline.waiting_for_input' | translate }}</span>
+        <span *ngIf="!!waitingCount" class="waiting-count">{{waitingCount}}</span>
+      </div>
+      <alo-pipeline-histories
+              [project]="(params$ | async)?.project"
+              [filterByStatus]="'PAUSED_PENDING_INPUT'"
+              [permissions]="permissions$ | async"
+              [showWaiting]="true"
+              [hideTitle]="true"
+              (dataChange)="onHistoryDataChange($event)"
+      ></alo-pipeline-histories>
+    </aui-tab>
+  </aui-tab-group>
+
+</ng-container>
+
+<ng-template #appValueLabel let-label="text">
+  {{ label }}
+</ng-template>

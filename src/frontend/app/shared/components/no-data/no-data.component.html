@@ -1,0 +1,25 @@
+<div
+  class="no-data"
+  [class.no-data--card]="mode === 'card'"
+>
+  <span *ngIf="loading">{{ translateOptions.loading | translate }}</span>
+  <span *ngIf="!loading && !errorType">
+    {{ searchKeyword ? (translateOptions.noResult | translate) :resourceName
+    ? (translateOptions.noResource | translate: { resourceName: resourceName | pure: getDisplayResourceName })
+    : (translateOptions.noData | translate)
+    }}
+  </span>
+  <span *ngIf="!loading && errorType">
+    <ng-container *ngIf="!retryDisabled && errorType === translateOptions.serviceUnaviable; else errorInfo">
+      <span>{{ translateOptions.retryOnError | translate }}</span>
+      <a
+        href="javascript:;"
+        (click)="onRetry()"
+      >{{ translateOptions.retry | translate }}</a>
+    </ng-container>
+  </span>
+</div>
+
+<ng-template #errorInfo>
+  {{ errorType | translate }}
+</ng-template>

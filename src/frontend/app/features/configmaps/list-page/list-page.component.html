@@ -1,0 +1,64 @@
+<ng-container *aloPageHeaderContent>
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <span>
+        {{ 'nav_config' | translate }}
+      </span>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <span>
+        {{ 'configmap.list' | translate }}
+      </span>
+    </ng-template>
+  </alo-breadcrumb>
+</ng-container>
+<aui-card
+  *aloAsyncData="
+    let configmaps;
+    let loading = loading;
+    let error = error;
+    let refetch = refetch;
+    params: params$ | async;
+    handler: fetchConfigmaps;
+  "
+>
+  <div class="list-header">
+    <acl-disabled-container [isAllowed]="(permissions$ | async)?.create">
+      <button
+        aui-button="primary"
+        (click)="createConfigmap()">
+        {{ 'configmap.create' | translate }}
+      </button>
+    </acl-disabled-container>
+    <div class="alo-search">
+      <aui-search
+        [keyword]="keywords$ | async"
+        [placeholder]="'search_by_name_placeholder' | translate"
+        [searchButton]="true"
+        (search)="search($event)"
+      ></aui-search>
+    </div>
+  </div>
+  <div>
+    <alo-configmap-list #configmapListRef
+      [params]="params$ | async"
+      [data]="configmaps?.items || []"
+      [permissions]="permissions$ | async"
+      (updated)="refetch()"
+      (sortChange)="onSort($event)">
+    </alo-configmap-list>
+    <alo-no-data
+      *ngIf="!configmaps || configmaps.total === 0"
+      [resourceName]="'configmap.list' | translate"
+    ></alo-no-data>
+    <aui-paginator
+      *ngIf="configmaps?.total"
+      [pageIndex]="(params$ | async).pageIndex"
+      [pageSize]="(params$ | async).itemsPerPage"
+      [pageSizeOptions]="[20, 50, 100]"
+      [length]="configmaps.total"
+      (currentPageChange)="currentPageChange($event)"
+      (pageSizeChange)="pageSizeChange($event)"
+    ></aui-paginator>
+  </div>
+</aui-card>

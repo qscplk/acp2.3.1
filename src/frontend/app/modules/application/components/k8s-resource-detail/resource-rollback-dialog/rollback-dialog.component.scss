@@ -1,0 +1,12 @@
+.aui-table {
+  min-width: 0px;
+  &__column-revision {
+    flex: 1;
+  }
+  &__column-tag {
+    flex: 2;
+  }
+  &__column-time {
+    flex: 2;
+  }
+}

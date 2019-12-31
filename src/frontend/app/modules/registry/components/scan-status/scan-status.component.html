@@ -1,0 +1,107 @@
+<div
+  *ngIf="tag.scanStatus==='notScan'"
+  class="status-desc"
+>{{ 'registry.not_scan' | translate }}</div>
+<div
+  *ngIf="tag.scanStatus==='error'"
+  class="status-desc error"
+>
+  <span>{{ 'registry.scan_failed' | translate }}</span>
+  <aui-icon
+    icon="basic:close_circle_s"
+    margin="left"
+    [auiTooltip]="tag.message"
+    [auiTooltipDisabled]="!tag.message"
+  ></aui-icon>
+</div>
+<ng-container *ngIf="tag.scanStatus==='pending'">
+  <aui-status-bar
+    size="small"
+    [status]="[{scale:1,class:'waiting'}]"
+  ></aui-status-bar>
+  <div class="status-desc">{{ 'registry.pending' | translate }}...</div>
+</ng-container>
+<ng-container *ngIf="tag.scanStatus==='running'">
+  <aui-status-bar
+    size="small"
+    [status]="[{scale:1,type:StatusType.Pending}]"
+  ></aui-status-bar>
+  <div class="status-desc">{{ 'registry.analyzing' | translate }}...</div>
+</ng-container>
+<ng-container *ngIf="tag.scanStatus==='finished' && !!tag.summary">
+  <aui-status-bar
+    [status]="parseScanResult(tag.summary)"
+    size="small"
+    [auiTooltip]="tagStatus"
+    [auiTooltipContext]="{tag: tag}"
+    auiTooltipClass="alo-status-overview"
+  ></aui-status-bar>
+  <div class="status-desc">{{ 'registry.scan_finished' | translate }}</div>
+</ng-container>
+<ng-container *ngIf="tag.scanStatus==='finished' && !tag.summary">
+  <aui-status-bar
+    [status]="[{ type: StatusType.Info, scale: 1 }]"
+    size="small"
+    [auiTooltip]="unknowTagStatus"
+    auiTooltipClass="alo-status-overview"
+  ></aui-status-bar>
+  <div class="status-desc">{{ 'registry.scan_finished' | translate }}</div>
+</ng-container>
+
+<ng-template #unknowTagStatus>
+  <div class="status-summary">
+    <aui-icon [class]="'level-2'" [icon]="getSeverityIcon(2)"></aui-icon>
+    <span>
+      {{ 'registry.vulnerability_severity' | translate }}:
+      {{ 'registry.severity_2' | translate }}
+    </span>
+  </div>
+  <div class="status-detail">
+    <div>{{ 'registry.no_identifiable_vulnerability_found' | translate }}</div>
+  </div>
+</ng-template>
+
+<ng-template
+  #tagStatus
+  let-tag="tag"
+>
+  <div class="status-summary">
+    <aui-icon
+      [class]="'level-' + tag.level"
+      [icon]="getSeverityIcon(tag.level)"
+    ></aui-icon>
+    <span>{{ 'registry.vulnerability_severity' | translate }}: {{
+      ('registry.severity_' + tag.level) | translate }}</span>
+  </div>
+  <div class="status-detail">
+    <div class="count-summary">{{ getSummary(tag.summary) }}</div>
+
+    <ul class="severity-detail">
+      <li>
+        <em class="pointer level-5"></em>
+        <span class="count">{{ getSeverityCount(tag.summary,5) }}</span>
+        <span>{{ 'registry.severity_5' | translate }}</span>
+      </li>
+      <li>
+        <em class="pointer level-4"></em>
+        <span class="count">{{ getSeverityCount(tag.summary,4) }}</span>
+        <span>{{ 'registry.severity_4' | translate }}</span>
+      </li>
+      <li>
+        <em class="pointer level-3"></em>
+        <span class="count">{{ getSeverityCount(tag.summary,3) }}</span>
+        <span>{{ 'registry.severity_3' | translate }}</span>
+      </li>
+      <li>
+        <em class="pointer level-2"></em>
+        <span class="count">{{ getSeverityCount(tag.summary,2) }}</span>
+        <span>{{ 'registry.severity_2' | translate }}</span>
+      </li>
+      <li>
+        <em class="pointer level-1"></em>
+        <span class="count">{{ getSeverityCount(tag.summary,1) }}</span>
+        <span>{{ 'registry.severity_1' | translate }}</span>
+      </li>
+    </ul>
+  </div>
+</ng-template>

@@ -1,0 +1,33 @@
+<alo-breadcrumb *aloPageHeaderContent>
+  <ng-template aloBreadcrumbItem>
+    <span>{{ 'overview' | translate }}</span>
+  </ng-template>
+</alo-breadcrumb>
+<div class="dashboard-widget">
+  <div class="dashboard-widget__global-status">
+    <alo-pipeline-global-status-chart
+      [project]="project$ | async"
+      class="global-status"
+    ></alo-pipeline-global-status-chart>
+  </div>
+  <div class="dashboard-widget__recent-histories">
+    <alo-pipeline-recent-histories
+      [project]="project$ | async"
+      (actions)="onAction($event)"
+    ></alo-pipeline-recent-histories>
+  </div>
+</div>
+<div class="dashboard-widget">
+  <alo-pipeline-stage-status-chart [project]="project$ | async"></alo-pipeline-stage-status-chart>
+</div>
+<div class="dashboard-widget">
+  <alo-code-quality-global-status [project]="project$ | async"></alo-code-quality-global-status>
+</div>
+<div class="dashboard-row">
+  <div class="dashboard-widget">
+    <alo-code-recent-commits [project]="project$ | async"></alo-code-recent-commits>
+  </div>
+  <div class="dashboard-widget">
+    <alo-registry-recent-pushs [project]="project$ | async"></alo-registry-recent-pushs>
+  </div>
+</div>

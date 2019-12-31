@@ -1,0 +1,134 @@
+<aui-dialog-header>
+  <div class="title">{{'pipeline.sync_result'|translate}}</div>
+</aui-dialog-header>
+<aui-dialog-content>
+  <div class="header">
+    <div class="results">
+      <span class="field color--success">
+        {{syncResultCount.success}} 
+        {{'pipeline.template_sync_unit'|translate}}{{'pipeline.template_sync_result_succ'|translate}}
+      </span>
+      <span class="field color--skip">
+        {{syncResultCount.skip}}
+        {{'pipeline.template_sync_unit'|translate}}{{'pipeline.template_sync_result_skip'|translate}}
+      </span>
+      <span class="field color--failure">
+        {{syncResultCount.failure}}
+        {{'pipeline.template_sync_unit'|translate}}{{'pipeline.template_sync_result_fail'|translate}}
+      </span>
+    </div>
+  </div>
+  <div>
+    <aui-table [dataSource]="conditions">
+      <aui-table-header-row *auiTableHeaderRowDef="columns"></aui-table-header-row>
+      <aui-table-row *auiTableRowDef="let row; columns: columns;"></aui-table-row>
+      <ng-container auiTableColumnDef="result">
+        <aui-table-header-cell *auiTableHeaderCellDef>{{'pipeline.sync_result'|translate}}</aui-table-header-cell>
+        <aui-table-cell *auiTableCellDef="let item">
+          <div>
+            <span
+              class="color"
+              [ngSwitch]="item.status"
+            >
+              <span
+                class="color--success"
+                *ngSwitchCase="'Success'"
+              >
+                <aui-icon icon="check_circle_s"></aui-icon>
+                {{'pipeline.template_sync_result_succ'|translate}}
+              </span>
+              <span
+                class="color--success"
+                *ngSwitchCase="'Deleted'"
+              >
+                <aui-icon icon="check_circle_s"></aui-icon>
+                {{'pipeline.template_sync_result_succ'|translate}}
+              </span>
+              <span
+                class="color--skip"
+                *ngSwitchCase="'Skip'"
+              >
+                <aui-icon icon="basic:minus_circle_s"></aui-icon>
+                {{'pipeline.template_sync_result_skip'|translate}}
+              </span>
+              <span
+                class="color--failure"
+                *ngSwitchCase="'Failure'"
+              >
+                <aui-icon icon="basic:close_circle_s"></aui-icon>
+                {{'pipeline.template_sync_result_fail'|translate}}
+              </span>
+            </span>
+          </div>
+        </aui-table-cell>
+      </ng-container>
+      <ng-container auiTableColumnDef="name">
+        <aui-table-header-cell *auiTableHeaderCellDef>{{'pipeline.template_name'|translate}}</aui-table-header-cell>
+        <aui-table-cell *auiTableCellDef="let item">
+          <div
+            class="template-name"
+            title="{{item.name}}"
+          >
+            {{item.name}}
+          </div>
+        </aui-table-cell>
+      </ng-container>
+      <ng-container auiTableColumnDef="type">
+        <aui-table-header-cell *auiTableHeaderCellDef>{{'pipeline.template_type'|translate}}</aui-table-header-cell>
+        <aui-table-cell *auiTableCellDef="let item">
+          <div>{{item.type}}</div>
+        </aui-table-cell>
+      </ng-container>
+      <ng-container auiTableColumnDef="version">
+        <aui-table-header-cell *auiTableHeaderCellDef>
+          {{'pipeline.template_version_change'|translate}}
+        </aui-table-header-cell>
+        <aui-table-cell *auiTableCellDef="let item">
+          <div>
+            <div
+              class="color--success"
+              *ngIf="item.previousVersion && item.status === 'Success'"
+            >
+              {{item.previousVersion}} --> {{item.version}}
+            </div>
+            <div
+              class="color--success"
+              *ngIf="!item.previousVersion  && item.status === 'Success'"
+            >
+              {{'pipeline.template_new'|translate}}
+            </div>
+            <div
+              class="color--failure"
+              *ngIf="item.status === 'Deleted'"
+            >
+              {{'pipeline.template_deleted'|translate}}
+            </div>
+            <div *ngIf="item.status !== 'Success' && item.status !== 'Deleted'">{{item.version}}</div>
+          </div>
+        </aui-table-cell>
+      </ng-container>
+      <ng-container auiTableColumnDef="action">
+        <aui-table-header-cell *auiTableHeaderCellDef></aui-table-header-cell>
+        <aui-table-cell *auiTableCellDef="let item">
+          <div *ngIf="item.status==='Failure'">
+            <button
+              aui-button="text"
+              size="small"
+              [auiTooltip]="item.message"
+            >
+              {{'detail'|translate}}
+            </button>
+          </div>
+        </aui-table-cell>
+      </ng-container>
+    </aui-table>
+    <div
+      class="no-data"
+      *ngIf="!conditions?.length"
+    >
+      <span>
+        {{'pipeline.sync_result_no_data'|translate}}
+      </span>
+    </div>
+  </div>
+</aui-dialog-content>

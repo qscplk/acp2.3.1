@@ -1,0 +1,116 @@
+.chart-content {
+  display: flex;
+  flex-direction: row;
+  .status-summary {
+    flex: 1;
+    padding-right: 24px;
+    border-right: solid 1px #ededed;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    alo-quality-gate-pie {
+      flex-shrink: 0;
+      flex-grow: 0;
+      margin-right: 20px;
+    }
+    .legends {
+      flex: 1;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: row;
+      .legend {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        .title {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: flex-start;
+          em {
+            display: block;
+            width: 10px;
+            height: 10px;
+            flex-shrink: 0;
+            flex-grow: 0;
+            border-radius: 50%;
+            margin-right: 8px;
+          }
+          span {
+            display: block;
+            flex: 1;
+            font-size: 24px;
+          }
+        }
+        .description {
+          white-space: nowrap;
+          font-size: 12px;
+          color: #999;
+          margin-left: 18px;
+        }
+      }
+    }
+  }
+  .status-by-types {
+    flex: 1;
+    padding-left: 24px;
+    > div {
+      display: flex;
+      flex-direction: row;
+      & + div {
+        margin-top: 16px;
+      }
+      label {
+        white-space: nowrap;
+        color: #999;
+        width: 90px;
+        aui-icon {
+          margin-right: 4px;
+        }
+        flex-shrink: 0;
+        flex-grow: 0;
+      }
+      ul {
+        flex: 1;
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        max-width: 480px;
+        li {
+          flex: 1;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: flex-start;
+          alo-code-quality-icon {
+            margin-right: 4px;
+          }
+          span {
+            display: block;
+            flex: 1;
+          }
+        }
+      }
+    }
+  }
+
+  &.sketch {
+    .title {
+      span {
+        background-color: #f2f2f2;
+        border-radius: 2px;
+        text-indent: -9999px;
+        overflow: hidden;
+        height: 12px;
+        margin: 6px 12px 6px 0px;
+      }
+    }
+  }
+}

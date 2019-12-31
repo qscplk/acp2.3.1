@@ -1,0 +1,43 @@
+.alo-tag-icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  border-width: 1px;
+  border-style: solid;
+  vertical-align: middle;
+
+  &--docker {
+    color: #039bc6;
+    border-color: #039bc6;
+  }
+
+  &--dockerhub {
+    color: #0f4f72;
+    border-color: #0f4f72;
+  }
+
+  &--harbor {
+    color: #59ab2e;
+    border-color: #696566;
+  }
+
+  &--small {
+    margin-right: 4px;
+    width: 16px;
+    height: 16px;
+    ::ng-deep {
+      .aui-icon {
+        width: 10px;
+        height: 10px;
+      }
+    }
+  }
+
+  &--large {
+    margin-right: 8px;
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+  }
+}

@@ -1,0 +1,58 @@
+<div class="logs-container">
+  <div
+    class="diagram"
+    *ngIf="!fullLog && history?.jenkins?.stages?.length"
+  >
+    <acl-pipeline-status-diagram
+      *ngIf="history?.jenkins?.stages?.length"
+      [stages]="history.jenkins.stages"
+      [selected]="selectedStage"
+      (selectedChange)="selectedChange($event)"
+    >
+    </acl-pipeline-status-diagram>
+  </div>
+  <div class="action">
+    <span>
+      <span *ngIf="!fullLog && selectedStage">
+        {{selectedStage?.name}} ({{selectedStage?.durationInMillis | aloDuration}})
+      </span>
+    </span>
+    <button
+      aui-button="text"
+      [disabled]="history | pure:disableFullLogSwitch"
+      (click)="fullLog = !fullLog"
+    >
+      {{(fullLog?'pipeline.view_stage_log':'pipeline.view_full_log')|translate}}
+    </button>
+  </div>
+  <div
+    class="logs-content"
+    *ngIf="!fullLog"
+  >
+    <div
+      class="step"
+      *ngFor="let step of steps; trackBy: trackById"
+    >
+      <alo-pipeline-history-step
+        [project]="project"
+        [historyName]="history?.name"
+        [stageId]="selectedStage?.id"
+        [step]="step"
+        [permissions]="permissions"
+        (stageStatusChanged)="onStageStatusChanged()"
+      ></alo-pipeline-history-step>
+    </div>
+  </div>
+  <div *ngIf="fullLog || !history?.jenkins?.stages?.length">
+    <ng-container *aloAsyncData="let loading;
+      handler: fetchLogs;
+      pullIn: more ? 2000 : 0">
+      <alo-log-view
+        [logs]="text"
+        [paginated]="false"
+        [pullEnabled]="true"
+        [pullToggleEnabled]="false"
+      ></alo-log-view>
+    </ng-container>
+  </div>
+</div>

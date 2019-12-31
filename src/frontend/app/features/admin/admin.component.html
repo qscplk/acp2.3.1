@@ -1,0 +1,28 @@
+<aui-page>
+  <ng-container *auiPageHeader>
+    <alo-logo></alo-logo>
+    <alo-global-actions></alo-global-actions>
+  </ng-container>
+  <div *auiPageSider>
+    <aui-platform-nav
+      [activatedKey]="activated$ | async | pure: getActivatedKey"
+      [items]="configs$ | async | pure:filterEnabled | async"
+      [hideMainPanelToggle]="true"
+      [theme]="themeService.navTheme$ | async"
+      (activatedItemChange)="handleActivatedNavItemChange($event)"
+    ></aui-platform-nav>
+  </div>
+  <div *auiPageToolbar>
+    <ng-container
+      *cdkPortalOutlet="(pageHeaderContentTemplate$ | async)"
+    ></ng-container>
+    <div class="global-loader" [class.loading]="showLoadingBar$ | async"></div>
+  </div>
+  <div
+    *auiPageContent
+    class="layout-page-content"
+    [@routerTransition]="getPage(outlet)"
+  >
+    <router-outlet #outlet="outlet"></router-outlet>
+  </div>
+</aui-page>

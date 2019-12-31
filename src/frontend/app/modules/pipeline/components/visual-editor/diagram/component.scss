@@ -1,0 +1,328 @@
+@import 'var';
+
+:host {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.diagram-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url(assets/diagram_bg.png);
+  background-size: 10px 10px;
+  overflow: hidden;
+  cursor: move;
+}
+
+.diagram {
+  position: absolute;
+  transform-origin: top left;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  user-select: none;
+  pointer-events: none;
+  &.with-transition {
+    transition: transform 0.3s;
+    user-select: inherit;
+  }
+
+  &__svg,
+  &__dom {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+  }
+
+  &__svg {
+    overflow: visible;
+    line,
+    path {
+      stroke-width: 2;
+      fill: none;
+    }
+  }
+
+  &__dom {
+    * {
+      pointer-events: initial;
+    }
+  }
+}
+
+.navigator {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  &__action-group {
+    width: 24px;
+    background-color: #fff;
+    color: #979797;
+    box-shadow: 0 2px 8px 0px rgba(0, 0, 0, 0.16);
+    + * {
+      margin-top: 4px;
+    }
+  }
+
+  &__action {
+    height: 24px;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    &:hover {
+      background-color: #e6f1ff;
+      color: $color-primary;
+      cursor: pointer;
+    }
+    + * {
+      position: relative;
+      &::before {
+        content: '';
+        height: 1px;
+        position: absolute;
+        top: -0.5px;
+        left: 4px;
+        width: 16px;
+        background-color: #ededed;
+        border-radius: 0.5px;
+      }
+    }
+  }
+}
+
+.navigator-status {
+  position: absolute;
+  height: 24px;
+  background-color: #fff;
+  color: #979797;
+  box-shadow: 0 2px 8px 0px rgba(0, 0, 0, 0.16);
+  bottom: 20px;
+  left: 20px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+}
+
+.pipeline-settings {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  > aui-icon {
+    font-size: 16px;
+    margin-right: 4px;
+    color: #e54545;
+  }
+  > div {
+    padding: 2px 4px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0);
+    border-radius: 2px;
+    cursor: pointer;
+    aui-icon {
+      margin-right: 4px;
+      font-size: 16px;
+    }
+  }
+
+  &.selected,
+  &:hover {
+    > div {
+      background-color: #e6f1ff;
+      color: $color-primary;
+    }
+  }
+}
+
+// TODO: refactor later
+.endpoint,
+.group-placeholder,
+.stage-placeholder,
+.node,
+.group {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  box-sizing: content-box;
+  font-size: 12px;
+}
+
+.group-placeholder,
+.stage-placeholder,
+.node,
+.group {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  box-sizing: content-box;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.endpoint {
+  display: block;
+  width: 12px;
+  height: 12px;
+  background-color: #cccccc;
+  border-radius: 50%;
+  line-height: 18px;
+}
+
+.group-placeholder {
+  display: block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border-style: dashed;
+  border-color: #cccccc;
+  border-width: 1px;
+  line-height: 16px;
+  padding: 0;
+}
+
+.group {
+  transform: translate(-50%, -44.5px);
+  white-space: nowrap;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  .group-icon {
+    display: block;
+    background-color: #999;
+    mask-image: url(assets/icons/pipeline/parallel_stage.svg);
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover,
+  &.selected {
+    color: $color-primary;
+
+    .group-icon {
+      background-color: $color-primary;
+    }
+  }
+  &.has-error {
+    color: #e54545;
+
+    .group-icon {
+      background-color: #e54545;
+    }
+  }
+  > span {
+    margin-left: 8px;
+  }
+}
+
+.node {
+  transform: translate(-50%, -15px);
+  border-width: 1px;
+  border-style: solid;
+  border-color: #ededed;
+  width: 160px;
+  font-size: 12px;
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  &:hover {
+    border-color: $color-primary;
+  }
+  &.has-error {
+    border-color: $color-error;
+  }
+  &.selected {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 1px #b3d4ff;
+  }
+  &__header {
+    height: 25px;
+    font-weight: 500;
+    padding: 0px 8px;
+    box-sizing: border-box;
+    color: #333;
+    display: flex;
+    align-items: center;
+    border-bottom: solid 1px #ededed;
+    background-color: #f4f4f4;
+    min-width: 0;
+    &.has-error {
+      color: $color-error;
+    }
+    & > span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  &__fields {
+    list-style: none;
+    margin: 0;
+    padding: 4px 8px;
+    color: #666666;
+    > li {
+      height: 20px;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      &.has-error {
+        color: $color-error;
+      }
+
+      &.no-parameters {
+        color: #999;
+      }
+    }
+  }
+}
+
+.stage-placeholder {
+  height: 30px;
+  width: 160px;
+  border-radius: 15px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 8px;
+  & > aui-icon {
+    margin-right: 4px;
+  }
+}
+
+.stage-placeholder,
+.group-placeholder {
+  border-style: dashed;
+  border-color: #cccccc;
+  border-width: 1px;
+  background-color: #fff;
+  color: #979797;
+
+  &:hover {
+    color: $color-primary;
+    border-color: $color-primary;
+  }
+
+  &.selected {
+    color: $color-primary;
+    border-style: solid;
+    border-color: $color-primary;
+    box-shadow: 0 0 0 1px #b3d4ff;
+  }
+}

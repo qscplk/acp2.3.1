@@ -1,0 +1,90 @@
+<aui-table
+  auiSort
+  [dataSource]="data"
+  [active]="params.sort"
+  [direction]="params.direction"
+  (sortChange)="onSort($event)"
+  [trackBy]="tracker"
+>
+  <ng-container auiTableColumnDef="name">
+    <aui-table-header-cell
+      *auiTableHeaderCellDef
+      aui-sort-header
+    >
+      {{ 'name' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      <a [routerLink]="['./detail',item.objectMeta.name]">
+        <span>{{ item.objectMeta.name }}</span>
+      </a>
+      <div
+        *ngIf="item.displayName"
+        class="display-name"
+      >{{ item.displayName }}</div>
+    </aui-table-cell>
+  </ng-container>
+  <ng-container auiTableColumnDef="number">
+    <aui-table-header-cell *auiTableHeaderCellDef>
+      {{ 'number' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      <div *ngIf="item.keys && item.keys.length; else zeroNum">
+        <a
+          [auiTooltip]="keys"
+          auiTooltipType="info"
+          [routerLink]=""
+        >{{ (item.keys || []).length}}</a>
+      </div>
+      <ng-template #zeroNum>
+        0
+      </ng-template>
+      <ng-template #keys>
+        <div class="keys-container-wrapper">
+          <span
+            class="keys-container"
+            *ngFor="let key of item.keys"
+          >
+            {{ key }}
+          </span>
+        </div>
+      </ng-template>
+    </aui-table-cell>
+  </ng-container>
+  <ng-container auiTableColumnDef="creationTimestamp">
+    <aui-table-header-cell
+      *auiTableHeaderCellDef
+      aui-sort-header
+      start="asc"
+    >
+      {{ 'create_at' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      {{ item.objectMeta.creationTimestamp | aclRelativeTime }}
+    </aui-table-cell>
+  </ng-container>
+  <ng-container auiTableColumnDef="actions">
+    <aui-table-header-cell *auiTableHeaderCellDef></aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      <alo-menu-trigger
+        [menu]="actionsMenu"
+        [context]="{item: item}"
+      ></alo-menu-trigger>
+    </aui-table-cell>
+  </ng-container>
+  <aui-table-header-row *auiTableHeaderRowDef="columns"></aui-table-header-row>
+  <aui-table-row *auiTableRowDef="let row; columns: columns;"></aui-table-row>
+</aui-table>
+
+<aui-menu #actionsMenu>
+  <ng-template
+    auiMenuContent
+    let-item="item"
+  >
+    <acl-disabled-container [isAllowed]="permissions?.update">
+      <aui-menu-item (click)="update(item)">{{ 'update' | translate }}</aui-menu-item>
+    </acl-disabled-container>
+    <acl-disabled-container [isAllowed]="permissions?.delete">
+      <aui-menu-item (click)="delete(item)">{{ 'delete' | translate }}</aui-menu-item>
+    </acl-disabled-container>
+  </ng-template>
+</aui-menu>

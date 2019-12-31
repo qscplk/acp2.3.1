@@ -1,0 +1,36 @@
+@import 'variables';
+
+:host {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  ::ng-deep {
+    .aui-card {
+      margin-bottom: 75px;
+      .aui-card__header {
+        display: flex;
+      }
+      alo-k8s-resource-icon {
+        margin-right: 8px;
+      }
+    }
+  }
+
+  .no-data {
+    display: flex;
+    height: 50px;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    background-color: white;
+  }
+
+  .mutate-buttons {
+    justify-content: space-between;
+    .yaml-preview {
+      width: 140px;
+      margin-left: 200px;
+    }
+  }
+}

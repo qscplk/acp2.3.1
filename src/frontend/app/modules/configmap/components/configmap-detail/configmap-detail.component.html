@@ -1,0 +1,21 @@
+<aui-card>
+  <div auiCardHeader class="base-header">
+    <div class="title">
+      <span>{{ params?.name || '-' }}</span>
+    </div>
+  </div>
+  <div class="alo-detail">
+    <div class="alo-detail__row">
+      <div class="alo-detail__field">
+        <label>{{ 'display_name' | translate }}</label>
+        <span>{{ data?.displayName || '-' }}</span>
+      </div>
+      <div class="alo-detail__field">
+        <label>{{ 'create_at' | translate }}</label>
+        <span>{{ data?.objectMeta?.creationTimestamp | aclStandardTime }}</span>
+      </div>
+    </div>
+    <div class="alo-detail__group-header">{{ 'data' | translate }}</div>
+    <alo-configmap-data-viewer [data]="data?.data"></alo-configmap-data-viewer>
+  </div>
+</aui-card>

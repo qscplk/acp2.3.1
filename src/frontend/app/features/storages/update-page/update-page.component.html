@@ -1,0 +1,29 @@
+<ng-container *aloPageHeaderContent>
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['../../']">
+        {{ 'storage.list' | translate }}
+      </a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <span>
+        {{ 'update' | translate }}
+      </span>
+    </ng-template>
+  </alo-breadcrumb>
+  <!-- yaml互转功能隐藏 -->
+  <!-- <div fxFlex></div>
+  <aui-radio-group
+    [isPlain]="false"
+    (ngModelChange)="storageForm.modeChange($event)"
+    [(ngModel)]="displayModel"
+  >
+    <aui-radio-button value="form">{{'form' | translate}}</aui-radio-button>
+    <aui-radio-button value="yaml">YAML</aui-radio-button>
+  </aui-radio-group> -->
+</ng-container>
+
+<alo-storage-update
+  #storageForm
+  [displayModel]="displayModel"
+></alo-storage-update>

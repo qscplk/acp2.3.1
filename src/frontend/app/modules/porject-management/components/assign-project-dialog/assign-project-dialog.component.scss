@@ -1,0 +1,17 @@
+@import 'var';
+
+:host {
+  .disabled-link {
+    cursor: not-allowed;
+    color: $color-info;
+  }
+  ::ng-deep {
+    form {
+      .aui-form-item {
+        &__addon-wrapper {
+          width: 150px;
+        }
+      }
+    }
+  }
+}

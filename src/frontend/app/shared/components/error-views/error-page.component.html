@@ -1,0 +1,10 @@
+<div class="alo-error-page">
+  <img src="icons/error.svg" alt="devops" />
+  <div class="alo-error-page__title">
+    <span>{{ 'http_status' | translate }}</span>
+    <span>({{ error?.status || 'Unknown' }})</span>
+  </div>
+  <div class="alo-error-page__description">
+    {{ 'http_status_error_description' | translate }}
+  </div>
+</div>

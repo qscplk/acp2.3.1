@@ -1,0 +1,11 @@
+<div class="params-container">
+  <div class="params-input" *ngFor="let param of params; let i = index; trackBy: trackByFn">
+    <input type="text" aui-input [(ngModel)]="param.value" (input)="onValueChange()">
+    <aui-icon icon="basic:minus_circle" (click)="deleteRow(i)"></aui-icon>
+  </div>
+  <button aui-button="primary" class="add-button" size="small" [plain]="true" (click)="add()">
+    <aui-icon icon="basic:add_circle">
+    </aui-icon>
+    {{ 'add' | translate }}
+  </button>
+</div>

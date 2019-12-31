@@ -1,0 +1,178 @@
+<aui-table
+  auiSort
+  [dataSource]="pipelines"
+  [active]="sort.active"
+  [direction]="sort.direction"
+  (sortChange)="sortChanged($event)"
+  [trackBy]="pipelineIdentity"
+>
+  <ng-container auiTableColumnDef="name">
+    <aui-table-header-cell
+      aui-sort-header="name"
+      start="asc"
+      *auiTableHeaderCellDef
+    >
+      {{ 'name' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      <div class="pipeline-name-container">
+        <img
+          *ngIf="getMethod(item)"
+          src="icons/pipeline/{{ getMethod(item) }}.svg"
+          alt="devops"
+        >
+        <div class="pipeline-name-container_content">
+          <a
+            [routerLink]="['/workspace',item.namespace,'pipelines', category, item.name]"
+            [title]="item.name"
+            class="pipeline-name-container_content_name"
+          >
+            <span
+              title="{{item.name}}"
+              class="pipeline-name-container_content_name_string"
+            >
+              {{ item.name }}
+            </span>
+            <span
+              *ngIf="item?.status?.phase === 'Error'"
+              class="error-hint-icon"
+            >
+              <aui-icon
+                icon="exclamation_circle_s"
+                [auiTooltip]="errors"
+              ></aui-icon>
+            </span>
+            <ng-template #errors>
+              <div>{{item?.status.message}}</div>
+              <ul>
+                <li *ngFor="let condition of item?.status?.conditions">{{condition?.message}}</li>
+              </ul>
+            </ng-template>
+          </a>
+          <div *ngIf="item.displayName">{{ item.displayName }}</div>
+        </div>
+      </div>
+    </aui-table-cell>
+  </ng-container>
+  <ng-container auiTableColumnDef="history">
+    <aui-table-header-cell
+      aui-sort-header="pipelineCreationTimestamp"
+      start="desc"
+      *auiTableHeaderCellDef
+    >
+      {{ 'history' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      <span *ngIf="!item.histories.length">-</span>
+      <alo-history-preview
+        *ngIf="item.histories.length"
+        [histories]="item.histories"
+        [project]="item.namespace"
+        [pipelineName]="item.name"
+        [category]="category"
+        [viewLogsPermission]="permissions?.pipelineLogs?.get"
+        [type]="item.kind"
+      ></alo-history-preview>
+    </aui-table-cell>
+  </ng-container>
+  <!--<ng-container auiTableColumnDef="belongs_application">-->
+    <!--<aui-table-header-cell *auiTableHeaderCellDef>-->
+      <!--{{ 'pipeline.belongs_application' | translate }}-->
+    <!--</aui-table-header-cell>-->
+    <!--<aui-table-cell *auiTableCellDef="let item">-->
+      <!--<span *ngIf="!item.application">-</span>-->
+      <!--<a-->
+        <!--*ngIf="item.application"-->
+        <!--[routerLink]="['/workspace',item.namespace,'applications',item.application]"-->
+      <!--&gt;-->
+        <!--{{ item.application }}-->
+      <!--</a>-->
+    <!--</aui-table-cell>-->
+  <!--</ng-container>-->
+  <ng-container auiTableColumnDef="triggers">
+    <aui-table-header-cell *auiTableHeaderCellDef>{{ 'pipeline_trigger' | translate }}</aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      <ng-container *ngIf="item.triggers | pure:hasEnabledTriggers; else noTriggers">
+        <ng-container *ngFor="let trigger of item.triggers">
+          <aui-icon
+            style="color: #333"
+            *ngIf="trigger.enabled"
+            margin="right"
+            [icon]="mapTriggerIcon(trigger.type)"
+            [auiTooltip]="getTriggerHint(trigger)"
+          ></aui-icon>
+        </ng-container>
+      </ng-container>
+      <ng-template #noTriggers>
+        <span>-</span>
+      </ng-template>
+    </aui-table-cell>
+  </ng-container>
+  <ng-container auiTableColumnDef="actions">
+    <aui-table-header-cell *auiTableHeaderCellDef></aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      <alo-menu-trigger
+        [menu]="actionsMenu"
+        [context]="{item: item}"
+      ></alo-menu-trigger>
+    </aui-table-cell>
+  </ng-container>
+  <aui-table-header-row *auiTableHeaderRowDef="columns"></aui-table-header-row>
+  <aui-table-row *auiTableRowDef="let row; columns: columns;"></aui-table-row>
+</aui-table>
+
+<aui-menu #actionsMenu>
+  <ng-template
+    auiMenuContent
+    let-item="item"
+  >
+    <acl-disabled-container
+      [isAllowed]="permissions?.pipelines?.create"
+      [isDisabled]="item?.status.phase.toLowerCase() !== 'ready'"
+      [tooltip]="'please_wait' | translate"
+      tooltipPosition="start"
+      *ngIf="getMethod(item) !== 'multi-branch'"
+    >
+      <aui-menu-item (click)="start(item)">
+        {{ 'start' | translate }}
+      </aui-menu-item>
+    </acl-disabled-container>
+    <acl-disabled-container
+      [isAllowed]="permissions?.scan?.create"
+      [isDisabled]="item?.status.phase.toLowerCase() !== 'ready'"
+      [tooltip]="'please_wait' | translate"
+      tooltipPosition="start"
+      *ngIf="getMethod(item) === 'multi-branch'"
+    >
+      <aui-menu-item (click)="scan(item)">
+        {{ 'pipeline.scan' | translate }}
+      </aui-menu-item>
+    </acl-disabled-container>
+    <acl-disabled-container
+      [isAllowed]="permissions?.pipelineConfigs?.update"
+      tooltipPosition="start"
+    >
+      <aui-menu-item (click)="update(item)">{{ 'update' | translate }}</aui-menu-item>
+    </acl-disabled-container>
+    <acl-disabled-container
+      [isAllowed]="permissions?.pipelineConfigs?.create"
+      tooltipPosition="start"
+    >
+      <aui-menu-item
+        (click)="copy(item)"
+      >{{ 'copy' | translate }}</aui-menu-item>
+    </acl-disabled-container>
+    <acl-disabled-container
+      [isAllowed]="permissions?.pipelineConfigs?.delete"
+      tooltipPosition="start"
+    >
+      <aui-menu-item
+        type="danger"
+        [divide]="true"
+        (click)="delete(item)"
+      >
+        {{ 'delete' | translate }}
+      </aui-menu-item>
+    </acl-disabled-container>
+  </ng-template>
+</aui-menu>

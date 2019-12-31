@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: alaudak8s
+  namespace: alauda-system
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJpbmRleC5hbGF1ZGEuY24iOnsidXNlcm5hbWUiOiJhbGF1ZGFrOHMvcHVzaDIiLCJwYXNzd29yZCI6IjEyMzQ1NiIsImVtYWlsIjoiZGV2c0BhbGF1ZGEuaW8iLCJhdXRoIjoiWVd4aGRXUmhhemh6TDNCMWMyZ3lPakV5TXpRMU5nPT0ifX19
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: stability-monitor
+  namespace: alauda-system
+  labels:
+    app: stability-monitor
+    alauda.test: 'true'
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: stability-monitor
+    spec:
+      containers:
+        - name: stability-monitor
+          image: index.alauda.cn/alaudak8s/diablo-e2e:v1.0.10
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              cpu: 1500m
+              memory: 1536Mi
+          env:
+            - name: CURL_CMD
+              value: 'false'
+            - name: KEY_RESULT
+              value: '200'
+            - name: CASE_TYPE
+              value: monitor
+            - name: TEST_TIME
+              value: '259200'
+            - name: DING_DING_URL
+              value: https://oapi.dingtalk.com/robot/send
+            - name: DING_DING_ACCESS_TOKEN
+              value: 0af8c3916019275772160520b1d95abcc1740fa750ede45758148b564a5d1647
+          volumeMounts:
+            - mountPath: /dev/shm
+              name: shm
+              readOnly: false
+            - mountPath: /home/jenkins/.kube/config
+              name: config
+              readOnly: false
+            - mountPath: /go/src/alauda.io/diablo/e2e-reports
+              name: e2e-reports
+              readOnly: false
+      volumes:
+        - name: shm
+          hostPath:
+            path: /dev/shm
+        - name: config
+          hostPath:
+            path: /etc/kubernetes/admin.conf
+        - name: e2e-reports
+          hostPath:
+            path: /root/alauda-uireport/stability/monitor/e2e-reports
+
+      imagePullSecrets:
+        - name: alaudak8s
+      nodeSelector:
+        node-role.kubernetes.io/master: ''

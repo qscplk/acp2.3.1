@@ -1,0 +1,27 @@
+<div class="secret-validating-dialog">
+  <ng-container *ngIf="!validating">
+    <div class="tips">
+      {{ 'code.secret_validate_description' | translate }}
+    </div>
+    <div class="actions">
+      <button aui-button="primary" size="mini" (click)="validate()">
+        {{ 'code.secret_validate' | translate }}
+      </button>
+      <button aui-button size="mini" auiDialogClose>
+        {{ 'cancel' | translate }}
+      </button>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="validating">
+    <aui-icon icon="spinner" size="20px"></aui-icon>
+    <div>
+      {{ 'code.secret_validating' | translate }}
+    </div>
+    <div class="description">
+      <span>{{ 'code.secret_validating_cancel' | translate }}</span>
+      <button aui-button="text" auiDialogClose>
+        {{ 'cancel' | translate }}
+      </button>
+    </div>
+  </ng-container>
+</div>

@@ -1,0 +1,24 @@
+:host {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  .log-container {
+    display: flex;
+    margin-bottom: 15px;
+    .log-setting {
+      display: flex;
+      margin-right: 15px;
+      > label {
+        line-height: 32px;
+        margin-right: 5px;
+      }
+    }
+  }
+  ::ng-deep {
+    .alo-log-view {
+      height: calc(100% - 50px);
+    }
+  }
+}

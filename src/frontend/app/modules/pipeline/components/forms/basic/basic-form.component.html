@@ -1,0 +1,146 @@
+<div [ngSwitch]="type">
+  <aui-form-item *ngSwitchCase="'create'">
+    <label auiFormItemLabel>{{ 'name' | translate }}</label>
+    <input
+      auiFormItemControl
+      aui-input
+      [formControl]="form.controls.name"
+      [placeholder]="nameRule.placeholder | translate"
+      required
+    />
+    <div auiFormItemError *ngIf="form?.controls?.name?.errors?.pattern">
+      {{ nameRule.patternError | translate }}
+    </div>
+    <div auiFormItemError *ngIf="form?.controls?.name?.errors?.required">
+      {{ nameRule.requiredError | translate }}
+    </div>
+    <div auiFormItemError *ngIf="form?.controls?.name?.errors?.maxlength">
+      {{ nameRule.maxLengthError | translate }}
+    </div>
+  </aui-form-item>
+  <div *ngSwitchCase="'update'" class="aui-form-item aui-form-item--right">
+    <div
+      class="aui-form-item__label-wrapper aui-form-item__label-wrapper--right"
+    >
+      <label>{{ 'name' | translate }} :</label>
+    </div>
+    <div class="aui-form-item__container">
+      <div class="aui-form-item__content">{{ values?.name }}</div>
+    </div>
+  </div>
+  <aui-form-item>
+    <label auiFormItemLabel>{{ 'display_name' | translate }}</label>
+    <input
+      auiFormItemControl
+      aui-input
+      [formControl]="form.controls.display_name"
+    />
+    <div
+      auiFormItemError
+      *ngIf="form?.controls?.display_name?.errors?.maxlength"
+    >
+      {{ 'over_max_length' | translate }}
+    </div>
+  </aui-form-item>
+  <aui-form-item *ngSwitchCase="'create'">
+    <label auiFormItemLabel>{{ 'pipeline.instance' | translate }}</label>
+    <aui-select
+      auiFormItemControl
+      [loading]="!jenkins"
+      [formControl]="form.controls.jenkins_instance"
+      required
+    >
+      <aui-option *ngFor="let instance of jenkins" [value]="instance.name">
+        {{ instance.name }}
+      </aui-option>
+    </aui-select>
+    <div
+      auiFormItemError
+      *ngIf="form?.controls?.jenkins_instance?.errors?.required"
+    >
+      {{ 'required' | translate }}
+    </div>
+  </aui-form-item>
+  <div *ngSwitchCase="'update'" class="aui-form-item aui-form-item--right">
+    <div
+      class="aui-form-item__label-wrapper aui-form-item__label-wrapper--right"
+    >
+      <label>{{ 'pipeline.instance' | translate }} :</label>
+    </div>
+    <div class="aui-form-item__container">
+      <div class="aui-form-item__content">{{ values?.jenkins_instance }}</div>
+    </div>
+  </div>
+  <!--<aui-form-item>-->
+  <!--<label auiFormItemLabel>{{ 'pipeline.belong_app' | translate }}</label>-->
+  <!--<aui-select-->
+  <!--auiFormItemControl-->
+  <!--[loading]="!apps"-->
+  <!--[formControl]="form.controls.app"-->
+  <!--&gt;-->
+  <!--<aui-option *ngFor="let app of apps" [value]="app.name">-->
+  <!--{{ app.name }}-->
+  <!--</aui-option>-->
+  <!--</aui-select>-->
+  <!--</aui-form-item>-->
+  <ng-container *ngIf="method === 'script'">
+    <aui-form-item *ngSwitchCase="'create'">
+      <label auiFormItemLabel>{{ 'pipeline.from_source' | translate }}</label>
+      <aui-radio-group [formControl]="form.controls.source">
+        <aui-radio-button
+          *ngFor="let type of jenkinsfielSourceType"
+          [value]="type.value"
+        >
+          {{ type.name | translate }}
+        </aui-radio-button>
+      </aui-radio-group>
+    </aui-form-item>
+    <div *ngSwitchCase="'update'" class="aui-form-item aui-form-item--right">
+      <div
+        class="aui-form-item__label-wrapper aui-form-item__label-wrapper--right"
+      >
+        <label>{{ 'pipeline.from_source' | translate }} :</label>
+      </div>
+      <div class="aui-form-item__container">
+        <div class="aui-form-item__content" *ngIf="values.source">
+          {{
+            (values?.source === 'repo'
+              ? 'pipeline.from_repo'
+              : 'pipeline.from_script'
+            ) | translate
+          }}
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <aui-form-item *ngIf="method === 'script' || method === 'template'">
+    <label auiFormItemLabel>{{ 'pipeline.run_policy' | translate }}</label>
+    <aui-radio-group [formControl]="form.controls.run_policy">
+      <aui-radio-button
+        *ngFor="let type of jenkinsRunPolicy"
+        [value]="type.value"
+      >
+        {{ type.name | translate }}
+      </aui-radio-button>
+    </aui-radio-group>
+    <div auiFormAddOn>
+      <aui-icon
+        class="policy_question"
+        icon="basic:question"
+        auiTooltipPosition="top"
+        [auiTooltip]="template"
+        [auiTooltipTrigger]="'hover'"
+      ></aui-icon>
+    </div>
+  </aui-form-item>
+</div>
+<ng-template #template>
+  <ul class="run-policy-description">
+    <li>
+      <span>{{ 'pipeline.run_policy_serial_help' | translate }}</span>
+    </li>
+    <li>
+      <span>{{ 'pipeline.run_policy_parallel_help' | translate }}</span>
+    </li>
+  </ul>
+</ng-template>

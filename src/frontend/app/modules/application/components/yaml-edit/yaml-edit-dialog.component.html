@@ -1,0 +1,71 @@
+<ng-container *ngIf="!updating && !updateError && !updatePartSuccess">
+  <aui-dialog-header>
+    <span *ngIf="!results || !results.length">
+      {{ 'yaml_update' | translate }}
+    </span>
+    <a
+      class="close"
+      href="javascript:void(0)"
+      (click)="cancel()"
+    >
+      <aui-icon icon="close"></aui-icon>
+    </a>
+  </aui-dialog-header>
+  <aui-dialog-content>
+    <aui-code-editor
+      [options]="editorOptions"
+      [originalValue]="orignalYaml"
+      [(ngModel)]="yaml"
+    >
+    </aui-code-editor>
+  </aui-dialog-content>
+  <aui-dialog-footer>
+    <button
+      aui-button="primary"
+      (click)="save()"
+    >
+      {{ 'update' | translate }}
+    </button>
+    <button
+      aui-button
+      (click)="cancel()"
+    >
+      {{ 'cancel' | translate }}
+    </button>
+  </aui-dialog-footer>
+</ng-container>
+
+<ng-container *ngIf="updating && !updateError && !updatePartSuccess">
+  <aui-dialog-content>
+    <div class="spinner-icon">
+      <aui-icon icon="spinner"></aui-icon>
+    </div>
+    <div class="spinner-tip">{{ 'updating' | translate }}</div>
+  </aui-dialog-content>
+</ng-container>
+
+<ng-container *ngIf="updateError">
+  <alo-application-resource-report
+    [title]="'application.application_name_update_fail' | translate:{name:data?.name}"
+
+    failOrSuccess="fail"
+    updateButton="again"
+    [reports]="reports"
+    (close)="cancel()"
+    (save)="save()"
+  >
+  </alo-application-resource-report>
+</ng-container>
+
+<ng-container *ngIf="updatePartSuccess">
+  <alo-application-resource-report
+    [title]="'application.application_name_update_part_success' | translate:{name:data?.name}"
+
+    failOrSuccess="success"
+    updateButton="continue"
+    [reports]="reports"
+    (close)="cancel()"
+    (save)="save()"
+  >
+  </alo-application-resource-report>
+</ng-container>

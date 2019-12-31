@@ -1,0 +1,41 @@
+.base-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: -7px 0px;
+
+  div:first-child {
+    display: flex;
+    align-items: center;
+    div:first-child {
+      width: 24px;
+      margin-right: 8px;
+      height: 24px;
+      img {
+        width: 100%;
+        height: 24px;
+      }
+    }
+  }
+}
+
+.delete-confirm-text {
+  font-size: 18px;
+}
+
+.mixed-margin-top {
+  // TODO: aui-card mixed with alo-card, remove when replaced all alo-card
+  ::ng-deep .aui-card {
+    margin-top: 20px;
+  }
+}
+
+.list-status {
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: solid 1px #eee;
+  color: #ccc;
+}

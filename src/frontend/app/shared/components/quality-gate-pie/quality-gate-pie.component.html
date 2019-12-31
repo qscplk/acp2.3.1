@@ -1,0 +1,55 @@
+<svg
+  [attr.width]="width"
+  [attr.height]="height"
+  [auiTooltip]="tooltip"
+  auiTooltipType="plain"
+  [auiTooltipDisabled]="!data || !data.length"
+  (mousemove)="onMouseMove($event)"
+>
+  <g [attr.transform]="transform">
+    <path
+      *ngFor="let segment of data | pure:pie; trackBy: identity"
+      [attr.d]="segment | pure:arc"
+      [attr.fill]="segment.data.status | pure: statusColor"
+      (mouseover)="hoverData(segment.data)"
+      (mouseout)="unhoverData(segment.data)"
+    />
+  </g>
+</svg>
+<ng-template #tooltip>
+  <div
+    class="aui-tooltip aui-tooltip--default"
+    [style.transform]="tooltipTransform$ | async"
+    [style.display]="hited ? 'flex' : 'none'"
+  >
+    <ng-container *ngIf="hited?.status === 'SKETCH' else hasData">
+      <span>
+        {{ 'no_data' | translate }}
+      </span>
+    </ng-container>
+    <ng-template #hasData>
+      <em [style.background-color]="hited?.status | pure:statusColor"></em>
+      <ng-container *ngIf="!!hited?.expand else normal">
+        <ng-container [ngSwitch]="hited?.status">
+          <ng-container *ngSwitchCase="'PASSED'">
+            <span>{{ 'pipeline.test_passed' | translate }}: {{ hited?.count }}</span>
+            <span>({{ 'fixed' | translate }}: {{ hited?.expand['fixed'] }})</span>
+          </ng-container>
+
+          <ng-container *ngSwitchCase="'FAILED'">
+            <span>{{ 'pipeline.test_failed' | translate }}: {{ hited?.count }}</span>
+            <span>({{ 'regression' | translate }}: {{ hited?.expand['regressions'] }})</span>
+          </ng-container>
+
+          <ng-container *ngSwitchCase="'SKIPPED'">
+            <span>{{ 'pipeline.test_skipped' | translate }}: {{ hited?.count }}</span>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </ng-template>
+    <ng-template #normal>
+      <span>{{ 'code_quality.quality_gate' | translate }}-{{ hited?.status | pure:status | translate }}:</span>
+      <span>{{ hited?.count / (data | pure:total) | percent:'1.0-2' }}</span>
+    </ng-template>
+  </div>
+</ng-template>

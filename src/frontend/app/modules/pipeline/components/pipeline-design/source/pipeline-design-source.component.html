@@ -1,0 +1,48 @@
+<aui-card>
+  <div
+    auiCardHeader
+    class="header"
+  >
+    {{'pipeline.from_repo'|translate}}
+  </div>
+  <div class="alo-detail">
+    <div class="alo-detail__row">
+      <div class="alo-detail__field">
+        <label>{{'pipeline.from_repo'|translate}}</label>
+        <span
+          *ngIf="display$ | async as display; else empty"
+          [title]="display.text"
+        >
+          <img
+            class="repo-icon"
+            [src]="'icons/tool-chain/list/' + display.icon + '.svg'"
+            alt="devops"
+          />
+          <span>{{ display.text }}</span>
+        </span>
+        <ng-template #empty>
+          <span>-</span>
+        </ng-template>
+      </div>
+      <div class="alo-detail__field" *ngIf="type !== 'multi-branch'; else multiBranch">
+        <label>{{'pipeline.branch'|translate}}</label>
+        <span>{{source?.branch || '-'}}</span>
+      </div>
+      <ng-template #multiBranch>
+        <div class="alo-detail__field">
+          <label>{{'pipeline.branch_filter'|translate}}</label>
+          <span title="{{source?.branch }}">{{source?.branch || '-'}}</span>
+        </div>
+      </ng-template>
+    </div>
+    <div class="alo-detail__row">
+      <div class="alo-detail__field">
+        <label>
+          {{'pipeline.jenkinsfile_path'|translate}}
+        </label>
+        <span>{{source?.path|| '-'}}</span>
+      </div>
+    </div>
+  </div>
+</aui-card>
+

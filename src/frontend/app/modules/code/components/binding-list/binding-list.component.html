@@ -1,0 +1,86 @@
+<aui-table
+  [dataSource]="data"
+  [trackBy]="bindingIdentity"
+>
+  <ng-container auiTableColumnDef="name">
+    <aui-table-header-cell
+      *auiTableHeaderCellDef
+    >
+      {{ 'name' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      <a *ngIf="!!itemRoute" [routerLink]="itemRoute(item)">
+        {{ item.name }}
+      </a>
+      <span *ngIf="!itemRoute">
+        {{ item.name }}
+      </span>
+      <aui-icon
+        *ngIf="item.status?.phase === 'WaitingToDelete'"
+        class="warning-icon"
+        icon="basic:trash_s"
+        [auiTooltip]="item.status?.message"
+      ></aui-icon>
+      <aui-icon
+        *ngIf="item.status?.phase === 'Error'"
+        class="warning-icon"
+        icon="exclamation_circle_s"
+        [auiTooltip]="item.status?.message"
+      ></aui-icon>
+    </aui-table-cell>
+  </ng-container>
+  <ng-container auiTableColumnDef="account">
+    <aui-table-header-cell
+      *auiTableHeaderCellDef
+    >
+      {{ 'code.account' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      <span>
+        {{ item.account }}
+      </span>
+    </aui-table-cell>
+  </ng-container>
+  <ng-container auiTableColumnDef="type">
+    <aui-table-header-cell
+      *auiTableHeaderCellDef
+    >
+      {{ 'code.repo_type' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      <span>
+        {{ item.type }}
+      </span>
+    </aui-table-cell>
+  </ng-container>
+  <ng-container auiTableColumnDef="project">
+    <aui-table-header-cell
+      *auiTableHeaderCellDef
+    >
+      {{ 'code.project' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      <span>
+        {{ item.namespace }}
+      </span>
+    </aui-table-cell>
+  </ng-container>
+  <ng-container auiTableColumnDef="bindingBy">
+    <aui-table-header-cell
+      *auiTableHeaderCellDef
+    >
+      {{ 'code.bind_by' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      <span>
+        {{ item.bindBy }}
+      </span>
+    </aui-table-cell>
+  </ng-container>
+  <aui-table-header-row
+    *auiTableHeaderRowDef="hideProject ? columnsWithoutProject : columns"
+  ></aui-table-header-row>
+  <aui-table-row
+    *auiTableRowDef="let row; columns: (hideProject ? columnsWithoutProject : columns);"
+  ></aui-table-row>
+</aui-table>

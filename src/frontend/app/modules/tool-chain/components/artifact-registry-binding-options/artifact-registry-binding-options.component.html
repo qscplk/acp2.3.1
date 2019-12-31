@@ -1,0 +1,58 @@
+<ng-container *ngIf="managers">
+  <div class="manager" *ngFor="let manager of managers">
+    <div class="manager-head">
+      <span class="manager-head--logo">
+        <img
+          class="type-icon"
+          alt="devops"
+          [src]="'icons/tool-chain/' + manager.type.toLowerCase() + '.svg'"
+        />
+      </span>
+      <span class="manager-head--name">
+        {{ manager.name }}
+      </span>
+      <span class="manager-head--hint" [auiTooltip]="nexusTipTemplate">
+        <aui-icon icon="basic:question"></aui-icon>
+      </span>
+      <aui-tag type="info" [round]="true" size="mini">
+        {{ snakeCase(manager.toolType) | translate }}
+      </aui-tag>
+      <aui-dropdown-button type="default" [plain]="true" [size]="'mini'">
+        <span (click)="addRegistry('create', manager)">
+          {{ 'tool_chain.create_registry' | translate }}
+        </span>
+        <aui-menu [size]="'mini'">
+          <aui-menu-item (click)="addRegistry('integrate', manager)">
+            {{ 'tool_chain.integrate_existed_registry' | translate }}
+          </aui-menu-item>
+        </aui-menu>
+      </aui-dropdown-button>
+    </div>
+    <div class="manager-body">
+      <alo-service-list
+        *ngIf="manager.registries && manager.registries.length"
+        [services]="manager.registries"
+        [showTag]="showTag"
+        (cardClick)="cardClick.emit($event)"
+      ></alo-service-list>
+    </div>
+    <div
+      class="no-registries"
+      *ngIf="!manager.registries || !manager.registries.length"
+    >
+      <ng-container
+        *ngTemplateOutlet="
+          nexusTipTemplate;
+          context: {
+            manager: manager
+          }
+        "
+      ></ng-container>
+    </div>
+  </div>
+</ng-container>
+<ng-template #nexusTipTemplate let-manager="manager">
+  <div>
+    {{ 'tool_chain.nexus_dialog_tip' | translate }}
+  </div>
+</ng-template>

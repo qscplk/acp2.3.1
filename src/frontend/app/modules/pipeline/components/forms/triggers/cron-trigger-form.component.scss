@@ -1,0 +1,106 @@
+@import 'var';
+
+.card {
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  margin-top: 16px;
+  border: 1px solid #ccc;
+  color: #333;
+  .v-line {
+    width: 1px;
+    background: #ededed;
+    margin: 0 20px;
+  }
+  &--checked {
+    border: 1px solid $color-primary;
+  }
+  hr {
+    border: 0.5px solid #ededed;
+    margin: 12px 0;
+  }
+  .checkbox {
+    width: 24px;
+    position: relative;
+    ::ng-deep {
+      aui-checkbox {
+        position: absolute;
+        margin-top: -12px;
+        top: 50%;
+        i {
+          width: 24px;
+          height: 24px;
+          border-radius: 12px;
+        }
+      }
+    }
+  }
+  .input {
+    width: 100%;
+    .title {
+      font-size: 16px;
+      color: #333;
+      aui-icon {
+        color: #999;
+        width: 24px;
+        height: 24px;
+      }
+      aui-icon.enabled {
+        color: $color-primary;
+      }
+    }
+    .tips {
+      color: #999;
+      font-size: 12px;
+    }
+    ::ng-deep {
+      .aui-form-item {
+        display: block !important;
+        position: relative;
+        button.change_type {
+          font-size: 12px;
+          position: absolute;
+          right: 0;
+          top: 0;
+        }
+        .aui-form-item__label-wrapper {
+          width: 100% !important;
+          label {
+            margin-bottom: 8px;
+            display: inline-block;
+            width: 100%;
+            text-align: left;
+            position: relative;
+          }
+
+          &::after {
+            content: '';
+          }
+        }
+        alo-cron-trigger-selector {
+          width: 100%;
+          .errors {
+            display: none;
+          }
+        }
+        &.hasError {
+          alo-cron-trigger-selector {
+            .errors {
+              display: block;
+            }
+            .days.error {
+              background-color: #fdefef;
+            }
+          }
+        }
+      }
+    }
+  }
+  .cron-check {
+    color: $color-success;
+  }
+  .next_time_err {
+    color: $color-error;
+    font-size: 12px;
+  }
+}

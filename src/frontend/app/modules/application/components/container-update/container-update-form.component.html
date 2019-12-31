@@ -1,0 +1,55 @@
+<form #form="ngForm" auiForm auiFormLabelWidth="140px" auiFormEmptyAddon="true" novalidate
+  *ngIf="container">
+  <aui-form-item>
+    <label auiFormItemLabel>{{ 'image' | translate }}</label>
+    <input auiFormItemControl name="image" #image="ngModel" aui-input required readonly [(ngModel)]="container.image">
+    <button aui-button="primary" [plain]="true" (click)="selectImage()" class="select-image">
+      {{ 'update' | translate }}
+    </button>
+    <div auiFormItemError *ngIf="image?.errors?.required">{{ 'required' | translate }}
+    </div>
+  </aui-form-item>
+  <aui-form-item>
+    <label auiFormItemLabel>{{ 'application.container_size' | translate }}</label>
+    <div auiFormItemControl class="size-container">
+      <alo-container-update-size [(ngModel)]="container['resources']" #resources name="resources"></alo-container-update-size>
+    </div>
+  </aui-form-item>
+  <aui-form-item>
+    <label auiFormItemLabel>{{ 'environment_variables' | translate }}</label>
+    <div auiFormItemControl class="environment-container">
+      <alo-container-update-env [(ngModel)]="container['env']" [namespace]="params.namespace" #envs name="envs"></alo-container-update-env>
+    </div>
+  </aui-form-item>
+  <aui-form-item>
+    <label auiFormItemLabel>{{ 'env_from' | translate }}</label>
+    <div auiFormItemControl class="environment-container">
+      <alo-container-update-env-from [(ngModel)]="container['envFrom']" [namespace]="params.namespace" [cluster]="params.cluster" #envfrom name="envfrom"></alo-container-update-env-from>
+    </div>
+  </aui-form-item>
+  <aui-form-item>
+    <label auiFormItemLabel>{{ 'volume' | translate }}</label>
+    <div auiFormItemControl class="volume-container">
+      <alo-container-update-volume [(ngModel)]="volumeInfo" #volume name="volume" [containerParams]="params"
+        [container]="container"></alo-container-update-volume>
+    </div>
+  </aui-form-item>
+  <aui-form-item>
+    <label auiFormItemLabel>{{'command' | translate}}</label>
+    <input
+      auiFormItemControl
+      [(ngModel)]="container.command"
+      name="command"
+      #command="ngModel"
+      aui-input
+    />
+  </aui-form-item>
+  <aui-form-item>
+    <label auiFormItemLabel>{{'parameter' | translate}}</label>
+    <alo-params-input
+      [(ngModel)]="container.args"
+      name="args"
+      #args="ngModel"
+    ></alo-params-input>
+  </aui-form-item>
+</form>

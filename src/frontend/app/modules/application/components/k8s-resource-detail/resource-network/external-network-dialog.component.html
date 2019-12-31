@@ -1,0 +1,49 @@
+<ng-container [ngSwitch]="actionType">
+  <ng-container *ngSwitchCase="'create'">
+    <aui-dialog-header>
+      {{ 'application.add_public_network_access' | translate }}
+    </aui-dialog-header>
+  </ng-container>
+  <ng-container *ngSwitchCase="'update'">
+    <aui-dialog-header>
+      {{ 'application.update_public_network_access' | translate }}
+    </aui-dialog-header>
+  </ng-container>
+</ng-container>
+<aui-dialog-content>
+  <alo-public-network-access
+    [(ngModel)]="publicNetworkAccess"
+    isSingle="ture"
+    name="publicNetworkAccess"
+  ></alo-public-network-access>
+</aui-dialog-content>
+<aui-dialog-footer>
+  <ng-container [ngSwitch]="actionType">
+    <ng-container *ngSwitchCase="'create'">
+      <button
+        aui-button="primary"
+        [size]="small"
+        (click)="addNetwork('external')"
+        [loading]="loading"
+      >
+        {{ 'add' | translate }}
+      </button>
+    </ng-container>
+    <ng-container *ngSwitchCase="'update'">
+      <button
+        aui-button="primary"
+        [size]="small"
+        (click)="updateNetwork('external')"
+        [loading]="loading"
+      >
+        {{ 'update' | translate }}
+      </button>
+    </ng-container>
+  </ng-container>
+  <button
+    aui-button
+    [auiDialogClose]="false"
+  >
+    {{ 'cancel' | translate }}
+  </button>
+</aui-dialog-footer>

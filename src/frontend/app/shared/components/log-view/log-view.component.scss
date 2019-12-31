@@ -1,0 +1,126 @@
+$log-view-min-height: 400px;
+$log-view-border-radius: 2px;
+
+$log-view-toolbar-height: 40px;
+$log-view-toolbar-padding: 20px;
+$log-view-toolbar-fg: #333;
+$log-view-toolbar-bg: #f7f7f7;
+$log-view-toolbar-fg-dark: #fff;
+$log-view-toolbar-bg-dark: #333;
+
+$log-view-button-margin: 4px;
+$log-view-button-opacity: 0.6;
+$log-view-button-opacity-disabled: 0.4;
+$log-view-button-icon-size: 16px;
+$log-view-button-icon-margin: 2px;
+
+$log-view-rang-padding: 8px;
+
+:host {
+  height: 100%;
+}
+
+.alo-log-view {
+  display: flex;
+  min-height: $log-view-min-height;
+  flex: 1;
+  border: solid 1px #ddd;
+  border-radius: $log-view-border-radius;
+  flex-flow: column;
+  &--fullscreen {
+    height: 100%;
+  }
+  &__toolbar {
+    height: $log-view-toolbar-height;
+    flex-shrink: 0;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    background-color: $log-view-toolbar-bg;
+    padding: 0 $log-view-toolbar-padding;
+    a {
+      display: flex;
+      flex-flow: row;
+      align-items: center;
+      color: $log-view-toolbar-fg;
+      margin: 0 $log-view-button-margin;
+      opacity: $log-view-button-opacity;
+      &:hover {
+        opacity: 1;
+      }
+      svg {
+        width: $log-view-button-icon-size;
+        height: $log-view-button-icon-size;
+      }
+    }
+  }
+  &--dark &__toolbar {
+    background-color: $log-view-toolbar-bg-dark;
+    color: $log-view-toolbar-fg-dark;
+    a {
+      color: $log-view-toolbar-fg-dark;
+      path {
+        fill: $log-view-toolbar-fg-dark;
+      }
+    }
+  }
+  &__auto-update {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    flex-shrink: 0;
+    margin-right: $log-view-button-margin;
+    ::ng-deep .aui-checkbox__content {
+      color: unset;
+      opacity: 0.6;
+    }
+  }
+  &__auto-update-dark {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    flex-shrink: 0;
+    margin-right: $log-view-button-margin;
+    ::ng-deep .aui-checkbox__content {
+      color: #fff;
+      opacity: 0.6;
+    }
+  }
+  &__pages {
+    display: flex;
+    flex-shrink: 0;
+    flex-flow: row;
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+  &__range {
+    flex-wrap: nowrap;
+    flex-grow: 1;
+    flex-shrink: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 $log-view-rang-padding;
+    &:first-child {
+      padding-left: 0;
+    }
+  }
+  &__tools {
+    display: flex;
+    flex-shrink: 0;
+    flex-flow: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    a {
+      margin: 0 $log-view-button-margin;
+      aui-icon {
+        margin: 0 $log-view-button-icon-margin;
+      }
+    }
+  }
+  ng-monaco-editor {
+    flex: 1;
+    display: flex;
+    flex-flow: column;
+  }
+}

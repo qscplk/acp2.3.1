@@ -1,0 +1,85 @@
+<div class="alo-service-list">
+  <div
+    *ngFor="let service of services; trackBy: trackByName"
+    class="alo-service-card"
+    (click)="cardClick.emit(service)"
+  >
+    <div class="status-icons">
+      <span
+        class="warning-icon"
+        *ngIf="service.status.phase === 'Error'"
+        [auiTooltip]="serviceStatusTip"
+        [auiTooltipContext]="{ service: service }"
+        [auiTooltipType]="
+          getServiceTipType(service) === 'NeedAuthorization'
+            ? 'info'
+            : 'default'
+        "
+        auiTooltipPosition="top start"
+      >
+        <aui-icon icon="exclamation_circle_s"></aui-icon>
+      </span>
+      <span
+        *ngIf="service.integratedBy"
+        class="integrate-icon"
+        auiTooltip="{{
+          'tool_chain.service_integrated_by'
+            | translate: { name: service.integratedBy }
+        }}"
+        [auiTooltipPosition]="'top'"
+      >
+        <aui-icon icon="basic:project_circle_s"></aui-icon>
+      </span>
+      <span
+        *ngIf="isIntegrating(service)"
+        class="integrate-icon"
+        auiTooltip="{{ 'tool_chain.service_integrating' | translate }}"
+        [auiTooltipPosition]="'top start'"
+      >
+        <aui-icon icon="basic:sync_circle_s"></aui-icon>
+      </span>
+    </div>
+    <div class="icon-stack">
+      <img
+        class="type-icon"
+        [src]="'icons/tool-chain/' + service.type.toLowerCase() + '.svg'"
+        [alt]="service.type"
+      />
+      <img
+        *ngIf="service.enterprise"
+        class="enterprise-mark"
+        [src]="enterpriseIcon$ | async"
+        alt="Enterprise"
+      />
+    </div>
+    <div class="title" [title]="service.name">{{ service.name }}</div>
+    <div class="description">{{ service.accessUrl || '-' }}</div>
+    <div class="tags" *ngIf="showTag">
+      <aui-tag type="info" [round]="true" size="mini">{{
+        snakeCase(service.toolType) | translate
+      }}</aui-tag>
+    </div>
+  </div>
+</div>
+<ng-template #serviceStatusTip let-service="service">
+  <ng-container [ngSwitch]="getServiceTipType(service)">
+    <ng-container *ngSwitchCase="'NoSecret'">
+      {{ 'tool_chain.service_no_secret_tip' | translate }}
+    </ng-container>
+    <ng-container *ngSwitchCase="'ServiceUnavailable'">
+      {{ 'tool_chain.service_unavailable_tip' | translate }}
+    </ng-container>
+    <ng-container *ngSwitchCase="'AuthFailed'">
+      {{ 'tool_chain.service_auth_failed_tip' | translate }}
+    </ng-container>
+    <ng-container *ngSwitchCase="'NeedAuthorization'">
+      {{ 'tool_chain.service_need_authorization_tip_text' | translate }}
+      <a href="javascript:void(0);" (click)="secretValidate(service)">
+        {{ 'tool_chain.service_need_authorization_tip_link' | translate }}
+      </a>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+      {{ service.status.message }}
+    </ng-container>
+  </ng-container>
+</ng-template>

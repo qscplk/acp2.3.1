@@ -1,0 +1,25 @@
+@import 'var';
+
+:host {
+  ::ng-deep {
+    form {
+      .aui-form-item.hasError {
+        button {
+          border-color: red;
+        }
+      }
+    }
+
+    aui-icon {
+      &:hover {
+        color: $color-primary;
+      }
+    }
+  }
+}
+
+.form-addon {
+  color: #999;
+  width: 20px;
+  margin-left: 8px;
+}

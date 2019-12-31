@@ -1,0 +1,192 @@
+<form
+  #form="ngForm"
+  auiForm
+  auiFormLabelWidth="150px"
+>
+  <aui-card [divider]="false">
+      <div auiCardHeader>
+        {{'applications.list'| translate}}
+      </div>
+      <div>
+        <aui-form-item>
+          <label auiFormItemLabel>{{'application_name' | translate}}</label>
+          <input
+            auiFormItemControl
+            [(ngModel)]="appName"
+            name="applicationName"
+            #applicationName="ngModel"
+            aui-input
+            required
+            [maxlength]="validatorRule.maxLength"
+            [readOnly]="isEdit"
+            [pattern]="validatorRule.pattern"
+            [placeholder]="validatorRule.placeholder | translate: {count: validatorRule.maxLength}"
+          />
+          <div auiFormItemError *ngIf="applicationName.errors?.required">
+            {{ 'required' | translate }}
+          </div>
+          <div auiFormItemError *ngIf="applicationName.errors?.pattern">
+            {{ validatorRule.patternError | translate }}
+          </div>
+        </aui-form-item>
+        <aui-form-item>
+          <label auiFormItemLabel>{{'display_name' | translate}}</label>
+          <input
+            auiFormItemControl
+            maxlength="63"
+            [(ngModel)]="displayName"
+            name="applicationDisplayName"
+            #applicationDisplayName="ngModel"
+            aui-input
+          />
+        </aui-form-item>
+      </div>
+  </aui-card>
+</form>
+
+<div class="yaml-card-container">
+  <aui-card [divider]="false">
+      <div auiCardHeader class="list-yaml-card-header">
+        <ng-container *ngIf="!isYamlEditMode; else yamlModeTitle">
+          <button
+            aui-button="primary"
+            [plain]="true"
+            (click)="add()"
+          >
+            <aui-icon icon="basic:add_circle"></aui-icon>
+            {{'application.add_compute_component' | translate}}
+          </button>
+          <aui-radio-group
+            [isPlain]="false"
+            [(ngModel)]="displayModel"
+          >
+            <aui-radio-button value="list">{{'list' | translate}}</aui-radio-button>
+            <aui-radio-button value="yaml">YAML</aui-radio-button>
+          </aui-radio-group>
+        </ng-container>
+        <ng-template #yamlModeTitle>
+          {{'application.yaml_arrange_file'| translate}}
+        </ng-template>
+      </div>
+      <div>
+        <!-- YAML -->
+        <ng-container *ngIf="displayModel==='yaml'">
+          <aui-code-editor
+            [options]="editorOptions"
+            [(ngModel)]="yaml"
+          ></aui-code-editor>
+          <div
+            class="yaml-editing-mode"
+            *ngIf="!isYamlEditMode"
+          >
+            <button
+              aui-button="primary"
+              *ngIf="!isEdit"
+              class="no-border"
+              [plain]="true"
+              (click)="selectYamlEditingMode()"
+            >
+              <aui-icon icon="basic:yaml"></aui-icon>
+              {{'application.entering_yaml_editing_mode' | translate}}
+            </button>
+          </div>
+        </ng-container>
+        <!-- LIST -->
+        <aui-table
+          auiSort
+          *ngIf="displayModel==='list'"
+          [dataSource]="components"
+        >
+          <ng-container auiTableColumnDef="componentName">
+            <aui-table-header-cell *auiTableHeaderCellDef>
+              {{ 'application.component_name' | translate }}
+            </aui-table-header-cell>
+            <aui-table-cell *auiTableCellDef="let item">
+              {{ item.componentName }}
+            </aui-table-cell>
+          </ng-container>
+          <ng-container auiTableColumnDef="type">
+            <aui-table-header-cell *auiTableHeaderCellDef>
+              {{ 'type' | translate }}
+            </aui-table-header-cell>
+            <aui-table-cell *auiTableCellDef="let item">
+              {{ item.type }}
+            </aui-table-cell>
+          </ng-container>
+          <ng-container auiTableColumnDef="replicas">
+            <aui-table-header-cell *auiTableHeaderCellDef>
+              {{ 'application.replicas' | translate }}
+            </aui-table-header-cell>
+            <aui-table-cell *auiTableCellDef="let item">
+              {{ item.replicas }}
+            </aui-table-cell>
+          </ng-container>
+          <ng-container auiTableColumnDef="container">
+            <aui-table-header-cell *auiTableHeaderCellDef>
+              {{ 'container' | translate }}
+            </aui-table-header-cell>
+            <aui-table-cell *auiTableCellDef="let item">
+              <div
+                *ngFor="let container of (item.containers || [] | slice:0:2)"
+                class="container-item"
+              >
+                <span class="container-image">{{ container.image }}</span>
+                <span class="container-size">
+                  CPU:{{ container.resources.requests.cpu || '-'}};
+                  {{'memory' | translate}}:{{
+                  container.resources.requests.memory || '-'}}</span>
+              </div>
+              <ng-container *ngIf="(item.containers || []).length>2">
+                {{ 'total' | translate }}
+                <span
+                  class="aviliable-data"
+                  [auiTooltip]="images"
+                  auiTooltipType="info"
+                  auiTooltipTrigger="click"
+                  auiTooltipPosition="bottom"
+                  (click)="displayImges(item.containers)"
+                >
+                  {{ item.containers.length }}
+                </span>
+                {{ 'application.image_num' | translate }}
+              </ng-container>
+              <ng-template #images>
+                <div class="tooltip-container">
+                  <div class="tooltip-list">
+                    <ul>
+                      <li *ngFor="let item of selectedImages">{{item}}</li>
+                    </ul>
+                  </div>
+                </div>
+              </ng-template>
+            </aui-table-cell>
+          </ng-container>
+          <ng-container auiTableColumnDef="actions">
+            <aui-table-header-cell *auiTableHeaderCellDef></aui-table-header-cell>
+            <aui-table-cell
+              *auiTableCellDef="let item"
+              class="actions"
+            >
+              <button
+                aui-button
+                square="true"
+                (click)="edit(item)"
+              >
+                <aui-icon icon="basic:pencil_edit"></aui-icon>
+              </button>
+              <button
+                aui-button
+                *ngIf="components.length>1"
+                square="true"
+                (click)="delete(item)"
+              >
+                <aui-icon icon="basic:minus_circle"></aui-icon>
+              </button>
+            </aui-table-cell>
+          </ng-container>
+          <aui-table-header-row *auiTableHeaderRowDef="columns"></aui-table-header-row>
+          <aui-table-row *auiTableRowDef="let row; columns: columns;"></aui-table-row>
+        </aui-table>
+      </div>
+  </aui-card>
+</div>

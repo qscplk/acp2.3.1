@@ -1,0 +1,144 @@
+<div *aloPageHeaderContent class="page-header">
+  <alo-breadcrumb *ngIf="params$ | async as _params">
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['/admin/projects']">{{ 'project.list' | translate }}</a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <a
+        [routerLink]="['/admin/projects', _params?.name]"
+        [queryParams]="{ tab: '1' }"
+      >
+        {{ _params?.name }}
+      </a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <span>
+        {{ _params?.bindingName }}
+      </span>
+    </ng-template>
+  </alo-breadcrumb>
+</div>
+
+<acl-page-state
+  [adapter]="dataLoader"
+  (redirect)="back()"
+  [autoRedirect]="false"
+>
+  <ng-template>
+    <aui-card>
+      <div auiCardHeader class="info-header">
+        <div class="header-title">
+          <img
+            *ngIf="binding$ | async"
+            class="type-icon"
+            [src]="
+              'icons/tool-chain/' +
+              (binding$ | async)?.serviceType.toLowerCase() +
+              '.svg'
+            "
+            alt="devops"
+          />
+          <span>{{ (params$ | async)?.bindingName }}</span>
+          <aui-icon
+            *ngIf="(binding$ | async)?.status.phase === 'Error'"
+            class="alert"
+            [auiTooltip]="(binding$ | async)?.status.message"
+            [auiTooltipDisabled]="!(binding$ | async)?.status.message"
+            auiTooltipPosition="top start"
+            icon="exclamation_circle_s"
+          ></aui-icon>
+        </div>
+        <alo-menu-trigger [menu]="actionsMenu"></alo-menu-trigger>
+      </div>
+      <aui-menu #actionsMenu>
+        <aui-menu-group>
+          <acl-disabled-container [isAllowed]="(permission$ | async)?.update">
+            <aui-menu-item (click)="updateBind()">{{
+              'update' | translate
+            }}</aui-menu-item>
+          </acl-disabled-container>
+        </aui-menu-group>
+        <aui-menu-group>
+          <acl-disabled-container [isAllowed]="(permission$ | async)?.delete">
+            <aui-menu-item type="danger" [divide]="true" (click)="unbind()">{{
+              'project.unbind' | translate
+            }}</aui-menu-item>
+          </acl-disabled-container>
+        </aui-menu-group>
+      </aui-menu>
+      <ul class="basic-info">
+        <li class="info-item">
+          <span class="label">{{ 'project.binding_integration_name' | translate }}：</span>
+          <span class="value">
+            <a
+              *ngIf="(binding$ | async)?.service"
+              [routerLink]="[
+                '/admin/tool-chain/imageregistry',
+                (binding$ | async)?.service
+              ]"
+              >{{ (binding$ | async)?.service }}</a
+            >
+          </span>
+        </li>
+        <li class="info-item">
+          <span class="label">{{ 'secret' | translate }}：</span>
+          <span class="value">
+            <a
+              *ngIf="(binding$ | async)?.secret"
+              [routerLink]="secretRoute((binding$ | async)?.secret)"
+              >{{ secretName((binding$ | async)?.secret) }}</a
+            >
+            <ng-container *ngIf="!(binding$ | async)?.secret"
+              >{{ 'no_auth' | translate }}
+            </ng-container>
+          </span>
+        </li>
+        <li class="info-item">
+          <span class="label">{{ 'project.repo_type' | translate }}：</span>
+          <span class="value">{{ (binding$ | async)?.serviceType }}</span>
+        </li>
+        <li class="info-item">
+          <span class="label">{{ 'project.bind_at' | translate }}：</span>
+          <span class="value">{{
+            (binding$ | async)?.creationTimestamp | aclStandardTime
+          }}</span>
+        </li>
+        <li class="info-item">
+          <span class="label">{{ 'description' | translate }}：</span>
+          <span class="value">
+            <span>{{ (binding$ | async)?.description || '-' }}</span>
+          </span>
+        </li>
+      </ul>
+    </aui-card>
+
+    <aui-card>
+      <div class="list-header">
+        <div>{{ 'artifact_repository' | translate }}</div>
+        <div class="actions">
+          <acl-disabled-container
+            [isAllowed]="(assignRepoPermission$ | async) && (binding$ | async)"
+          >
+            <button aui-button (click)="assignRepository()">
+              {{ 'registry.assign_image_repository' | translate }}
+            </button>
+          </acl-disabled-container>
+          <aui-search
+            [placeholder]="'registry.filter_by_repo_address' | translate"
+            (keywordChange)="repositoriesFilter$$.next($event)"
+          ></aui-search>
+        </div>
+      </div>
+      <alo-repository-list [repositories]="filteredRepositories$ | async">
+      </alo-repository-list>
+      <alo-no-data
+        *ngIf="!(filteredRepositories$ | async)?.length"
+        [resourceName]="'image_repository' | translate"
+        [loading]="loading"
+        [error]="error"
+        (retry)="updated$$.next(null)"
+      >
+      </alo-no-data>
+    </aui-card>
+  </ng-template>
+</acl-page-state>

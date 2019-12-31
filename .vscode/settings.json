@@ -1,0 +1,9 @@
+{
+  "html.format.endWithNewline": true,
+  "html.format.preserveNewLines": true,
+  "html.format.wrapAttributes": "force-expand-multiline",
+  "html.format.wrapLineLength": 80,
+  "editor.tabSize": 2,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "go.formatTool": "goimports"
+}

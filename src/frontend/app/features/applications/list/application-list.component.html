@@ -1,0 +1,152 @@
+<ng-container *aloPageHeaderContent>
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <span>{{ 'applications.list' | translate }}</span>
+    </ng-template>
+  </alo-breadcrumb>
+</ng-container>
+<div class="list-header">
+  <div
+    class="btn-wrapper"
+    [auiTooltip]="'forbidden' | translate"
+    [auiTooltipDisabled]="creatable$ | async"
+  >
+    <aui-dropdown-button
+      type="primary"
+      [plain]="false"
+      [disabled]="!(creatable$ | async)"
+      (buttonClick)="createByImage()"
+    >
+      <aui-icon icon="basic:images"></aui-icon>
+      {{ 'applications.create' | translate }}
+      <aui-menu>
+        <aui-menu-group *ngIf="creatable$ | async">
+          <!-- <aui-menu-item (click)="selectCreateMethod()">
+            <aui-icon icon="basic:template"></aui-icon>
+            {{ 'applications.create_by_template' | translate }}
+          </aui-menu-item> -->
+          <aui-menu-item
+            routerLink="./create"
+            [queryParams]="{ method: 'yaml' }"
+          >
+            <aui-icon icon="basic:yaml"></aui-icon>
+            {{ 'applications.create_by_yaml' | translate }}
+          </aui-menu-item>
+          <aui-menu-item (click)="createByWorkload()">
+            <aui-icon icon="basic:sitemap_s"></aui-icon>
+            {{ 'applications.create_by_workload' | translate }}
+          </aui-menu-item>
+        </aui-menu-group>
+      </aui-menu>
+    </aui-dropdown-button>
+  </div>
+
+  <aui-search
+    [keyword]="keywords$ | async"
+    [placeholder]="'search_by_name_placeholder' | translate"
+    [searchButton]="true"
+    (search)="search($event)"
+  ></aui-search>
+</div>
+<ng-container *aloAsyncData="
+    let applications;
+    let error = error;
+    let loading = loading;
+    let refresh = refetch;
+    pullIn: 10 * 1000;
+    handler: fetchApplications;
+    params: params$ | async;
+    notification: refresh$;
+  ">
+  <div class="list-card-container">
+    <alo-application-list-card
+      [appInfo]='item'
+      *ngFor="let item of applications?.items; trackBy: trackByFn"
+    ></alo-application-list-card>
+  </div>
+  <alo-no-data
+    *ngIf="!applications?.items?.length"
+    mode="card"
+    [resourceName]="'applications.list' | translate"
+    [loading]="loading"
+    [error]="error || applications && applications.errors"
+    (retry)="refresh()"
+  ></alo-no-data>
+
+  <aui-paginator
+    *ngIf="applications?.total && applications?.total > 10"
+    [pageIndex]="(params$ | async).pageIndex"
+    [pageSize]="(params$ | async).itemsPerPage"
+    [pageSizeOptions]="[10, 20, 50, 100]"
+    [total]="applications?.total"
+    (page)="pageChange($event)"
+  ></aui-paginator>
+</ng-container>
+
+<ng-template #createMethodDialog>
+  <aui-dialog-header>{{ 'template' | translate }}</aui-dialog-header>
+  <aui-dialog-content>
+    <div class="alo-card-group">
+      <a
+        class="mini-card"
+        href="javascript:void(0)"
+        routerLink="./create"
+        [queryParams]="{ method: 'template', template: 'java' }"
+      >
+        <aui-icon
+          icon="diablo:java_file_line"
+          size="80px,80px"
+        ></aui-icon>
+        <span>
+          {{ 'applications.template_java' | translate }}
+        </span>
+        <!-- <p>{{ 'applications.template_java_description' | translate }}</p> -->
+      </a>
+      <a
+        class="mini-card"
+        href="javascript:void(0)"
+        routerLink="./create"
+        [queryParams]="{ method: 'template', template: 'golang' }"
+      >
+        <aui-icon
+          icon="diablo:golang_file_line"
+          size="80px,80px"
+        ></aui-icon>
+        <span>
+          {{ 'applications.template_golang' | translate }}
+        </span>
+        <!-- <p>{{ 'applications.template_golang_description' | translate }}</p> -->
+      </a>
+      <a
+        class="mini-card"
+        href="javascript:void(0)"
+        routerLink="./create"
+        [queryParams]="{ method: 'template', template: 'python' }"
+      >
+        <aui-icon
+          icon="diablo:python_file_line"
+          size="80px,80px"
+        ></aui-icon>
+        <span>
+          {{ 'applications.template_python' | translate }}
+        </span>
+        <!-- <p>{{ 'applications.template_python_description' | translate }}</p> -->
+      </a>
+      <a
+        class="mini-card"
+        href="javascript:void(0)"
+        routerLink="./create"
+        [queryParams]="{ method: 'template', template: 'php' }"
+      >
+        <aui-icon
+          icon="diablo:php_file_line"
+          size="80px,80px"
+        ></aui-icon>
+        <span>
+          {{ 'applications.template_php' | translate }}
+        </span>
+        <!-- <p>{{ 'applications.template_php_description' | translate }}</p> -->
+      </a>
+    </div>
+  </aui-dialog-content>
+</ng-template>

@@ -1,0 +1,66 @@
+<aui-dialog-header>
+  <div class="info">
+    <span class="name">{{template.displayName[key()]}}</span>
+    <span class="version">{{template.version}}</span>
+  </div>
+</aui-dialog-header>
+<aui-dialog-content>
+  <div class="stage">
+    <acl-pipeline-status-diagram
+      *ngIf="template?.stages?.length"
+      [stages]="template?.stages"
+      [hideStatus]="true"
+    ></acl-pipeline-status-diagram>
+  </div>
+  <div class="params-info">
+    <div class="description">
+      <label>{{'name'|translate}}</label>
+      <span class="content">{{template.displayName[key()]}}</span>
+    </div>
+    <div class="description">
+      <label>{{'description'|translate}}</label>
+      <span class="content">{{template.description[key()]}}</span>
+    </div>
+    <div class="description">
+      <label>{{'labels'|translate}}</label>
+      <span class="content labels">
+        <span
+          class="label"
+          *ngIf="template.kind === 'clusterpipelinetemplate'"
+        >
+          {{'pipeline.official'|translate}}
+        </span>
+        <span
+          *ngFor="let label of template.labels"
+          class="label"
+        >
+          <aui-icon *ngIf="customLabelIndex.includes(label.key); else labelText">{{label.value}}</aui-icon>
+          <ng-template #labelText>{{label.key + ':' + label.value}}</ng-template>
+        </span>
+        <span
+          *ngIf="!template?.labels?.length"
+          class="no-label"
+        >
+          {{'pipeline.no_label'|translate}}
+        </span>
+      </span>
+    </div>
+  </div>
+  <div>
+    <div
+      class="parameter-field"
+      *ngFor="let argument of template.arguments"
+    >
+      <alo-pipeline-template-detail-parameter-table [parameterField]="argument"></alo-pipeline-template-detail-parameter-table>
+    </div>
+  </div>
+</aui-dialog-content>
+<aui-dialog-footer *ngIf="showSelect">
+  <button aui-button="primary"
+          type="button"
+          [disabled]="disableSelect"
+          (click)="select()">{{'pipeline.select' | translate}}</button>
+  <button aui-button
+          type="button"
+          (click)="close()">{{'pipeline.close' | translate}}</button>
+</aui-dialog-footer>

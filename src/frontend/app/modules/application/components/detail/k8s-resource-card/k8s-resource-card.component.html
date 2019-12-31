@@ -1,0 +1,36 @@
+<section class="base">
+  <div class="info">
+    <a
+      href="javascript:void(0)"
+      [routerLink]="['./', data.kind, data.name]"
+      class="name"
+      >{{ data.name }}</a
+    >
+  </div>
+  <div class="status">
+    <alo-pods-scaler
+      [scaling]="scaling"
+      [kind]="data.kind"
+      [podInfo]="data.podInfo"
+      [errorMessages]="errorMessages"
+      [allowedUpdate]="allowedUpdate"
+      (desiredChange)="onDesiredChange($event)"
+    ></alo-pods-scaler>
+    <!-- <aui-dropdown-button size="medium" type="primary" (buttonClick)="updateContainer()">
+      {{ 'update_container' | translate }}
+      <aui-menu size="medium">
+      </aui-menu>
+    </aui-dropdown-button> -->
+  </div>
+</section>
+<section class="containers">
+  <alo-container
+    [params]="params"
+    [resource]="containerParams"
+    (selecteLogs)="containerSelectedLogs($event)"
+    [container]="item"
+    [allowedUpdate]="allowedUpdate"
+    *ngFor="let item of data.containers; trackBy: containerIdentity"
+  >
+  </alo-container>
+</section>

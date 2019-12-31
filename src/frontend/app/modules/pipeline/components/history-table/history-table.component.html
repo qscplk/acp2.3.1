@@ -1,0 +1,290 @@
+<aui-card [divider]="false">
+  <div auiCardHeader *ngIf="!hideTitle">
+    <div>
+      <ng-container>
+        {{ 'pipeline.history' | translate }}
+      </ng-container>
+    </div>
+  </div>
+  <aui-table
+    auiSort
+    (sortChange)="sortChange($event)"
+    [dataSource]="historyList?.histories"
+    [trackBy]="trackFn"
+  >
+    <ng-container auiTableColumnDef="name">
+      <aui-table-header-cell *auiTableHeaderCellDef>{{
+        'pipeline.history_id' | translate
+      }}</aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item">
+        <div style="display: flex">
+          <div style="min-width: 40px; display: inline-block;">
+            <a
+              *ngIf="item?.jenkins?.build"
+              [routerLink]="(showWaiting ? ['./', item.pipeline, item.name] : ['./', item.name])"
+            >
+              #{{ item?.jenkins?.build }}
+            </a>
+            <span *ngIf="!item?.jenkins?.build">-</span>
+          </div>
+          <aui-icon
+            (click)="openLogs(item)"
+            margin="left"
+            [ngClass]="{'history-name__overview': viewLogsPermission, 'history-name__disabled': !viewLogsPermission}"
+            [auiTooltip]="
+              (viewLogsPermission ? 'pipeline.click_to_view_history_overview': 'forbidden') | translate
+            "
+            icon="basic:overview"
+          ></aui-icon>
+          <ng-container *ngFor="let badge of item.badges">
+            <ng-container [ngSwitch]="badge.id">
+              <a
+                *ngSwitchCase="'QualityGate'"
+                class="badges"
+                [href]="badge.link"
+                [auiTooltip]="sonarQube"
+                target="_blank"
+              >
+                <img src="icons/pipeline/badges/sonarqube-{{ badge.text.toLowerCase() }}.svg" alt="devops" />
+              </a>
+              <a
+                *ngSwitchDefault
+                class="badges"
+                [href]="badge.link"
+                [auiTooltip]="badge.text"
+                target="_blank"
+              >
+                <aui-tag *ngSwitchDefault size="small">{{ badge.text }}</aui-tag>
+              </a>
+              <ng-template #sonarQube>
+                <div>{{ 'pipeline.pipeline_history_sonarqube_hint' | translate }}</div>
+              </ng-template>
+            </ng-container>
+          </ng-container>
+        </div>
+      </aui-table-cell>
+    </ng-container>
+    <ng-container auiTableColumnDef="pipeline">
+      <aui-table-header-cell *auiTableHeaderCellDef>
+        {{ 'pipeline.name' | translate }}
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item">
+        {{item.pipeline}}
+      </aui-table-cell>
+    </ng-container>
+    <ng-container auiTableColumnDef="status">
+      <aui-table-header-cell *auiTableHeaderCellDef>
+        {{ 'pipeline.history_status' | translate }}
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item">
+        <span [ngClass]="['history-status ', item?.phase?.toLowerCase()]">
+          <aui-icon
+            [ngClass]="{
+              'icon-spin':
+                getHistoryStatusIcon(item).icon ===
+                'basic:sync_circle_s'
+            }"
+            [icon]="getHistoryStatusIcon(item).icon"
+          ></aui-icon>
+          <span>
+            {{
+              getHistoryStatusIcon(item).translateKey | translate
+            }}
+          </span>
+        </span>
+      </aui-table-cell>
+    </ng-container>
+    <ng-container auiTableColumnDef="branch">
+      <aui-table-header-cell *auiTableHeaderCellDef>
+        <aui-select
+          [value]="activeBranch || { name: '', type: null }"
+          (valueChange)="onBranchChange($event)"
+          [trackFn]="branchIdentity"
+          [filterFn]="filterByBranchName"
+        >
+          <aui-option
+            [value]="{ name: '', type: null }"
+            [label]="'pipeline.all_branchs' | translate"
+          >{{ 'pipeline.all_branchs' | translate }}</aui-option>
+          <aui-option-group *ngFor="let group of branchs; trackBy: branchGroupIdentity">
+            <div auiOptionGroupTitle>{{  branchTypeTranslates[group.type] | translate }}</div>
+            <aui-option
+              *ngFor="let branch of group.items; trackBy: branchOptionIdentity"
+              [value]="branch"
+              [label]="branch.name"
+            >{{ branch.name }}</aui-option>
+          </aui-option-group>
+        </aui-select>
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item" class="name-cell">
+        <div class="name-cell__content">
+          <div class="name-cell__name">
+            {{ item.branch || '-' }}
+          </div>
+          <div class="name-cell__description" [title]="item?.prTitle">
+            {{item?.prTitle}}
+          </div>
+        </div>
+      </aui-table-cell>
+    </ng-container>
+    <ng-container auiTableColumnDef="startedAt">
+      <aui-table-header-cell
+        aui-sort-header
+        start="desc"
+        *auiTableHeaderCellDef
+      >
+        {{ 'pipeline.start_at' | translate }}
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item">
+        <div>{{ item.startedAt | aclRelativeTime }}</div>
+      </aui-table-cell>
+    </ng-container>
+    <ng-container auiTableColumnDef="time">
+      <aui-table-header-cell *auiTableHeaderCellDef>
+        {{ 'pipeline.history_time' | translate }}
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item">
+        <span
+          *ngIf="
+            !item.finishedAt && item?.phase?.toLowerCase() === 'running';
+            else durationTime
+          "
+        >
+          {{
+            (currentDate | async) - getDateTimes(item.startedAt)
+              | aloDuration
+          }}
+        </span>
+        <ng-template #durationTime>
+          <span>{{ item.duration | aloDuration }}</span>
+        </ng-template>
+      </aui-table-cell>
+    </ng-container>
+    <ng-container auiTableColumnDef="cause">
+      <aui-table-header-cell *auiTableHeaderCellDef>
+        {{ 'pipeline.history_cause' | translate }}
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item">
+        <div class="triggers" [ngSwitch]="item.cause.type">
+          <aui-icon
+            *ngSwitchCase="'cron'"
+            [auiTooltip]="'pipeline.cron' | translate"
+            icon="basic:time"
+          ></aui-icon>
+          <aui-icon
+            *ngSwitchCase="'codeChange'"
+            [auiTooltip]="'pipeline.code_change' | translate"
+            icon="basic:code"
+          ></aui-icon>
+          <aui-icon
+            *ngSwitchCase="'manual'"
+            [auiTooltip]="'pipeline.manual' | translate"
+            icon="basic:wrench_s"
+          ></aui-icon>
+          <aui-icon
+            *ngSwitchCase="'branchScan'"
+            [auiTooltip]="'pipeline.branch_scan' | translate"
+            icon="basic:multi_branch_trigger_method"
+          ></aui-icon>
+          <aui-icon
+            *ngSwitchCase="'upstreamCause'"
+            [auiTooltip]="'pipeline.upstream_cause' | translate"
+            icon="basic:pipeline"
+          ></aui-icon>
+          <aui-icon
+            *ngSwitchCase="'unknownCause'"
+            [auiTooltip]="'pipeline.unknown_cause' | translate"
+            icon="basic:other_trigger_method"
+          ></aui-icon>
+          <ng-container *ngSwitchDefault>{{ '-' }}</ng-container>
+        </div>
+      </aui-table-cell>
+    </ng-container>
+    <ng-container auiTableColumnDef="actions">
+      <aui-table-header-cell
+        *auiTableHeaderCellDef
+      ></aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item">
+        <alo-menu-trigger *ngIf="!showWaiting"
+          [menu]="actionsMenu"
+          [context]="{ item: item }"
+        ></alo-menu-trigger>
+        <aui-menu #actionsMenu>
+          <acl-disabled-container [isAllowed]="permissions?.pipelinesInput?.create"
+                                  *ngIf="item?.jenkins?.status === 'PAUSED_PENDING_INPUT' && getPausedStages(item).length === 1">
+            <aui-menu-item (click)="openWaitingInputDialog(item, getPausedStages(item)[0])">
+              {{ 'pipeline.input' | translate}}
+            </aui-menu-item>
+          </acl-disabled-container>
+          <acl-disabled-container [isAllowed]="permissions?.pipelinesInput?.create"
+                                  *ngIf="item?.jenkins?.status === 'PAUSED_PENDING_INPUT' && getPausedStages(item).length > 1">
+            <aui-submenu class="submenu">
+              {{ 'pipeline.input' | translate}}
+              <aui-menu-item *ngFor="let stage of getPausedStages(item); trackBy: trackByFn"
+                             class="submenu-item"
+                             (click)="openWaitingInputDialog(item, stage)">
+                <span [title]="stage.name">{{stage.name}}</span>
+              </aui-menu-item>
+            </aui-submenu>
+          </acl-disabled-container>
+
+          <acl-disabled-container [isAllowed]="permissions?.pipelines?.create"
+                                  *ngIf="item.phase.toLowerCase() === 'complete' || item.phase.toLowerCase() === 'failed'">
+            <aui-menu-item (click)="replay(item)">
+              {{ 'pipeline.replay' | translate }}
+            </aui-menu-item>
+          </acl-disabled-container>
+
+          <acl-disabled-container [isAllowed]="permissions?.pipelines?.update"
+                                  *ngIf="item.phase.toLowerCase() === 'running'">
+            <aui-menu-item (click)="cancel(item)">
+              {{ 'pipeline.cancel' | translate }}
+            </aui-menu-item>
+          </acl-disabled-container>
+
+          <acl-disabled-container [isAllowed]="permissions?.pipelines?.delete">
+            <aui-menu-item (click)="delete(item)">{{ 'delete' | translate}}</aui-menu-item>
+          </acl-disabled-container>
+        </aui-menu>
+
+        <acl-disabled-container [isAllowed]="permissions?.pipelinesInput?.create"
+                                *ngIf="showWaiting && getPausedStages(item).length === 1">
+          <button aui-button
+                  (click)="openWaitingInputDialog(item, getPausedStages(item)[0])">
+            {{ 'pipeline.input' | translate}}
+          </button>
+        </acl-disabled-container>
+        <acl-disabled-container [isAllowed]="permissions?.pipelinesInput?.create"
+                                *ngIf="showWaiting && getPausedStages(item).length > 1">
+          <button aui-button
+                  [auiDropdown]="inputMenu">
+            {{ 'pipeline.input' | translate}}
+            <aui-icon icon="angle_down" margin="left"></aui-icon>
+          </button>
+        </acl-disabled-container>
+        <aui-menu #inputMenu>
+          <aui-menu-item *ngFor="let stage of getPausedStages(item); trackBy: trackByFn"
+                         (click)="openWaitingInputDialog(item, stage)">{{stage.name}}</aui-menu-item>
+        </aui-menu>
+      </aui-table-cell>
+    </ng-container>
+    <aui-table-header-row
+      *auiTableHeaderRowDef="columns"
+    ></aui-table-header-row>
+    <aui-table-row
+      *auiTableRowDef="let row; columns: columns"
+    ></aui-table-row>
+  </aui-table>
+  <alo-no-data *ngIf="!historyList?.total"
+               [resourceName]="(showWaiting ? 'pipeline.waiting_input_data' : 'pipeline.history_data') | translate">
+  </alo-no-data>
+  <div auiCardFooter>
+    <aui-paginator
+      *ngIf="historyList?.total"
+      [(pageIndex)]="pageIndex"
+      [(pageSize)]="pageSize"
+      [pageSizeOptions]="[10, 20, 50]"
+      [total]="historyList?.total"
+      (page)="pageChange($event)"></aui-paginator>
+  </div>
+</aui-card>

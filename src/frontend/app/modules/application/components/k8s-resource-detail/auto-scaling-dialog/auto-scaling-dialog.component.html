@@ -1,0 +1,171 @@
+<aui-dialog-header>{{
+  (isUpdate
+    ? 'application.update_auto_scaling'
+    : 'application.add_auto_scaling') | translate
+}}</aui-dialog-header>
+<aui-dialog-content>
+  <form #form="ngForm" auiForm auiFormLabelWidth="150px">
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'resource_limits' | translate }}</label>
+      <div class="replicas-wrapper">
+        <aui-input-group>
+          <span auiInputAddonBefore>
+            {{ 'application.min_replicas' | translate }}
+          </span>
+          <input
+            aui-input
+            type="text"
+            auiFormItemControl
+            name="minRp"
+            #minRp="ngModel"
+            [pattern]="positiveIntPattern.pattern"
+            [placeholder]="positiveIntPattern.tip | translate"
+            [(ngModel)]="minReplicas"
+          />
+        </aui-input-group>
+        <aui-input-group>
+          <span auiInputAddonBefore class="max-replicas">
+            {{ 'application.max_replicas' | translate }}
+          </span>
+          <input
+            aui-input
+            type="text"
+            auiFormItemControl
+            required
+            name="maxRp"
+            #maxRp="ngModel"
+            [pattern]="positiveIntPattern.pattern"
+            [placeholder]="positiveIntPattern.tip | translate"
+            [(ngModel)]="maxReplicas"
+          />
+        </aui-input-group>
+      </div>
+      <div auiFormItemAddon>
+        <aui-icon
+          icon="basic:question"
+          auiTooltipPosition="end top"
+          [auiTooltip]="'application.auto_scaling_limits_tips' | translate"
+        ></aui-icon>
+      </div>
+      <div
+        auiFormItemError
+        *ngIf="minRp.errors?.pattern || maxRp.errors?.pattern"
+      >
+        {{ positiveIntPattern.tip | translate }}
+      </div>
+      <div auiFormItemError *ngIf="maxRp.errors?.required">
+        {{ 'required' | translate }}
+      </div>
+    </aui-form-item>
+    <aui-form-item>
+      <label auiFormItemLabel>{{
+        'application.rule_settings' | translate
+      }}</label>
+      <div class="rule-settings-wrapper" auiFormItemControl required>
+        <div class="rule-item">
+          <aui-checkbox
+            [(ngModel)]="ruleSettingsEnable.cpu"
+            name="cpuCheckBox"
+            (valueChange)="onCheckCpuRule($event)"
+          >
+            CPU</aui-checkbox
+          >
+          <aui-input-group>
+            <span auiInputAddonBefore> {{ 'application.target_average_utilization' | translate }} </span>
+            <input
+              aui-input
+              type="text"
+              auiFormItemControl
+              [required]="
+                !memTargetAverageUtilization ||
+                (cpuTargetAverageUtilization && memTargetAverageUtilization)
+              "
+              name="cpuSetting"
+              #cpuSetting="ngModel"
+              [readOnly]="!ruleSettingsEnable.cpu"
+              [pattern]="positiveIntPattern.pattern"
+              [placeholder]="positiveIntPattern.tip | translate"
+              [(ngModel)]="cpuTargetAverageUtilization"
+            />
+            <span auiInputAddonAfter> % </span>
+          </aui-input-group>
+        </div>
+        <div class="rule-item">
+          <aui-checkbox
+            [(ngModel)]="ruleSettingsEnable.memory"
+            name="memoryCheckBox"
+            (valueChange)="onCheckMemoryRule($event)"
+          >
+            {{ 'memory' | translate }}</aui-checkbox
+          >
+          <aui-input-group>
+            <span auiInputAddonBefore> {{ 'application.target_average_utilization' | translate }} </span>
+            <input
+              aui-input
+              type="text"
+              auiFormItemControl
+              [required]="
+                !cpuTargetAverageUtilization ||
+                (cpuTargetAverageUtilization && memTargetAverageUtilization)
+              "
+              name="memorySetting"
+              #memorySetting="ngModel"
+              [readOnly]="!ruleSettingsEnable.memory"
+              [pattern]="positiveIntPattern.pattern"
+              [placeholder]="positiveIntPattern.tip | translate"
+              [(ngModel)]="memTargetAverageUtilization"
+            />
+            <span auiInputAddonAfter> % </span>
+          </aui-input-group>
+        </div>
+      </div>
+      <div
+        auiFormItemError
+        *ngIf="memorySetting.errors?.required || cpuSetting.errors?.required"
+      >
+        {{ 'required' | translate }}
+      </div>
+      <div auiFormItemAddon>
+        <aui-icon
+          icon="basic:question"
+          [auiTooltip]="ruleTips"
+          auiTooltipPosition="end top"
+        ></aui-icon>
+      </div>
+      <div
+        auiFormItemError
+        *ngIf="memorySetting.errors?.pattern || cpuSetting.errors?.pattern"
+      >
+        {{ positiveIntPattern.tip | translate }}
+      </div>
+      <ng-template #ruleTips>
+        <div class="tooltip-container">
+          <ul>
+            <li>{{ 'application.auto_scaling_rule_tips_1' | translate }}</li>
+            <li>{{ 'application.auto_scaling_rule_tips_2' | translate }}</li>
+            <li>{{ 'application.auto_scaling_rule_tips_3' | translate }}</li>
+            <li>{{ 'application.auto_scaling_rule_tips_4' | translate }}</li>
+          </ul>
+        </div>
+      </ng-template>
+    </aui-form-item>
+  </form>
+</aui-dialog-content>
+<aui-dialog-footer>
+  <div>
+    <button
+      *ngIf="isUpdate; else: createButton"
+      aui-button="primary"
+      (click)="update()"
+      [loading]="submitting"
+    >
+      {{ 'update' | translate }}
+    </button>
+    <ng-template #createButton>
+      <button aui-button="primary" (click)="add()" [loading]="submitting">
+        {{ 'add' | translate }}
+      </button>
+    </ng-template>
+    <button aui-button auiDialogClose>{{ 'cancel' | translate }}</button>
+  </div>
+</aui-dialog-footer>

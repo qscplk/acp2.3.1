@@ -1,0 +1,30 @@
+@import 'var';
+
+$status-color-map: (
+  loading: $color-info,
+  executed: $color-warning,
+  error: $color-error,
+);
+
+.input-message {
+  margin: 0 0 16px;
+}
+
+.status-info {
+  display: flex;
+  min-height: 80px;
+  justify-content: center;
+  align-items: center;
+  color: $color-text-main;
+  font-size: 14px;
+  &__icon {
+    @each $status, $color in $status-color-map {
+      &--#{$status} {
+        color: $color;
+      }
+    }
+  }
+  aui-icon {
+    margin-right: 4px;
+  }
+}

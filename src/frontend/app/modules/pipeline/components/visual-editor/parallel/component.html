@@ -1,0 +1,26 @@
+<ng-container *ngIf="id | pure: getParallel | async as parallel">
+  <div class="side-form__header">
+    <span>{{ 'stage_settings' | translate }}</span>
+    <a href="javascript:;" (click)="remove(parallel)">
+      <aui-icon icon="basic:trash" size="16"></aui-icon>
+    </a>
+  </div>
+  <div class="side-form__body">
+    <div class="side-form__group">
+      <div class="side-form__group-header">
+          {{ 'basic_info' | translate }}
+      </div>
+      <form
+        *ngIf="id | pure: toNameForm | async as fg"
+        auiForm
+        auiFormLabelPosition="top"
+        [formGroup]="fg"
+      >  
+        <aui-form-item class="ng-submitted">
+          <label auiFormItemLabel>{{ 'stage_name' | translate }}</label>
+          <input aui-input formControlName="name" auiFormItemControl />
+        </aui-form-item>
+      </form>
+    </div>
+  </div>
+</ng-container>

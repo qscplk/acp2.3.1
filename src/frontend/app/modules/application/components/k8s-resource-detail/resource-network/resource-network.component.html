@@ -1,0 +1,101 @@
+<aui-card>
+  <div class="header">
+    <div>{{ 'network' | translate }}</div>
+    <div>
+      <alo-menu-trigger [menu]="actionsMenu"></alo-menu-trigger>
+      <aui-menu #actionsMenu>
+        <aui-menu-item [disabled]="!allowedUpdate" (click)="openAddNetwork('external')">
+          {{ 'application.add_public_network_access' | translate }}
+        </aui-menu-item>
+        <aui-menu-item [disabled]="!allowedUpdate" (click)="openAddNetwork('internal')">
+          {{ 'application.add_cluster_access' | translate }}
+        </aui-menu-item>
+        <aui-menu-item [disabled]="!allowedUpdate" (click)="openAddNetwork('nodePort')">
+          {{ 'application.add_public_ip_access' | translate }}
+        </aui-menu-item>
+      </aui-menu>
+    </div>
+  </div>
+  <aui-table [dataSource]="data" [trackBy]="networkIdentity">
+    <ng-container auiTableColumnDef="address">
+      <aui-table-header-cell *auiTableHeaderCellDef>
+        {{ 'application.visit_address' | translate }}
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item">
+        <ng-container [ngSwitch]="item.type">
+          <ng-container *ngSwitchCase="'external'">
+            <a [href]="item.address" target="_blank">{{ item.address }}</a>
+          </ng-container>
+          <ng-container *ngSwitchCase="'internal'">
+            {{ item.address }}
+          </ng-container>
+          <ng-container *ngSwitchCase="'nodePort'">
+            {{ item.address }}
+            <aui-icon
+              class="node-port-icon"
+              icon="basic:question"
+              [auiTooltip]="'application.node_port_address_desc' | translate"
+            ></aui-icon>
+          </ng-container>
+        </ng-container>
+      </aui-table-cell>
+    </ng-container>
+    <ng-container auiTableColumnDef="type">
+      <aui-table-header-cell *auiTableHeaderCellDef>
+        {{ 'type' | translate }}
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item">
+        <ng-container [ngSwitch]="item.type">
+          <ng-container *ngSwitchCase="'external'">
+            {{ 'application.public_network_access' | translate }}
+          </ng-container>
+          <ng-container *ngSwitchCase="'internal'">
+            {{ 'application.cluster_access' | translate }}
+          </ng-container>
+          <ng-container *ngSwitchCase="'nodePort'">
+            {{ 'application.public_ip_access' | translate }}
+          </ng-container>
+        </ng-container>
+      </aui-table-cell>
+    </ng-container>
+    <ng-container auiTableColumnDef="port">
+      <aui-table-header-cell *auiTableHeaderCellDef>
+        {{ 'container_port' | translate }}
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item">
+        {{ item.targetPort }}
+      </aui-table-cell>
+    </ng-container>
+    <ng-container auiTableColumnDef="time">
+      <aui-table-header-cell *auiTableHeaderCellDef>
+        {{ 'application.network_add_time' | translate }}
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item">
+        {{ item.createdAt | aclRelativeTime }}
+      </aui-table-cell>
+    </ng-container>
+    <ng-container auiTableColumnDef="actions">
+      <aui-table-header-cell *auiTableHeaderCellDef> </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item">
+        <alo-menu-trigger [menu]="networkActionsMenu"></alo-menu-trigger>
+        <aui-menu #networkActionsMenu>
+          <aui-menu-item [disabled]="!allowedUpdate" (click)="openUpdateNetwork(item)">
+            {{ 'update' | translate }}
+          </aui-menu-item>
+          <aui-menu-item [disabled]="!allowedUpdate" (click)="deleteNetwork(item)">
+            {{ 'delete' | translate }}
+          </aui-menu-item>
+        </aui-menu>
+      </aui-table-cell>
+    </ng-container>
+    <aui-table-header-row
+      *auiTableHeaderRowDef="columns"
+    ></aui-table-header-row>
+    <aui-table-row *auiTableRowDef="let row; columns: columns"></aui-table-row>
+  </aui-table>
+  <alo-no-data
+    *ngIf="!data || !data.length"
+    [resourceName]="'network' | translate"
+    [loading]="loading"
+  ></alo-no-data>
+</aui-card>

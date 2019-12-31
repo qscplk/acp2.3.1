@@ -1,0 +1,35 @@
+<div #anchor
+     class="xterm-anchor"
+     [class.xterm-anchor--dark-theme]="isDarkTheme">
+</div>
+
+<div class="status-indicator"
+     [auiTooltip]="statusIndicatorTooltip"
+     auiTooltipType="info"
+     auiTooltipPosition="start"
+     [ngClass]="'status-indicator--' + connectionStatus">
+  <aui-icon [icon]="connectionStatus !== 'connecting' ? 'basic:cloud_signal_s' : 'spinner'">
+  </aui-icon>
+</div>
+
+<ng-template #statusIndicatorTooltip>
+  <div [ngSwitch]="connectionStatus"
+       class="status-indicator-tooltip">
+    <ng-container *ngSwitchCase="'connecting'">
+      {{ 'exec_connecting' | translate }}
+    </ng-container>
+    <ng-container *ngSwitchCase="'goodConnection'">
+      <alo-status-icon status="success"></alo-status-icon>
+      {{ 'exec_good_connection' | translate }}
+    </ng-container>
+    <ng-container *ngSwitchCase="'badConnection'">
+      <alo-status-icon status="warning"></alo-status-icon>
+      {{ 'exec_high_latecency_warning' | translate }}
+    </ng-container>
+    <ng-container *ngSwitchCase="'disconnected'">
+      <alo-status-icon status="error"></alo-status-icon>
+      {{ 'exec_disconnected' | translate }}
+      <a href="javascript:location.reload()">{{ 'exec_reconnect' | translate }}</a>
+    </ng-container>
+  </div>
+</ng-template>

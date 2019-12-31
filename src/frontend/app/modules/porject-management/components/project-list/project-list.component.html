@@ -1,0 +1,62 @@
+<aui-table
+  [dataSource]="projects"
+  [trackBy]="trackById"
+  auiSort
+  active="projectId"
+  direction="desc"
+  (sortChange)="onSortChange($event)"
+>
+  <ng-container auiTableColumnDef="projectName">
+    <aui-table-header-cell *auiTableHeaderCellDef>
+      {{ 'name' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let project">
+      <div class="name-cell">
+        <img [src]="'icons/tool-chain/list/jira.svg'" alt="jira">
+        {{ project.name }}
+        <aui-icon
+          *ngIf="(project.status && project.status!=='Ready') || (binding?.status.phase !== 'Ready')"
+          class="alert-icon"
+          icon="exclamation_circle_s"
+          [auiTooltip]="project.message || binding?.status?.message"
+        ></aui-icon>
+        <aui-icon
+          *ngIf="!project.status && binding?.status?.phase === 'Ready'"
+          class="loading-icon"
+          icon="spinner"
+        ></aui-icon>
+        <a
+          *ngIf="accessible"
+          class="jump-icon"
+          [auiTooltip]="'jump_to' | translate:{ name: 'Jira' }"
+          auiTooltipType="info"
+          auiTooltipPosition="bottom start"
+          auiTooltipClass="jump-tooltip"
+          [href]="project.projectlink | pure:dropDuplicateUrlSlash"
+          target="_blank"
+        ><aui-icon icon="basic:jump"></aui-icon></a>
+      </div>
+    </aui-table-cell>
+  </ng-container>
+
+  <ng-container auiTableColumnDef="projectId">
+    <aui-table-header-cell *auiTableHeaderCellDef aui-sort-header>
+      {{ 'project_management.project_id' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let project">
+      {{ project.status==='Ready' ? project.id : '-' }}
+    </aui-table-cell>
+  </ng-container>
+
+  <ng-container auiTableColumnDef="projectLeader">
+    <aui-table-header-cell *auiTableHeaderCellDef>
+      {{ 'project_management.project_leader' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let project">
+      {{ project.leader || '-' }}
+    </aui-table-cell>
+  </ng-container>
+
+  <aui-table-header-row *auiTableHeaderRowDef="displayedColumns"></aui-table-header-row>
+  <aui-table-row *auiTableRowDef="let row; columns: displayedColumns;"></aui-table-row>
+</aui-table>

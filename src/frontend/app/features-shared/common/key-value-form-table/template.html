@@ -1,0 +1,42 @@
+<alo-array-form-table [noRowSeparator]="true"
+                      [rowBackgroundColorFn]="rowBackgroundColorFn"
+                      (add)="add(form.length)"
+                      (remove)="remove($event)"
+                      [rows]="form.controls">
+  <ng-container *aloArrayFormTableHeader>
+    <th width="33%">{{ 'key' | translate }}</th>
+    <th width="66%">{{ 'value' | translate }}</th>
+  </ng-container>
+
+  <!-- Input row -->
+  <ng-container *aloArrayFormTableRow="let control">
+
+    <td>
+      <input (blur)="onBlur()"
+             aui-input
+             maxlength="63"
+             [formControl]="control.controls[0]">
+    </td>
+
+    <td>
+      <input (blur)="onBlur()"
+             aui-input
+             [formControl]="control.controls[1]">
+    </td>
+  </ng-container>
+
+  <!-- Input error row -->
+  <ng-container *aloArrayFormTableRow="let control">
+    <td *ngIf="control.invalid"
+        colspan="3"
+        class="alo-table-form-error-hint">
+      <ng-container *ngIf="control.errors?.keyIsMissing">
+        {{ 'key_is_missing_error_message' | translate }}
+      </ng-container>
+
+      <ng-container *ngIf="control.errors?.duplicateKey">
+        {{ 'duplicate_key_error_message' | translate: {key: control?.errors?.duplicateKey} }}
+      </ng-container>
+    </td>
+  </ng-container>
+</alo-array-form-table>

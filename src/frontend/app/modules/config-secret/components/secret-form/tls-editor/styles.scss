@@ -1,0 +1,30 @@
+.tls-form-item-group {
+  background: #fff;
+  ::ng-deep .ca {
+    .aui-form-item__content {
+      position: relative;
+      .import {
+        position: absolute;
+        right: 100px;
+        top: 0;
+        color: #999;
+      }
+    }
+  }
+}
+
+:host::ng-deep {
+  .alo-form-table input.aui-input.aui-input--medium {
+    height: 32px;
+    width: 40%;
+  }
+}
+
+aui-code-editor {
+  height: 200px;
+}
+
+textarea {
+  font-family: monospace;
+  height: auto;
+}

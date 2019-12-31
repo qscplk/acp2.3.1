@@ -1,0 +1,19 @@
+<div class="alo-tool-type-bar">
+  <button
+    class="alo-tool-type-bar__label"
+    [class.isSelected]="'all' === selectedType"
+    (click)="handleLabelClicked('all')"
+  >
+    <span>{{ 'all' | translate }}</span>
+    <span *ngIf="resources"> ({{ resources.length + addTotal }})</span>
+  </button>
+  <button
+    class="alo-tool-type-bar__label"
+    *ngFor="let type of types"
+    [class.isSelected]="type.name === selectedType"
+    (click)="handleLabelClicked(type.name)"
+  >
+    <span>{{ snakeCase(type.name) | translate }}</span>
+    <span *ngIf="resources"> ({{ getResourcesCount(type) }})</span>
+  </button>
+</div>

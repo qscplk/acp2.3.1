@@ -1,0 +1,45 @@
+apiVersion: apps/v1 # for versions before 1.8.0 use apps/v1beta1
+kind: Deployment
+metadata:
+  name: diablo
+  namespace: alauda-system
+  labels:
+    app: diablo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: diablo
+  template:
+    metadata:
+      labels:
+        app: diablo
+    spec:
+      containers:
+      - name: backend
+        image: index.alauda.cn/alaudak8s/diablo:daniel-dev
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9090
+        command:
+        - /backend
+        - --insecure-bind-address=0.0.0.0
+        - --insecure-port=9090
+      imagePullSecrets:
+        - name: alaudak8s
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: diablo
+  namespace: alauda-system
+spec:
+  ports:
+  - port: 9090
+    protocol: TCP
+    targetPort: 9090
+    nodePort: 31001
+  type: NodePort
+  selector:
+    app: diablo
+

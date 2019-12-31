@@ -1,0 +1,48 @@
+<alo-breadcrumb *aloPageHeaderContent>
+  <ng-template aloBreadcrumbItem>
+    <span>{{ 'artifact_repository' | translate }}</span>
+  </ng-template>
+</alo-breadcrumb>
+
+<aui-tab-group>
+  <aui-tab>
+    <span *auiTabLabel>
+      {{ 'image_repository' | translate }}
+    </span>
+    <aui-card>
+      <div class="list-card-header">
+        <div></div>
+        <aui-search
+          [placeholder]="'registry.filter_by_repo_address' | translate"
+          (keywordChange)="repositoriesFilter$$.next($event)"
+        ></aui-search>
+      </div>
+      <alo-repository-list [repositories]="filteredRepositories$ | async">
+      </alo-repository-list>
+      <alo-no-data
+        *ngIf="!(filteredRepositories$ | async)?.length || error"
+        [resourceName]="'image_repository' | translate"
+        [loading]="loading"
+        [error]="error"
+        (retry)="refetch$$.next(null)"
+      >
+      </alo-no-data>
+    </aui-card>
+  </aui-tab>
+  <aui-tab [disabled]="true">
+    <span
+      *auiTabLabel
+      [auiTooltip]="'stay_tuned' | translate"
+    >
+      Maven
+    </span>
+  </aui-tab>
+  <aui-tab [disabled]="true">
+    <span
+      *auiTabLabel
+      [auiTooltip]="'stay_tuned' | translate"
+    >
+      PyPl
+    </span>
+  </aui-tab>
+</aui-tab-group>

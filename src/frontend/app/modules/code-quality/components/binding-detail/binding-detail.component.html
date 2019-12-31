@@ -1,0 +1,120 @@
+<acl-page-state
+  [adapter]="dataLoader"
+  (redirect)="back()"
+  [autoRedirect]="false"
+>
+  <ng-template let-binding>
+    <aui-card>
+      <div auiCardHeader class="info-header">
+        <div class="header-title" *ngIf="binding; else headerSketch">
+          <img
+            class="type-icon"
+            src="{{
+              'icons/tool-chain/' + binding.serviceType.toLowerCase() + '.svg'
+            }}"
+            alt="devops"
+          />
+          <span>{{ binding.name }}</span>
+          <aui-icon
+            *ngIf="binding.status.phase === 'Error'"
+            class="alert"
+            [auiTooltip]="binding.status.message"
+            [auiTooltipDisabled]="!binding.status.message"
+            auiTooltipPosition="top start"
+            icon="exclamation_circle_s"
+          ></aui-icon>
+        </div>
+        <ng-template #headerSketch>
+          <div class="header-title">
+            <span>{{ bindingName$ | async }}</span>
+          </div>
+        </ng-template>
+        <alo-menu-trigger [menu]="actionsMenu"></alo-menu-trigger>
+      </div>
+      <aui-menu #actionsMenu>
+        <aui-menu-group>
+        <acl-disabled-container [isAllowed]="(permission$ | async)?.update">
+          <aui-menu-item (click)="update()">{{
+            'update' | translate
+          }}</aui-menu-item>
+        </acl-disabled-container>
+      </aui-menu-group>
+    <aui-menu-group>
+        <acl-disabled-container [isAllowed]="(permission$ | async)?.delete">
+          <aui-menu-item
+            type="danger"
+            [divide]="true"
+            (click)="unbind(binding)"
+            >{{ 'project.unbind' | translate }}</aui-menu-item
+          >
+        </acl-disabled-container>
+      </aui-menu-group>
+      </aui-menu>
+      <ul class="basic-info">
+        <li class="info-item">
+          <span class="label">{{ 'project.binding_integration_name' | translate }}：</span>
+          <span class="value">
+            <a
+              *ngIf="binding?.service"
+              [routerLink]="[
+                '/admin/tool-chain/codequalitytool',
+                binding?.service
+              ]"
+              >{{ binding?.service }}</a
+            >
+          </span>
+        </li>
+        <li class="info-item">
+          <span class="label">{{ 'secret' | translate }}：</span>
+          <span class="value">
+            <a
+              *ngIf="binding?.secret"
+              [routerLink]="binding?.secret | pure: secretRoute"
+              >{{ binding?.secret | pure: secretName }}</a
+            >
+            <ng-container *ngIf="!binding?.secret"
+              >{{ 'no_auth' | translate }}
+            </ng-container>
+          </span>
+        </li>
+        <li class="info-item">
+          <span class="label">{{ 'type' | translate }}：</span>
+          <span class="value">{{ binding?.serviceType }}</span>
+        </li>
+        <li class="info-item">
+          <span class="label">{{ 'project.bind_at' | translate }}：</span>
+          <span class="value">{{
+            binding?.creationTimestamp | aclStandardTime
+          }}</span>
+        </li>
+        <li class="info-item">
+          <span class="label">{{ 'description' | translate }}：</span>
+          <span class="value">
+            <span>{{ binding?.description || '-' }}</span>
+          </span>
+        </li>
+      </ul>
+    </aui-card>
+
+    <aui-card>
+      <div class="list-header">
+        <div>{{ 'code_quality.projects' | translate }}</div>
+        <div class="actions">
+          <aui-search
+            [placeholder]="'code_quality.search_by_code_repo_name' | translate"
+            [keyword]="projectsKeywords"
+            (keywordChange)="onKeywordsChange($event)"
+          ></aui-search>
+        </div>
+      </div>
+      <alo-code-quality-project-list
+        [namespace]="namespace"
+        [bindingName]="name"
+        [keywords]="projectsKeywords"
+        [sort]="projectsSort"
+        (sortChange)="onSortChange($event)"
+      >
+      </alo-code-quality-project-list>
+    </aui-card>
+  </ng-template>
+</acl-page-state>

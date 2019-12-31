@@ -1,0 +1,304 @@
+<div
+  class="create-by-image-container"
+  *ngIf="model"
+>
+  <ng-container>
+    <ul class="toc-links">
+      <li *ngIf="!isMulti">
+        <a
+          href="javascript:void(0)"
+          auiTocLink="toc_content_app_basic"
+          [for]="toc"
+        >
+          <span class="link-icon icon-app">
+            <aui-icon icon="basic:application_s"></aui-icon>
+          </span>
+          <span class="link-label">{{'applications.list'| translate}}</span>
+        </a>
+        <div class="link-separator"></div>
+      </li>
+      <li>
+        <a
+          href="javascript:void(0)"
+          auiTocLink="toc_content_component_basic.toc_content_component_advance"
+          [for]="toc"
+        >
+          <span class="link-icon icon-component">
+            <aui-icon icon="basic:component"></aui-icon>
+          </span>
+          <span class="link-label">{{'component'| translate}}</span>
+        </a>
+        <div class="link-separator"></div>
+        <ul class="secondary-links">
+          <li>
+            <a
+              auiTocLink="toc_content_component_basic"
+              [for]="toc"
+              href="javascript:void(0)"
+            >{{'basic'
+              | translate}}</a>
+          </li>
+          <li>
+            <a
+              auiTocLink="toc_content_component_advance"
+              [for]="toc"
+              href="javascript:void(0)"
+            >{{'advanced'
+              | translate}}</a>
+          </li>
+        </ul>
+      </li>
+
+      <li>
+        <a
+          href="javascript:void(0)"
+          auiTocLink="toc_content_container_basic"
+          [for]="toc"
+        >
+          <span class="link-icon icon-container">
+            <aui-icon icon="basic:container"></aui-icon>
+          </span>
+          <span class="link-label">{{'container'| translate}}</span>
+        </a>
+        <div class="link-separator"></div>
+        <ul class="secondary-links">
+          <li>
+            <a
+              auiTocLink="toc_content_container_basic"
+              [for]="toc"
+              href="javascript:void(0)"
+            >{{'basic'
+              | translate}}</a>
+          </li>
+          <li>
+            <a
+              auiTocLink="toc_content_container_advance"
+              [for]="toc"
+              href="javascript:void(0)"
+            >{{'advanced'
+              | translate}}</a>
+          </li>
+        </ul>
+      </li>
+
+      <li>
+        <a
+          href="javascript:void(0)"
+          auiTocLink="toc_content_newwork"
+          [for]="toc"
+        >
+          <span class="link-icon icon-network">
+            <aui-icon icon="basic:route_s"></aui-icon>
+          </span>
+          <span class="link-label">{{ 'nav_networks' | translate }}</span>
+        </a>
+      </li>
+    </ul>
+  </ng-container>
+
+  <form
+    #form="ngForm"
+    auiForm
+    auiFormLabelWidth="150px"
+  >
+    <div
+      auiTocContainer
+      #toc=auiTocContainer
+      class="toc-container"
+    >
+      <div
+        auiTocContent="toc_content_app_basic"
+        *ngIf="!isMulti"
+      >
+        <ng-content></ng-content>
+      </div>
+      <div
+        class="comp-card"
+        auiTocContent="toc_content_component_basic"
+      >
+        <aui-card>
+          <div auiCardHeader>
+            {{ 'application.compute_component' | translate }}
+          </div>
+          <div>
+            <aui-form-item>
+              <label auiFormItemLabel>{{'application.component_name' |
+                translate}}</label>
+              <input
+                auiFormItemControl
+                [(ngModel)]="model.componentName"
+                [readonly]="isEdit && !model.isNewComponent"
+                name="componentName"
+                [maxlength]="nameRule.maxLength"
+                #componentName="ngModel"
+                aui-input
+                required
+                [placeholder]="nameRule.placeholder | translate: {count: nameRule.maxLength}"
+                [pattern]="nameRule.pattern"
+              />
+              <div auiFormItemError *ngIf="componentName.errors?.required">
+                {{ 'required' | translate }}
+              </div>
+              <div auiFormItemError *ngIf="componentName.errors?.pattern">
+                {{ nameRule.patternError | translate }}
+              </div>
+            </aui-form-item>
+            <aui-form-item>
+              <label auiFormItemLabel>{{'application.replicas' | translate}}</label>
+              <button
+                aui-button
+                [disabled]="model.replicas <= 0"
+                (click)="reduceReplicas()"
+                square="true"
+              >
+                <aui-icon icon="basic:minus "></aui-icon>
+              </button>
+              <input
+                auiFormItemControl
+                class="instance-number"
+                [(ngModel)]="model.replicas"
+                name="replicas"
+                type="number"
+                #replicas="ngModel"
+                aui-input
+                pattern="^[+]{0,1}(\d+)$"
+              />
+              <button
+                aui-button
+                (click)="increaseReplicas()"
+                square="true"
+              >
+                <aui-icon icon="basic:plus"></aui-icon>
+              </button>
+            </aui-form-item>
+          </div>
+
+          <div class="inject-form-item" *ngIf="displayInjectSidecar">
+            <aui-form-item>
+              <label auiFormItemLabel>{{'application.inject_into_sidecar' | translate}}</label>
+              <aui-switch
+                auiFormItemControl
+                name="injectSidecar"
+                [(ngModel)]="model.injectSidecar"
+              >
+              </aui-switch>
+              <div class="inject-tip">{{'application.inject_sidecar_tip' | translate}}</div>
+            </aui-form-item>
+          </div>
+        </aui-card>
+
+        <alo-foldable-block [title]="('application.compute_component' | translate)+'-'+('advanced' | translate)">
+          <aui-card>
+            <div auiCardHeader>
+              {{ 'application.compute_component' | translate }}-{{ 'advanced' | translate }}
+            </div>
+            <div>
+              <aui-form-item>
+                <label auiFormItemLabel>{{'application.component_label' |
+                  translate}}</label>
+                <alo-key-value-form-table
+                  auiFormItemControl
+                  [(ngModel)]="model.labels"
+                  name="key"
+                ></alo-key-value-form-table>
+              </aui-form-item>
+              <aui-form-item>
+                <label auiFormItemLabel>{{'secret' | translate}}</label>
+                <aui-multi-select
+                  auiFormItemControl
+                  name="secret"
+                  #secret="ngModel"
+                  clearable="true"
+                  [(ngModel)]="model.secrets"
+                >
+                  <ng-container *ngFor="let secret of (secrets$ | async)">
+                    <aui-option
+                      *ngIf="secret.type === secretTypes.DockerConfig"
+                      [value]="secret.objectMeta.name"
+                    >{{secret.objectMeta.name}}</aui-option>
+                  </ng-container>
+                </aui-multi-select>
+              </aui-form-item>
+            </div>
+          </aui-card>
+        </alo-foldable-block>
+      </div>
+
+      <div
+        class="container-card"
+        auiTocContent="toc_content_container_basic"
+      >
+        <alo-app-create-container-field
+          name="container"
+          [params]="params"
+          (secretChange)="secretChange($event)"
+          [(ngModel)]="model.containers"
+          #container="ngModel"
+        ></alo-app-create-container-field>
+      </div>
+
+      <div class="network-card">
+        <aui-card auiTocContent="toc_content_newwork">
+          <div auiCardHeader>
+            {{ 'nav_networks' | translate }}
+          </div>
+          <div>
+            <aui-form-item>
+              <label auiFormItemLabel>{{'application.public_network_access' |
+                translate}}</label>
+              <ng-container *ngIf="canDisplayPublicNetworkAccessTable; else emptyPublicNetworkAccessBlock">
+                <alo-public-network-access
+                  [(ngModel)]="model.publicNetworkAccess"
+                  #publicNetworkAccess
+                  name="publicNetworkAccess"
+                ></alo-public-network-access>
+              </ng-container>
+              <ng-template #emptyPublicNetworkAccessBlock>
+                <div class="empty-access">{{
+                  'application.no_public_network_access_hint' | translate }}
+                  <a (click)="addPublicNetworkAccess()">{{ 'add' | translate
+                    }}</a></div>
+              </ng-template>
+            </aui-form-item>
+
+            <aui-form-item>
+              <label auiFormItemLabel>{{'application.public_ip_access' |
+                translate}}</label>
+              <ng-container *ngIf="canDisplayPublicIPAccessTable; else emptyPublicIPAccessBlock">
+                <alo-public-ip-access
+                  [(ngModel)]="model.publicIPAccess"
+                  #publicIPAccess
+                  name="publicIPAccess"
+                ></alo-public-ip-access>
+              </ng-container>
+              <ng-template #emptyPublicIPAccessBlock>
+                <div class="empty-access">{{
+                  'application.no_public_ip_access_hint' | translate }}
+                  <a (click)="addPublicIPAccess()">{{ 'add' | translate
+                    }}</a></div>
+              </ng-template>
+            </aui-form-item>
+
+            <aui-form-item>
+              <label auiFormItemLabel>{{'application.cluster_access' |
+                translate}}</label>
+              <ng-container *ngIf="canDisplayClusterAccessTable; else emptyClusterAccessBlock">
+                <alo-cluster-access
+                  [(ngModel)]="model.clusterAccess"
+                  #clusterAccess
+                  name="clusterAccess"
+                ></alo-cluster-access>
+              </ng-container>
+              <ng-template #emptyClusterAccessBlock>
+                <div class="empty-access">{{
+                  'application.no_cluster_access_hint'
+                  | translate }} <a (click)="addClusterAccess()">{{ 'add' |
+                    translate }}</a></div>
+              </ng-template>
+            </aui-form-item>
+          </div>
+        </aui-card>
+      </div>
+    </div>
+  </form>
+</div>

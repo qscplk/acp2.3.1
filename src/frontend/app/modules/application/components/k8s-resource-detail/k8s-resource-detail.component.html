@@ -1,0 +1,142 @@
+<div
+  *ngIf="!result"
+  class="no-data"
+>
+  <span>{{ 'loading' | translate }}</span>
+</div>
+
+<aui-tab-group
+  *ngIf="result"
+  (selectedIndexChange)="changeTab($event)"
+  [(selectedIndex)]="activeTab"
+>
+  <aui-tab>
+    <span *auiTabLabel>
+      {{ 'detail' | translate }}
+    </span>
+    <alo-k8s-resource-basic-info
+      [result]="result"
+      [data]="params"
+      [isContainersRequestsEmpty]="isContainersRequestsEmpty"
+      [allowedUpdate]="allowedUpdate"
+      (updateLabelsEvent)="updateLabels()"
+      (updateAnnotationsEvent)="updateAnnotations()"
+      (updatedReplicasEvent)="refreshResourceDetail()"
+      (updatedHpaEvent)="updateAutoScaling()"
+      (deletedHpaEvent)="deleteAutoScaling()"
+    ></alo-k8s-resource-basic-info>
+    <div class="container-card">
+      <aui-card>
+        <div auiCardHeader>
+          {{ 'container' | translate }}
+        </div>
+        <div
+          auiCardBody
+          class="base-body"
+        >
+          <div class="field full">
+            <ng-container *ngIf="multiContainer">
+              <ul class="tabs">
+                <li
+                  class="tab-label"
+                  *ngFor="let container of result.containers"
+                  [class.active]="selectedContainer === container.name"
+                >
+                  <a
+                    href="javascript:void(0)"
+                    (click)="changeContainer(container.name)"
+                  >{{ container.name }}</a>
+                </li>
+              </ul>
+            </ng-container>
+          </div>
+          <ng-container *ngFor="let container of result.containers; index as i; trackBy: containerIdentity">
+            <ng-container *ngIf="selectedContainer === container.name">
+              <div class="containers-wrapper">
+                <alo-container
+                  [params]="params"
+                  [resource]="containerParams"
+                  (selecteLogs)="showLogs($event)"
+                  [container]="container"
+                  [displayContainerName]="!multiContainer"
+                  [displayAdvanced]="true"
+                  [allowedUpdate]="allowedUpdate"
+                  (updated)="refreshResourceDetail()"
+                >
+                </alo-container>
+                <div
+                  class="volume-info-wrapper"
+                  *ngIf="result.volumeInfos[i] && result.volumeInfos[i].length !== 0"
+                >
+                  <alo-foldable-bar
+                    [title]="'application.mounted_volume' | translate"
+                    (toggleFold)="toggleFold()"
+                  ></alo-foldable-bar>
+                  <alo-volume-info
+                    *ngIf="folded"
+                    [data]="result.volumeInfos[i]"
+                    [resource]="containerParams"
+                    [container]="container"
+                  ></alo-volume-info>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+      </aui-card>
+    </div>
+    <!-- network -->
+    <alo-resource-network
+      *ngIf="params.kind === 'Deployment'"
+      [networkInfo]="result.networkInfo"
+      [visitAddresses]="result.visitAddresses"
+      [name]="result.objectMeta.name"
+      [cluster]="params.cluster"
+      [namespace]="params.namespace"
+      [allowedUpdate]="allowedUpdate"
+      (updated)="updated.emit()">
+    </alo-resource-network>
+  </aui-tab>
+  <aui-tab>
+    <span *auiTabLabel>YAML</span>
+  </aui-tab>
+  <aui-tab>
+    <span *auiTabLabel>{{ 'configmap' | translate }}</span>
+    <alo-pod-env-list
+      [containers]="result.containers"
+      [noUpdate]="false"
+      [cluster]="params.cluster"
+      [namespace]="params.namespace"
+      [kind]="params.kind"
+      [resourceName]="params.resourceName"
+      [allowedUpdate]="allowedUpdate"
+      (update)="refreshResourceDetail()"
+    ></alo-pod-env-list>
+  </aui-tab>
+  <aui-tab>
+    <span *auiTabLabel>{{ 'logs' | translate }}</span>
+  </aui-tab>
+  <aui-tab>
+    <span *auiTabLabel>{{ 'event' | translate }}</span>
+    <aui-card>
+      <div class="empty-tab"
+      >{{ 'no_data' | translate }}</div>
+    </aui-card>
+  </aui-tab>
+</aui-tab-group>
+<div
+  class="detail-page-tab-container"
+  *ngIf="activeTab===tabs.yaml"
+>
+  <aui-code-editor
+    [options]="displayOptions"
+    [(ngModel)]="yaml"
+  >
+  </aui-code-editor>
+</div>
+<div
+  class="detail-page-tab-container"
+  *ngIf="activeTab===tabs.log"
+>
+  <alo-application-log [resourceLogParams]="logParams"></alo-application-log>
+</div>

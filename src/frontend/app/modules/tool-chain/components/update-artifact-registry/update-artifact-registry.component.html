@@ -1,0 +1,99 @@
+<aui-dialog-header>
+  {{ 'update' | translate }}
+</aui-dialog-header>
+<aui-dialog-content>
+  <form
+    #form="ngForm"
+    auiForm
+    [auiFormEmptyAddon]="false"
+    auiFormLabelWidth="114px"
+  >
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'name' | translate }}</label>
+      <span>{{ model.name }}</span>
+    </aui-form-item>
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'tool_chain.registry_type' | translate }}</label>
+      <span>{{ model.artifactType }}</span>
+    </aui-form-item>
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'tool_chain.version_policy' | translate }}</label>
+      <span>{{ model?.versionPolicy || '-'}}</span>
+    </aui-form-item>
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'tool_chain.file_location' | translate }}</label>
+      <span>{{ model?.fileLocation || '-'}}</span>
+    </aui-form-item>
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'auth_type' | translate }}</label>
+      <aui-radio-group
+        [(ngModel)]="model.secretType"
+        [isPlain]="true"
+        name="secretType"
+        (ngModelChange)="secretChange()"
+      >
+        <aui-radio-button
+          [value]="SecretType.BasicAuth"
+        >
+          {{ 'secret.basic_auth' | translate }}
+        </aui-radio-button>
+      </aui-radio-group>
+    </aui-form-item>
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'secret' | translate }}</label>
+      <div class="secret-group">
+        <aui-select
+          auiFormItemControl
+          name="secret"
+          #secret="ngModel"
+          [(ngModel)]="model.secretName"
+          filterable
+          required
+        >
+          <aui-option-group>
+            <aui-option
+              *ngFor="let item of (secrets$ | async)"
+              [value]="item.name"
+              [label]="item.name"
+              (click)="secretToValue(item)"
+            >
+              <span>{{ item.name }}</span>
+              <span class="secret-group__display-name" *ngIf="!!item.displayName">
+                ({{ item.displayName }})
+              </span>
+            </aui-option>
+          </aui-option-group>
+          <aui-option-placeholder>
+            {{ 'no_available_secrets' | translate }}
+          </aui-option-placeholder>
+        </aui-select>
+        <button aui-button type="button" class="add-secret" (click)="addSecret()">
+          {{ 'add_secret' | translate }}
+        </button>
+      </div>
+      <div
+        auiFormItemError
+        *ngIf="secret.errors?.required"
+      >
+        {{ 'required' | translate }}
+      </div>
+    </aui-form-item>
+  </form>
+</aui-dialog-content>
+<aui-dialog-footer>
+  <button
+    aui-button="primary"
+    [loading]="submitting"
+    [disabled]="submitting || form.invalid"
+    (click)="submit()"
+  >
+    {{ 'update' | translate }}
+  </button>
+  <button
+    aui-button
+    [auiDialogClose]="null"
+    [disabled]="submitting"
+  >
+    {{ 'cancel' | translate }}
+  </button>
+</aui-dialog-footer>

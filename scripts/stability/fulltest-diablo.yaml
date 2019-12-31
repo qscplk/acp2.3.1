@@ -1,0 +1,99 @@
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: diablo-fulltest
+  namespace: alauda-system
+  labels:
+    job-name: diablo-fulltest
+spec:
+  serviceAccount: devops-apiserver
+  serviceAccountName: devops-apiserver
+  parallelism: 1
+  completions: 1
+  backoffLimit: 1
+  template:
+    metadata:
+      name: diablo-fulltest
+      labels:
+        job-name: diablo-fulltest
+    spec:
+      volumes:
+        - name: shm
+          hostPath:
+            path: /dev/shm
+        - name: config
+          hostPath:
+            path: /etc/kubernetes/admin.conf
+        - name: e2e-reports
+          hostPath:
+            path: /root/alauda-uireport/diablo/e2e-reports
+        - name: e2e-result
+          hostPath:
+          path: /tmp/results
+      containers:
+        - name: counter
+          image: '172.30.0.94:60080/alaudak8s/diablo-e2e:v1.2.10'
+          env:
+            - name: TESTIMAGE
+              value: 172.30.0.94:60080/alaudak8s/qaimages:helloworld
+            - name: OIDC_ENABLED
+              value: 'true'
+            - name: ISPUBLIC
+              value: 'false'
+            - name: CASE_TYPE
+              value: 'diablo'
+            - name: GITLAB_HOST
+              value: 'http://172.30.0.94:31101'
+            - name: GITLAB_TOKEN
+              value: 'dv8KmYca1yt__FLfqyue'
+            - name: GITLAB_TEMPLATE
+              value: 'http://172.30.0.94:31101/root/template-demo.git'
+            - name: JENKINS_HOST
+              value: 'http://jenkins.default:8080'
+            - name: REGISTRY_ISREADY
+              value: 'false'
+            - name: HARBOR_URL
+              value: 'http://172.30.0.94:31104'
+            - name: BASE_URL
+              value: 'https://94.191.102.25/devops' #使用公有IP可访问地址
+            - name: JENKINS_ISREADY
+              value: 'true'
+            - name: JENKINS_PWD
+              value: '1103e5b6f0ff68b48f5432e44faa2e9aa0'
+            - name: ACEREGISTRY_ISREADY  #私有环境如果部署ACE REGISTRY, 如果是ture，需要传入ACEREGISTRY下面环境变量。
+              value: 'false'
+            - name: ACEREGISTRY_HOST
+              value: 'https://api.alauda.cn'
+            - name: ACEREGISTRY_USER
+              value: 'alaudak8s/jiaozhang'
+            - name: ACEREGISTRY_PWD
+              value: 'ZHj,.123'
+            - name: ACEREGISTRY_REPO
+              value: 'alaudak8s'
+          resources:
+            limits:
+              cpu: 1500m
+              memory: 1536Mi
+            requests:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: shm
+              mountPath: /dev/shm
+            - name: config
+              mountPath: /home/jenkins/.kube/config
+            - name: e2e-reports
+              mountPath: /go/src/alauda.io/diablo/e2e-reports
+            - name: e2e-result
+              mountPath: /tmp/results
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Never
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      imagePullSecrets:
+        - name: alaudak8s
+      nodeSelector:
+        node-role.kubernetes.io/master: ''

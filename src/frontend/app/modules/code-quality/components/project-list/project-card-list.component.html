@@ -1,0 +1,243 @@
+<ng-container>
+  <aui-card [divider]="false">
+    <div auiCardHeader class="list-header">
+      <div>
+        <span>{{ 'code_quality.projects' | translate }}</span>
+        <a
+          href="javascript:;"
+          auiTooltip="{{ 'code_quality.legends' | translate }}"
+          [auiDropdown]="legends"
+          auiDropdownPosition="bottom start"
+        >
+          <aui-icon icon="basic:info"></aui-icon>
+        </a>
+      </div>
+      <div>
+        <button
+          aui-button="default"
+          [auiDropdown]="sortMethods"
+          class="sort-btn"
+        >
+          {{
+            (sortActive === 'date'
+              ? 'code_quality.sort_by_date'
+              : 'code_quality.sort_by_status'
+            ) | translate
+          }}
+          <aui-icon icon="caret_down_s"></aui-icon>
+        </button>
+        <aui-search
+          placeholder="{{
+            'code_quality.search_by_code_repo_name' | translate
+          }}"
+          [keyword]="keywords"
+          (keywordChange)="search($event)"
+        ></aui-search>
+      </div>
+    </div>
+    <ng-container
+      *aloAsyncData="
+        let items;
+        let error = error;
+        let loading = loading;
+        let refresh = refetch;
+        handler: fetchProjects;
+        params: params
+      "
+    >
+      <div class="card-list">
+        <div *ngFor="let item of items; trackBy: projectIdentity" class="card">
+          <div class="card__header">
+            <div class="card__title">
+              <img src="icons/pipeline/badges/sonarqube.svg" alt="devops" />
+              <span>{{ item.codeAddress }}</span>
+              <aui-tag
+                [color]="item.mainBranch?.status | pure: statusColor"
+                size="small"
+              >
+                {{ item.mainBranch?.status | pure: status | translate }}
+              </aui-tag>
+            </div>
+            <div class="card__status">
+              <div [title]="item.name">
+                <aui-icon
+                  *ngIf="item.status?.phase === 'Error'"
+                  icon="exclamation_circle_s"
+                  [auiTooltip]="item.status?.message"
+                ></aui-icon>
+                {{ item.name }}
+              </div>
+              <div>
+                <span>{{ 'code_quality.latest_scan_at' | translate }}</span>
+                <span>
+                  {{ item.mainBranch?.lastAttempt | aclRelativeTime }}
+                </span>
+              </div>
+            </div>
+            <div class="card__actions">
+              <a
+                *ngIf="item.link"
+                [href]="item.link"
+                target="_blank"
+                [title]="'jump_to' | translate: { name: item.toolType }"
+              >
+                <aui-icon icon="basic:jump"></aui-icon>
+              </a>
+            </div>
+          </div>
+          <div class="card__body">
+            <ng-container *ngIf="item.mainBranch as mainBranch; else empty">
+              <div class="report-item">
+                <div class="report-item__status">
+                  <alo-code-quality-icon
+                    type="level"
+                    [level]="mainBranch.metrics.bugs.level"
+                  ></alo-code-quality-icon>
+                  <div class="report-item__status-body">
+                    <span class="report-item__status-value">
+                      {{ mainBranch.metrics.bugs.value | aloSIPrefix }}
+                    </span>
+                    <span class="report-item__status-text">
+                      {{ 'code_quality.bug' | translate }}
+                    </span>
+                  </div>
+                </div>
+                <div class="report-item__text">
+                  <span>{{ 'reliability' | translate }}</span>
+                </div>
+              </div>
+              <div class="report-item">
+                <div class="report-item__status">
+                  <alo-code-quality-icon
+                    type="level"
+                    [level]="mainBranch.metrics.vulnerabilities.level"
+                  ></alo-code-quality-icon>
+                  <div class="report-item__status-body">
+                    <span class="report-item__status-value">
+                      {{
+                        mainBranch.metrics.vulnerabilities.value | aloSIPrefix
+                      }}
+                    </span>
+                    <span class="report-item__status-text">
+                      {{ 'code_quality.vulnerability' | translate }}
+                    </span>
+                  </div>
+                </div>
+                <div class="report-item__text">
+                  <span>{{ 'security' | translate }}</span>
+                </div>
+              </div>
+              <div class="report-item">
+                <div class="report-item__status">
+                  <alo-code-quality-icon
+                    type="level"
+                    [level]="mainBranch.metrics.codeSmells.level"
+                  ></alo-code-quality-icon>
+                  <div class="report-item__status-body">
+                    <span class="report-item__status-value">
+                      {{ mainBranch.metrics.codeSmells.value | aloSIPrefix }}
+                    </span>
+                    <span class="report-item__status-text">
+                      {{ 'code_quality.smell' | translate }}
+                    </span>
+                  </div>
+                </div>
+                <div class="report-item__text">
+                  <span>{{ 'maintainability' | translate }}</span>
+                </div>
+              </div>
+              <div class="report-item">
+                <div class="report-item__status">
+                  <alo-code-quality-icon
+                    type="coverage"
+                    [level]="mainBranch.metrics.coverage.value | pure: coverage"
+                  ></alo-code-quality-icon>
+                  <div class="report-item__status-body">
+                    <span class="report-item__status-value">
+                      {{ mainBranch.metrics.coverage.value }}%
+                    </span>
+                  </div>
+                </div>
+                <div class="report-item__text">
+                  <span>{{ 'code_quality.coverage' | translate }}</span>
+                </div>
+              </div>
+              <div class="report-item">
+                <div class="report-item__status">
+                  <alo-code-quality-icon
+                    type="duplicate"
+                    [level]="
+                      mainBranch.metrics.duplications.value | pure: duplication
+                    "
+                  ></alo-code-quality-icon>
+                  <div class="report-item__status-body">
+                    <span class="report-item__status-value">
+                      {{ mainBranch.metrics.duplications.value }}%
+                    </span>
+                  </div>
+                </div>
+                <div class="report-item__text">
+                  <span>{{ 'code_quality.duplicate' | translate }}</span>
+                </div>
+              </div>
+              <div class="report-item">
+                <div class="report-item__status">
+                  <alo-code-quality-icon
+                    type="size"
+                    [level]="mainBranch.language.lineCount | pure: size"
+                  ></alo-code-quality-icon>
+                  <div class="report-item__status-body">
+                    <span class="report-item__status-value">
+                      {{ mainBranch.language.lineCount | aloSIPrefix }}
+                    </span>
+                  </div>
+                </div>
+                <div class="report-item__text">
+                  <span [title]="mainBranch.language.text">
+                    {{ mainBranch.language.text }}
+                  </span>
+                </div>
+              </div>
+            </ng-container>
+            <ng-template #empty>
+              <div class="empty">
+                {{ 'code_quality.no_scan_data' | translate }}
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <alo-no-data
+        *ngIf="!items || !items.length"
+        [resourceName]="'code_quality.scan_data' | translate"
+        [loading]="loading"
+        [error]="error"
+        [mode]="card"
+        (retry)="refresh()"
+      ></alo-no-data>
+    </ng-container>
+  </aui-card>
+</ng-container>
+
+<aui-menu #legends>
+  <ng-template auiMenuContent>
+    <alo-code-quality-legends></alo-code-quality-legends>
+  </ng-template>
+</aui-menu>
+
+<aui-menu #sortMethods>
+  <ng-template auiMenuContent>
+    <aui-menu-item (click)="sort('date')">
+      <span>{{ 'code_quality.sort_by_date' | translate }}</span>
+      <span class="menu_description">
+        ({{ 'code_quality.sort_by_date_description' | translate }})
+      </span>
+    </aui-menu-item>
+    <aui-menu-item (click)="sort('status')">
+      <span>{{ 'code_quality.sort_by_status' | translate }}</span>
+      <span class="menu_description">
+        ({{ 'code_quality.sort_by_status_description' | translate }})
+      </span>
+    </aui-menu-item>
+  </ng-template>
+</aui-menu>

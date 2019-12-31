@@ -1,0 +1,34 @@
+<ng-container *aloPageHeaderContent>
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <span>
+        {{ 'nav_config' | translate }}
+      </span>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['../../']">
+        {{ 'configmap.list' | translate }}
+      </a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <span>
+        {{ 'configmap.update' | translate }}
+      </span>
+    </ng-template>
+  </alo-breadcrumb>
+  <!-- yaml互转功能隐藏 -->
+  <!-- <div fxFlex></div>
+  <aui-radio-group
+    [isPlain]="false"
+    (ngModelChange)="modeChange($event)"
+    [(ngModel)]="displayModel"
+  >
+    <aui-radio-button value="form">{{'form' | translate}}</aui-radio-button>
+    <aui-radio-button value="yaml">YAML</aui-radio-button>
+  </aui-radio-group> -->
+</ng-container>
+
+<alo-configmap-update
+  #configmapForm
+  [displayModel]="displayModel"
+></alo-configmap-update>

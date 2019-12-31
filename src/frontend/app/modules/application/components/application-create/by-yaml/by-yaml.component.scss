@@ -1,0 +1,21 @@
+@import 'variables';
+
+:host {
+  .yaml-card-container {
+    margin-top: 10px;
+    margin-bottom: 70px;
+  }
+  aui-code-editor {
+    flex-grow: 1;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: $margin-12;
+    ::ng-deep .aui-code-editor {
+      flex: 1;
+    }
+  }
+  .mutate-buttons {
+    justify-content: flex-end;
+  }
+}

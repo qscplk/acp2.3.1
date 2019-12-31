@@ -1,0 +1,33 @@
+aui-muti-select {
+  display: block;
+  ::ng-deep .aui-muti-select {
+    width: 100%;
+  }
+}
+
+.alo-account-group {
+  &__title {
+    margin: 24px 0px 12px;
+    font-size: 16px;
+    color: #666666;
+  }
+}
+
+.status {
+  display: flex;
+  height: 140px;
+  border: dashed 1px #ccc;
+  border-radius: 2px;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  > span {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    > aui-icon {
+      margin-right: 8px;
+      font-size: 16px;
+    }
+  }
+}

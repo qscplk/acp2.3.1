@@ -1,0 +1,54 @@
+@import 'var';
+
+.manager {
+  &:not(:last-child) {
+    margin-bottom: 16px;
+  }
+  &-head {
+    display: flex;
+    align-items: center;
+    background-color: #fafafa;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    padding: 8px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    &--logo {
+      width: 32px;
+      height: 24px;
+      img {
+        height: 100%;
+      }
+      margin-right: 4px;
+    }
+    &--hint {
+      margin: 0 40px 0 8px;
+      aui-icon {
+        color: #999;
+        font-size: 16px;
+        &:hover {
+          color: $color-primary;
+        }
+      }
+    }
+    &--warning {
+      margin-left: 8px;
+      color: $color-warning;
+      font-size: 16px;
+    }
+    &--detail-link {
+      margin-left: auto;
+    }
+  }
+}
+
+.no-registries {
+  border: 1px dashed #ededed;
+  padding: 70px 0;
+  text-align: center;
+  color: #999;
+  > div {
+    margin: 0 auto;
+    width: 576px;
+  }
+}

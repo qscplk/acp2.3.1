@@ -1,0 +1,53 @@
+<ng-container *aloPageHeaderContent>
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <span>
+        {{ 'nav_storage' | translate }}
+      </span>
+    </ng-template>
+  </alo-breadcrumb>
+</ng-container>
+
+<acl-page-state [adapter]="dataManager">
+  <ng-template let-resource="resource" let-permissions="permissions">
+    <aui-card>
+      <div class="list-header">
+        <acl-disabled-container [isAllowed]="permissions?.create">
+          <button aui-button="primary" (click)="createStorage()">
+            {{ 'storage.create' | translate }}
+          </button>
+        </acl-disabled-container>
+        <div class="alo-search">
+          <aui-search
+            [keyword]="keywords$ | async"
+            [placeholder]="'search_by_name_placeholder' | translate"
+            [searchButton]="true"
+            (search)="search($event)"
+          ></aui-search>
+        </div>
+      </div>
+      <div>
+        <alo-storage-list
+          [params]="params$ | async"
+          [data]="resource?.items || []"
+          [permissions]="permissions"
+          (updated)="dataManager?.reload()"
+          (sortChange)="onSort($event)">
+        </alo-storage-list>
+        <alo-no-data
+          *ngIf="!resource || resource.total === 0"
+          [resourceName]="'storage.list' | translate"
+        ></alo-no-data>
+        <aui-paginator
+          *ngIf="resource?.total"
+          [pageIndex]="(params$ | async).pageIndex"
+          [pageSize]="(params$ | async).itemsPerPage"
+          [pageSizeOptions]="[20, 50, 100]"
+          [length]="resource.total"
+          (currentPageChange)="currentPageChange($event)"
+          (pageSizeChange)="pageSizeChange($event)"
+        ></aui-paginator>
+      </div>
+    </aui-card>
+  </ng-template>
+</acl-page-state>

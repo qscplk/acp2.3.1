@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="36" viewBox="0 0 48 36">
+  <defs>
+    <radialGradient id="nexus-a" cx="52.202%" cy="49.387%" r="71.282%" fx="52.202%" fy="49.387%">
+      <stop offset="0%" stop-color="#94DEA6"/>
+      <stop offset="100%" stop-color="#208E3E"/>
+    </radialGradient>
+    <radialGradient id="nexus-b" cy="0%" r="84.134%" fx="50%" fy="0%" gradientTransform="matrix(0 1 -1.60998 0 .5 -.5)">
+      <stop offset="0%" stop-color="#A8E8B9"/>
+      <stop offset="55.536%" stop-color="#278D43"/>
+      <stop offset="100%" stop-color="#0B501E"/>
+    </radialGradient>
+    <linearGradient id="nexus-c" x1="66.346%" x2="50.37%" y1="0%" y2="97.735%">
+      <stop offset="0%" stop-color="#2A9D48"/>
+      <stop offset="100%" stop-color="#1B8036"/>
+    </linearGradient>
+    <radialGradient id="nexus-d" cx="88.914%" cy="29.596%" r="79.636%" fx="88.914%" fy="29.596%" gradientTransform="matrix(-.84493 .53487 -.86113 -1.36033 1.895 .223)">
+      <stop offset="0%" stop-color="#A8E8B9"/>
+      <stop offset="50.573%" stop-color="#278D43"/>
+      <stop offset="100%" stop-color="#0B501E"/>
+    </radialGradient>
+    <radialGradient id="nexus-e" cx="21.852%" cy="30.761%" r="79.813%" fx="21.852%" fy="30.761%" gradientTransform="rotate(37.691 .493 .401) scale(1 1.60998)">
+      <stop offset="0%" stop-color="#A8E8B9"/>
+      <stop offset="55.536%" stop-color="#278D43"/>
+      <stop offset="100%" stop-color="#0B501E"/>
+    </radialGradient>
+    <linearGradient id="nexus-f" x1="12.874%" y1="15.496%" y2="100%">
+      <stop offset="0%" stop-color="#2A9D48"/>
+      <stop offset="100%" stop-color="#1B8036"/>
+    </linearGradient>
+    <linearGradient id="nexus-g" x1="95.048%" x2="7.146%" y1="12.369%" y2="88.922%">
+      <stop offset="0%" stop-color="#2A9D48"/>
+      <stop offset="100%" stop-color="#1B8036"/>
+    </linearGradient>
+    <linearGradient id="nexus-h" x1="93.819%" x2="7.511%" y1="91.464%" y2="8.216%">
+      <stop offset="0%" stop-color="#2A9D48"/>
+      <stop offset="100%" stop-color="#1B8036"/>
+    </linearGradient>
+    <linearGradient id="nexus-i" x1="0%" x2="87.058%" y1="100%" y2="18.467%">
+      <stop offset="0%" stop-color="#2A9D48"/>
+      <stop offset="100%" stop-color="#1B8036"/>
+    </linearGradient>
+    <radialGradient id="nexus-j" cx="100%" cy="63.471%" r="89.312%" fx="100%" fy="63.471%" gradientTransform="rotate(-157.801 .962 .828) scale(1 1.60998)">
+      <stop offset="0%" stop-color="#A8E8B9"/>
+      <stop offset="55.536%" stop-color="#278D43"/>
+      <stop offset="100%" stop-color="#0B501E"/>
+    </radialGradient>
+    <radialGradient id="nexus-k" cx="24.44%" cy="75.903%" r="78.654%" fx="24.44%" fy="75.903%" gradientTransform="matrix(.77124 -.63651 1.02473 1.24173 -.722 -.028)">
+      <stop offset="0%" stop-color="#A8E8B9"/>
+      <stop offset="55.536%" stop-color="#278D43"/>
+      <stop offset="100%" stop-color="#0B501E"/>
+    </radialGradient>
+  </defs>
+  <g fill="none">
+    <rect width="48" height="36" fill="#FFF" opacity="0" rx="2"/>
+    <g transform="translate(8 2)">
+      <rect width="32" height="32" fill="url(#nexus-a)"/>
+      <g transform="matrix(1 0 0 -1 1.925 29.063)">
+        <path fill="url(#nexus-b)" d="M12.8288615,25.8932973 C12.0622795,25.6686157 11.9720934,24.615109 12.6935823,24.2406398 C13.24973,23.9510503 13.98625,24.4054063 13.98625,25.0245287 C13.9812397,25.6636228 13.4351126,26.0780354 12.8288615,25.8932973 Z"/>
+        <path fill="url(#nexus-c)" d="M12.9526749,22.0125 C12.8625,21.8875 12.8399563,21.5625 12.8850437,20.975 C12.9864904,19.7625 13.020306,19.6625 13.3697336,19.7125 C13.6628019,19.75 13.6740738,19.775 13.6740738,20.5625 C13.6853456,21.725 13.5951708,22.1125 13.3246462,22.1625 C13.1893839,22.1875 13.0315779,22.1125 12.9526749,22.0125 Z"/>
+        <path fill="url(#nexus-d)" d="M1.32876237,21.3493729 C-0.199573601,20.9014249 -0.379377832,18.8010466 1.05905602,18.0544666 C2.16784878,17.4771115 3.63625,18.3829618 3.63625,19.6173074 C3.62626088,20.8914705 2.53744636,21.7176857 1.32876237,21.3493729 Z"/>
+        <path fill="url(#nexus-e)" d="M24.7689524,21.3711495 C23.6182747,21.0338914 23.4829009,19.4525254 24.5658916,18.8904285 C25.400697,18.4557403 26.50625,19.1377512 26.50625,20.0670847 C26.4987292,21.0263967 25.6789654,21.6484506 24.7689524,21.3711495 Z"/>
+        <g transform="matrix(1 0 0 -1 8.575 18.688)">
+          <polygon fill="#3EB25B" points=".027 3.558 5.34 7.1 10.577 3.558 5.34 .016"/>
+          <polygon fill="#2C9B48" points="5.355 12.513 5.355 7.092 .031 3.559 .031 8.983"/>
+          <polygon fill="#138432" points="10.574 8.991 10.574 3.557 5.354 7.089 5.354 12.512"/>
+        </g>
+        <path fill="url(#nexus-f)" d="M21.2,17.925 C20.2875,17.2875 20.1125,16.9375 20.55,16.7 C20.7375,16.6 20.9375,16.675 21.4625,17.025 C22.5,17.7125 22.7,17.925 22.5875,18.225 C22.4375,18.6375 22.1375,18.575 21.2,17.925 Z"/>
+        <path fill="url(#nexus-g)" d="M4.9875,17.975 C4.75,17.8875 4.7875,17.5125 5.05,17.2875 C5.1625,17.1875 5.7375,16.8375 6.3125,16.5 C7.4,15.8625 7.7125,15.85 7.8,16.3875 C7.825,16.575 7.5625,16.8 6.6375,17.35 C5.4625,18.05 5.3,18.1125 4.9875,17.975 Z"/>
+        <path fill="url(#nexus-h)" d="M7.9375,8.0875 C7.3625,7.7 6.4625,6.9 6.3875,6.7125 C6.3,6.4875 6.5375,6.1875 6.8125,6.1875 C7.125,6.1875 8.7,7.5625 8.7,7.825 C8.7,8.2 8.3,8.3375 7.9375,8.0875 Z"/>
+        <path fill="url(#nexus-i)" d="M19.8375,7.3375 C19.775,7.2125 19.75,7.05 19.8,6.975 C19.95,6.725 22.4875,4.6875 22.65,4.6875 C22.8625,4.6875 23.1,5.0125 23.05,5.2375 C23,5.5 20.4375,7.5625 20.175,7.5625 C20.05,7.5625 19.9,7.4625 19.8375,7.3375 Z"/>
+        <path fill="url(#nexus-j)" d="M3.26631193,5.24633509 C2.11885295,4.91002033 1.98385778,3.33307782 3.06381917,2.77255322 C3.89628941,2.33908087 4.99875,3.01918404 4.99875,3.94591804 C4.99125027,4.90254667 4.17377949,5.52286055 3.26631193,5.24633509 Z"/>
+        <path fill="url(#nexus-k)" d="M25.3375,4.34718386 C23.425,3.78665926 23.2,1.15842173 25,0.224214081 C26.3875,-0.498239837 28.225,0.635265449 28.225,2.1798221 C28.2125,3.77420316 26.85,4.80805963 25.3375,4.34718386 Z"/>
+      </g>
+    </g>
+  </g>
+</svg>

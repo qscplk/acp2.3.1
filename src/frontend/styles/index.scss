@@ -1,0 +1,423 @@
+@import '~@alauda/ui/theme/_pattern';
+@import '~@alauda/ui/theme/style';
+@import 'variables';
+@import 'base';
+@import 'common';
+@import './table.styles';
+@import 'var';
+
+.alo-console {
+  .aui-page {
+    display: flex;
+
+    &__header {
+      z-index: 3;
+    }
+
+    &__sider {
+      right: unset;
+      width: 200px;
+      height: 100%;
+      background-color: $nav-menu-bg-color-main;
+    }
+
+    &__content {
+      min-width: 800px;
+      overflow: auto;
+      flex: 1;
+      display: flex;
+      > * {
+        flex: 1;
+      }
+    }
+
+    &__toolbar {
+      min-width: max-content;
+      z-index: 3;
+      > div {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        flex-direction: row;
+      }
+    }
+  }
+
+  .aui-nav-menu {
+    height: unset;
+  }
+
+  .layout-page-content {
+    width: 100%;
+  }
+  /*
+  .aui-layout__page-header {
+    > div {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      flex-direction: row;
+    }
+  }
+
+  .layout-page-content {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    ::ng-deep router-outlet + * {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+  }*/
+
+  .alo-search {
+    display: flex;
+
+    .aui-button {
+      margin-right: -1px;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+
+      &:focus,
+      &:hover,
+      &:active,
+      &.isActived {
+        z-index: 1;
+      }
+    }
+
+    ::ng-deep {
+      .aui-input {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+    }
+  }
+
+  form.horizontal-form,
+  div.horizontal-form {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    height: 48px;
+    > * + * {
+      margin-left: 8px;
+    }
+    .aui-form-item {
+      &__addon-wrapper {
+        width: unset;
+      }
+    }
+  }
+
+  .aui-table {
+    &__row,
+    &__header-row {
+      padding-left: 0;
+      padding-right: 0;
+    }
+    &__cell,
+    &__header-cell {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+  }
+
+  .logo {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    h1 {
+      color: #fff;
+      span {
+        font-size: 16px;
+        margin-left: 8px;
+      }
+    }
+  }
+  .toolbar {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+
+  .nav-item-content {
+    display: flex;
+    align-items: center;
+    &__icon {
+      display: flex;
+      align-items: center;
+      width: 26px;
+      .mat-icon {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+
+  .alo-card-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    .mini-card {
+      width: 214px;
+      height: 214px;
+      border-radius: 3px;
+      background-color: #fff;
+      box-shadow: 0 0 3px 0 rgba(102, 102, 102, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      flex-shrink: 0;
+      padding: 32px;
+      & + .mini-card {
+        margin-left: 16px;
+      }
+      aui-icon {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 24px;
+        color: #999;
+      }
+      span {
+        font-size: 18px;
+        margin-bottom: 6px;
+        color: #333;
+      }
+      p {
+        font-size: 12px;
+        width: 100%;
+        color: #999;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      &:hover {
+        box-shadow: 0 0 0px 1px $color-primary;
+        aui-icon {
+          color: $color-primary;
+        }
+        span,
+        p {
+          color: $color-primary;
+        }
+      }
+    }
+  }
+
+  .alo-confirm {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    .mat-icon {
+      background-color: $color-error;
+      color: #fff;
+      flex-shrink: 0;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    .content {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      .title {
+        font-size: 18px;
+        margin-bottom: 8px;
+        word-break: break-all;
+      }
+      .description {
+        font-size: 14px;
+        color: #666;
+      }
+    }
+  }
+
+  // Tabs
+  .tabs {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: #fff;
+    font-size: 16px;
+    box-shadow: 0 1px 0 0 rgba(204, 204, 204, 0.5);
+    > .tab-label {
+      border-bottom: solid 2px #fff;
+      > a {
+        display: block;
+        padding: 8px 24px;
+        white-space: nowrap;
+        &:link {
+          color: #666;
+        }
+        &:hover {
+          color: #0079c2;
+        }
+      }
+      &.active {
+        border-color: $color-primary;
+        > a:link {
+          color: #333;
+        }
+      }
+    }
+  }
+
+  .tabs {
+    margin-bottom: $margin-base;
+  }
+
+  .aui-checkbox {
+    margin-right: 0;
+  }
+
+  .alo-alert {
+    padding: 12px 16px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #ccc;
+    border-radius: 3px;
+    color: #4d4d4d;
+    &--error {
+      border-color: $color-error;
+      .aui-icon {
+        color: $color-error;
+      }
+    }
+  }
+
+  .nav-item-content {
+    &__icon {
+      font-size: 16px;
+    }
+  }
+
+  .no-data {
+    @include table-placeholder;
+
+    &.no-data--card {
+      border-bottom: none;
+    }
+  }
+
+  .global-loader {
+    height: 4px;
+    width: 100%;
+    overflow: hidden;
+    background-color: #ddd;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: translateY(4px);
+    opacity: 0;
+    transition: opacity 0.3s;
+    &.loading {
+      opacity: 1;
+    }
+  }
+  .global-loader:before {
+    display: block;
+    position: absolute;
+    content: '';
+    left: -200px;
+    width: 200px;
+    height: 4px;
+    background-color: $color-primary;
+    animation: loading 2s linear infinite;
+  }
+
+  @keyframes loading {
+    from {
+      left: -200px;
+      width: 30%;
+    }
+    50% {
+      width: 30%;
+    }
+    70% {
+      width: 70%;
+    }
+    80% {
+      left: 50%;
+    }
+    95% {
+      left: 120%;
+    }
+    to {
+      left: 100%;
+    }
+  }
+
+  .secret-group {
+    &__title {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      img {
+        width: 14px;
+        height: 14px;
+        margin-right: 4px;
+      }
+      span {
+        color: #999;
+        font-weight: 500;
+      }
+    }
+    &__display-name {
+      color: #999;
+      margin-left: 4px;
+    }
+  }
+
+  .alo-mutate-page-wrapper {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-flow: column;
+    padding-bottom: 50px;
+
+    aui-code-editor {
+      position: relative;
+      flex: 1;
+      .aui-code-editor {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+  .alo-mutate-page-bottom-buttons {
+    position: fixed;
+    z-index: 2;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    padding: 12px 20px;
+    background-color: #ffffff;
+    box-shadow: 0 -1px 2px 0 rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+}

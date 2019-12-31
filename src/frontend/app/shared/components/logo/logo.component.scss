@@ -1,0 +1,26 @@
+.alo-logo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  margin-right: 40px;
+  &__img {
+    height: 32px;
+  }
+
+  > em {
+    width: 0;
+    height: 32px;
+    border-left: solid 1px #000;
+    margin: 0 16px;
+  }
+
+  > span {
+    font-size: 18px;
+    margin-right: 4px;
+  }
+
+  > acl-product-select {
+    line-height: 16px;
+  }
+}

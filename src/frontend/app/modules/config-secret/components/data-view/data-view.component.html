@@ -1,0 +1,83 @@
+<ng-container *ngIf="configs && configs.length > 0">
+  <ng-container [ngSwitch]="type">
+    <ng-container *ngSwitchDefault>
+      <div class="config-data-keys">
+        <div
+          class="config-data-keys__label"
+          [auiTocLink]="handleTocLink(config[0])"
+          [for]="toc"
+          *ngFor="let config of configs"
+        >
+          <div class="config-data-keys__label-dot"></div>
+          <div class="config-data-keys__label-key">{{ getDisplayKey(config[0]) }}</div>
+        </div>
+      </div>
+
+      <div
+        class="config-data-values"
+        auiTocContainer
+        #toc=auiTocContainer
+      >
+        <div
+          class="config-data-section"
+          [auiTocContent]="handleTocLink(config[0])"
+          *ngFor="let config of configs"
+        >
+          <div class="config-data-section__header">
+            {{ getDisplayKey(config[0]) }}
+          </div>
+          <pre class="config-data-section__content">{{ decode(config[1]) }}</pre>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'kubernetes.io/basic-auth'">
+      <div class="alo-detail">
+        <div class="alo-detail__row">
+          <div class="alo-detail__field">
+            <label>{{ 'username' | translate }}</label>
+            <span>{{ decode(data.username) }}</span>
+          </div>
+        </div>
+        <div class="alo-detail__row">
+          <div class="alo-detail__field">
+            <label>{{ 'password' | translate }}</label>
+            <alo-password [value]="decode(data.password)"></alo-password>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'kubernetes.io/dockerconfigjson'">
+      <div class="alo-detail" *ngIf="dockerConfigData">
+        <div class="alo-detail__row">
+          <div class="alo-detail__field">
+            <label>{{ 'configsecret.docker_address' | translate }}</label>
+            <span>{{ dockerConfigData.dockerServiceAddress }}</span>
+          </div>
+        </div>
+        <div class="alo-detail__row">
+          <div class="alo-detail__field">
+            <label>{{ 'username' | translate }}</label>
+            <span>{{ dockerConfigData.username }}</span>
+          </div>
+        </div>
+        <div class="alo-detail__row">
+          <div class="alo-detail__field">
+            <label>{{ 'password' | translate }}</label>
+            <alo-password [value]="dockerConfigData.password"></alo-password>
+          </div>
+        </div>
+        <div class="alo-detail__row">
+          <div class="alo-detail__field">
+            <label>{{ 'email' | translate }}</label>
+            <span>{{ dockerConfigData.email }}</span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-container>
+
+<alo-no-data *ngIf="configs.length === 0">
+</alo-no-data>

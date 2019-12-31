@@ -1,0 +1,76 @@
+@import '../app/shared/mixins';
+
+:host {
+  display: flex;
+  overflow: hidden;
+  height: 289px;
+  flex-direction: column;
+}
+.report-item {
+  &__body {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+
+    .repo-path {
+      display: inline-flex;
+      flex-shrink: 1;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .prefix {
+      flex-shrink: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    > img {
+      width: 16px;
+      height: 16px;
+      margin-right: 4px;
+      flex-shrink: 0;
+    }
+    > a {
+      flex-shrink: 1;
+      min-width: 0px;
+      div {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+  &__actions {
+    .tag-icon {
+      margin-right: 4px;
+    }
+  }
+  &__footer {
+    .tag-name {
+      flex-shrink: 1;
+      min-width: 0;
+      cursor: pointer;
+      > div {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+    aui-icon {
+      flex-shrink: 0;
+    }
+    .tag-date {
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .copy-icon {
+      color: #999999;
+      cursor: pointer;
+      &:hover {
+        color: $color-primary;
+      }
+    }
+  }
+}

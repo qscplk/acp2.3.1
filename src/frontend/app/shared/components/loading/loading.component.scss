@@ -1,0 +1,26 @@
+.spin-container {
+  position: relative;
+  height: 100%;
+  transition: opacity 0.3s;
+  zoom: 1;
+  .spin-spinning {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 4;
+  }
+  .spinner-ico {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -10px;
+    color: #ccc;
+  }
+}
+
+.spin-loading {
+  .spin-spinning {
+    opacity: 0.9;
+    background: #fff;
+  }
+}

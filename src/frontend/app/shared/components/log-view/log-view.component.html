@@ -1,0 +1,65 @@
+<div class="alo-log-view" [class.alo-log-view--dark]="monacoProvider.isDarkTheme"
+  [class.alo-log-view--fullscreen]="!!source">
+  <div class="alo-log-view__toolbar">
+    <div class="alo-log-view__pages" *ngIf="paginated && !pullEnabled">
+      <a href="javascript:void(0)" [class.disabled]="loading" (click)="!loading && loadOldest()">
+        <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6zM6 6h2v12H6z" />
+        </svg>
+      </a>
+      <a href="javascript:void(0)" [class.disabled]="loading" (click)="!loading && loadOlder()">
+        <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+        </svg>
+      </a>
+      <a href="javascript:void(0)" [class.disabled]="loading" (click)="!loading && loadNewer()">
+        <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+        </svg>
+      </a>
+      <a href="javascript:void(0)" [class.disabled]="loading" (click)="!loading && loadNewest()">
+        <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5.59 7.41L10.18 12l-4.59 4.59L7 18l6-6-6-6zM16 6h2v12h-2z" />
+        </svg>
+      </a>
+    </div>
+    <span class="alo-log-view__range">{{ range }}</span>
+    <aui-checkbox [ngClass]="monacoProvider.isDarkTheme ? 'alo-log-view__auto-update-dark' : 'alo-log-view__auto-update'"
+      [(ngModel)]="pullEnabled" [disabled]="!pullToggleEnabled" (ngModelChange)="togglePullEnabled($event)">
+      {{ 'auto_update' | translate }}
+    </aui-checkbox>
+    <div class="alo-log-view__tools">
+      <a href="javascript:void(0)" (click)="search()">
+        <aui-icon icon="search_s"></aui-icon>
+        <span>{{ intl.findLabel }}</span>
+      </a>
+      <a href="javascript:void(0)" (click)="monacoProvider.toggleTheme()">
+
+        <ng-container *ngIf="monacoProvider.isDarkTheme">
+          <aui-icon icon="moon"></aui-icon>
+          <span>{{ intl.darkThemeLabel }}</span>
+        </ng-container>
+        <ng-container *ngIf="!monacoProvider.isDarkTheme">
+          <aui-icon icon="sun"></aui-icon>
+          <span>{{ intl.lightThemeLabel }}</span>
+        </ng-container>
+      </a>
+      <a *ngIf="downloadEnabled" href="javascript:void(0)" (click)="download()">
+        <aui-icon icon="basic:download"></aui-icon>
+        <span>{{ 'download' | translate }}</span>
+      </a>
+      <a href="javascript:void(0)" (click)="toggleFullscreen()">
+        <ng-container *ngIf="!source || dialogEmbedded">
+          <aui-icon icon="expand_s"></aui-icon>
+          <span>{{ intl.fullscreenLabel }}</span>
+        </ng-container>
+        <ng-container *ngIf="!!source && !dialogEmbedded">
+          <aui-icon icon="compress_s"></aui-icon>
+          <span>{{ intl.exitFullscreenLabel }}</span>
+        </ng-container>
+      </a>
+    </div>
+  </div>
+  <ng-monaco-editor *ngIf="!fullscreenDialog" [ngModel]="logs" [options]="monacoOptions"
+    (monacoEditorChanged)="onMonacoEditorChanged($event)"></ng-monaco-editor>
+</div>

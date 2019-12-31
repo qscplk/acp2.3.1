@@ -1,0 +1,8 @@
+<div class="zero-state-hint">
+  <ng-container *ngIf="resourceName">
+    {{'zero_state_hint'  | translate: { resourceName: resourceName | lowercase | translate } }}
+  </ng-container>
+  <ng-container *ngIf="!resourceName">
+    {{'no_data' | translate}}
+  </ng-container>
+</div>

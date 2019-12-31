@@ -1,0 +1,95 @@
+<aui-dialog-header>{{ 'applications.create_by_workload' | translate }}</aui-dialog-header>
+<aui-dialog-content>
+  <form [formGroup]="form"
+        #ngForm='ngForm'
+        auiForm
+        auiFormLabelWidth="120px"
+        [auiFormEmptyAddon]="true">
+    <aui-form-item>
+      <label auiFormItemLabel>
+        {{ 'application_name' | translate }}
+      </label>
+      <input auiFormItemControl
+             aui-input
+             formControlName="applicationName"
+             required
+             [placeholder]="validatorRule.placeholder | translate: {count: validatorRule.maxLength}"
+      >
+      <div auiFormItemError *ngIf="form?.controls?.applicationName?.errors?.pattern">
+        {{ validatorRule.patternError | translate }}
+      </div>
+      <div auiFormItemError *ngIf="form?.controls?.applicationName?.errors?.maxlength">
+        {{ validatorRule.maxLengthError | translate:{ count: validatorRule.maxLength } }}
+      </div>
+      <div auiFormItemError *ngIf="form?.controls?.applicationName?.errors?.required">
+        {{ validatorRule.requiredError | translate }}
+      </div>
+    </aui-form-item>
+
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'applications.workload' | translate }}</label>
+      <aui-select
+        formControlName="workload"
+        auiFormItemControl
+        required
+        filterable
+        [loading]="loading"
+      >
+        <ng-container *ngIf="(workloads$ | async) as workloads">
+          <aui-option-group>
+            <div auiOptionGroupTitle>
+              <span>{{ 'application.deployment' | translate }}</span>
+            </div>
+            <aui-option
+              *ngFor="let item of workloads?.deployments"
+              [value]="item"
+              [label]="item?.metadata?.name"
+            >
+              {{ item?.metadata?.name }}
+            </aui-option>
+          </aui-option-group>
+          <aui-option-group>
+            <div auiOptionGroupTitle>
+              <span>{{ 'application.daemonset' | translate }}</span>
+            </div>
+            <aui-option
+              *ngFor="let item of workloads?.daemonsets"
+              [value]="item"
+              [label]="item?.metadata?.name"
+            >
+              {{ item?.metadata?.name }}
+            </aui-option>
+          </aui-option-group>
+          <aui-option-group>
+            <div auiOptionGroupTitle>
+              <span>{{ 'application.statefulset' | translate }}</span>
+            </div>
+            <aui-option
+              *ngFor="let item of workloads?.statefulsets"
+              [value]="item"
+              [label]="item?.metadata?.name"
+            >
+              {{ item?.metadata?.name }}
+            </aui-option>
+          </aui-option-group>
+        </ng-container>
+
+        <aui-option-placeholder>{{ 'no_data' | translate }}</aui-option-placeholder>
+      </aui-select>
+      <div auiFormItemHint>
+        {{ 'applications.create_by_workload_hint' | translate }}
+      </div>
+      <div auiFormItemError *ngIf="form?.controls?.workload?.errors?.required">
+        {{ 'required' | translate }}
+      </div>
+    </aui-form-item>
+  </form>
+</aui-dialog-content>
+<aui-dialog-footer>
+  <button aui-button="primary" (click)="create()">
+    {{ 'create' | translate}}
+  </button>
+  <button aui-button type="button" (click)="cancel()">
+    {{ 'cancel' | translate}}
+  </button>
+</aui-dialog-footer>

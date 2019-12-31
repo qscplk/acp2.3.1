@@ -1,0 +1,16 @@
+<ng-container *ngIf="params$ | async as params">
+<ng-container *aloPageHeaderContent>
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <span>{{ 'nav_continuous_delivery' | translate }}</span>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['../']">{{ 'pipeline.list' | translate }}</a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <ng-container>{{ params.name }}</ng-container>
+    </ng-template>
+  </alo-breadcrumb>
+</ng-container>
+<alo-pipeline-visual-editor [project]="params.project" [name]="params.name">
+</alo-pipeline-visual-editor>

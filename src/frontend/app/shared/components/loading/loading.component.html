@@ -1,0 +1,11 @@
+<ng-template #defaultIndicatorTemplate>
+    <aui-icon icon="spinner" [size]="size"></aui-icon>
+</ng-template>
+<div class="spin-container" [ngClass]="{'spin-loading': aloLoading}">
+  <div class="spin-spinning" [hidden]="!aloLoading">
+    <div class="spinner-ico">
+      <ng-template [ngTemplateOutlet]="aloIndicator || defaultIndicatorTemplate"></ng-template>
+    </div>
+  </div>
+  <ng-content></ng-content>
+</div>

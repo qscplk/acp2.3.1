@@ -1,0 +1,43 @@
+<aui-form-item>
+  <label auiFormItemLabel>
+    {{'pipeline.jenkinsfile_from_script'|translate}}
+  </label>
+  <div class="alo-pipeline-create-script__editor">
+    <aui-code-editor
+      auiFormItemControl
+      [actionsConfig]="options"
+      [options]="{language: 'Jenkinsfile'}"
+      [formControl]="form.controls.script"
+      required
+    ></aui-code-editor>
+    <div class="alo-pipeline-create-script__actions">
+      <a
+        href="javascript:void(0)"
+        (click)="viewExample()"
+      >
+        {{'pipeline.view_jenkinsfile_example'|translate}}
+      </a>
+      <a
+        href="https://jenkins.io/doc/book/pipeline/syntax/"
+        target="_blank"
+      >
+        {{'pipeline.pipeline_language'|translate}}
+      </a>
+    </div>
+  </div>
+</aui-form-item>
+<ng-template #example>
+  <aui-dialog-header>
+    {{ 'pipeline.jenkinsfile_example' | translate }}
+  </aui-dialog-header>
+  <aui-dialog-content>
+    <div class="alo-card-group">
+      <aui-code-editor
+        [style.width]="'100%'"
+        [options]="exampleConfigs"
+        [actionsConfig]="exampleActionsConfig"
+        [(ngModel)]="originalYaml"
+      ></aui-code-editor>
+    </div>
+  </aui-dialog-content>
+</ng-template>

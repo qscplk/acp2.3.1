@@ -1,0 +1,70 @@
+<aui-card>
+  <div auiCardHeader>
+    <div class="header">
+      <div class="header_icon">
+        <aui-icon
+          icon="check_circle_s"
+          class="success"
+          *ngIf="failOrSuccess==='success'"
+        ></aui-icon>
+        <aui-icon
+          icon="close_circle_s"
+          class="fail"
+          *ngIf="failOrSuccess==='fail'"
+        ></aui-icon>
+      </div>
+      <div class="header_content">
+        <div class="header_content__text">
+          {{ title }}
+        </div>
+        <div
+          class="header_content__button"
+          *ngIf="failOrSuccess==='success'"
+        >
+          <button
+            aui-button="primary"
+            (click)="viewDetail()"
+          >
+            {{ 'application.view_detail' | translate }}
+          </button>
+          <button
+            aui-button
+            (click)="reCreate()"
+          >
+            {{ 'application.create_again' | translate }}
+          </button>
+          <button
+            aui-button
+            (click)="deleteApplication()"
+          >
+            {{ 'application.delete_application' | translate }}
+          </button>
+        </div>
+        <div
+          class="header_content__button"
+          *ngIf="failOrSuccess==='fail'"
+        >
+          <button
+            aui-button="primary"
+            (click)="reCreate()"
+          >
+            {{ 'application.create_again' | translate }}
+          </button>
+          <button
+            aui-button
+            (click)="backToList()"
+          >
+            {{ 'application.back_to_list' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <alo-application-resource-report-detail
+    [reports]="reports"
+    [failOrSuccess]="failOrSuccess"
+    [errorMessage]="errorMessage"
+  >
+  </alo-application-resource-report-detail>
+</aui-card>

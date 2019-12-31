@@ -1,0 +1,201 @@
+<div class="chart-header">
+  <span class="chart-header__title">{{ 'reports.pipeline_global_status' | translate }}</span>
+  <div class="chart-header__actions">
+    <button
+      class="range-switch"
+      aui-button="text"
+      size="small"
+      [disabled]="params.range === '-25h'"
+      (click)="onRangeChange('-25h')"
+    >24 {{ 'hour' | translate }}</button>
+    <button
+      class="range-switch"
+      aui-button="text"
+      size="small"
+      [disabled]="params.range === '-169h'"
+      (click)="onRangeChange('-169h')"
+    >7 {{ 'day' | translate }}</button>
+    <button
+      class="range-switch"
+      aui-button="text"
+      size="small"
+      [disabled]="params.range === '-337h'"
+      (click)="onRangeChange('-337h')"
+    >14 {{ 'day' | translate }}</button>
+    <!--<aui-select-->
+      <!--class="applications-select"-->
+      <!--size="mini"-->
+      <!--[value]="params.app"-->
+      <!--(valueChange)="onAppChange($event)"-->
+      <!--[loading]="!(applications$ | async)"-->
+    <!--&gt;-->
+      <!--<aui-option [value]="'__all'" [label]="'reports.all_pipelines' | translate">-->
+        <!--{{ 'reports.all_pipelines' | translate }}-->
+      <!--</aui-option>-->
+      <!--<aui-option-->
+        <!--*ngFor="let app of applications$ | async"-->
+        <!--[value]="app.name"-->
+        <!--[label]="app.name"-->
+      <!--&gt;{{ app.name }}</aui-option>-->
+    <!--</aui-select>-->
+  </div>
+</div>
+<ng-container
+  *aloAsyncData="
+    let areas;
+    let loading = loading;
+    handler: fetchPipelineGlobalStatus;
+    params: params
+  "
+>
+  <div class="chart-subtitle">
+    {{ 'reports.total' | translate: { total: total } }}
+  </div>
+  <div class="chart-legends">
+    <div class="chart-legends__axis">{{ 'reports.rate' | translate }}</div>
+    <div class="chart-legends__info">
+      <span class="succ">{{ 'reports.execute_succ' | translate }}</span>
+      <span class="failed">{{ 'reports.execute_failed' | translate }}</span>
+    </div>
+  </div>
+  <div
+    aloResize
+    (resized)="onResized($event)"
+    class="chart-container"
+  >
+    <svg
+      width="100%"
+      height="100%"
+      [auiTooltip]="tooltip"
+      auiTooltipType="plain"
+      auiTooltipPosition="top start"
+    >
+      <defs>
+        <linearGradient id="succ" gradientTransform="rotate(90)">
+          <stop offset="0%" stop-color="#d2f1ea" />
+          <stop offset="100%" stop-color="#fff" />
+        </linearGradient>
+        <linearGradient id="failed" gradientTransform="rotate(90)">
+          <stop offset="0%" stop-color="#fce0e0" />
+          <stop offset="100%" stop-color="#fff" />
+        </linearGradient>
+        <filter id="dropshadow" height="130%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="2"/> <!-- stdDeviation is how much to blur -->
+          <feOffset dx="0" dy="0" result="offsetblur"/> <!-- how much to offset -->
+          <feComponentTransfer>
+            <feFuncA type="linear" slope="0.5"/> <!-- slope is the opacity of the shadow -->
+          </feComponentTransfer>
+          <feMerge> 
+            <feMergeNode/> <!-- this contains the offset blurred image -->
+            <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+          </feMerge>
+        </filter>
+      </defs>
+      <g [attr.transform]="transform">
+        <g *ngFor="let tick of axisY.ticks">
+          <text x="-8" [attr.y]="tick.y" text-anchor="end" fill="#666" alignment-baseline="middle">
+            {{ tick.value }}
+          </text>
+          <line [attr.y1]="tick.y" x1="0" x2="-4" [attr.y2]="tick.y" stroke="#999" fill="none" />
+          <line [attr.y1]="tick.y" x1="0" [attr.y2]="tick.y" [attr.x2]="contentWidth" stroke="#eee" fill="none" stroke-dasharray="4,1"/>
+        </g>
+        <g *ngFor="let tick of axisX.ticks; let i = index">
+          <text y="20" [attr.x]="tick.x" [attr.text-anchor]="i === 0 ? 'start' : i < axisX.ticks.length - 1 ? 'middle' : 'end'" fill="#666">
+            {{ tick.time }}
+          </text>
+          <line [attr.x1]="tick.x" y1="0" [attr.x2]="tick.x" y2="4" stroke="#999" fill="none" />
+        </g>
+        <path
+          *ngFor="let area of areas; let i = index"
+          [attr.d]="area"
+          [attr.stroke]="colors[i]"
+          [attr.stroke-width]="1"
+          [attr.fill]="i === 0 ? 'url(#failed)' : 'url(#succ)'"
+        />
+        <path [attr.d]="rightFix" stroke="#fff" fill="none" stroke-width="1" />
+        <path [attr.d]="axisX.path" stroke="#999" fill="none" />
+        <path [attr.d]="axisY.path" stroke="#999" fill="none" />
+        <g *ngIf="showPointer && data && data.length">
+          <line
+            [attr.x1]="pointerX"
+            y1="0"
+            [attr.x2]="pointerX"
+            [attr.y1]="-contentHeight"
+            stroke="#999"
+            fill="none"
+          />
+          <line
+            x1="0"
+            [attr.y1]="pointerY"
+            [attr.x2]="contentWidth"
+            [attr.y2]="pointerY"
+            stroke="#ccc"
+            stroke-dasharray="5,2"
+            fill="none"
+          />
+          <circle
+            [attr.cx]="pointFail.cx"
+            [attr.cy]="pointFail.cy"
+            r="3.5"
+            [attr.stroke]="colors[0]"
+            fill="#fff"
+          />
+          <circle
+            [attr.cx]="pointSucc.cx"
+            [attr.cy]="pointSucc.cy"
+            r="3.5"
+            [attr.stroke]="colors[1]"
+            fill="#fff"
+          />
+          <g [attr.transform]="pointerLabelTransform">
+            <path
+              [attr.d]="labelPath"
+              fill="#030303"
+              stroke="#030303"
+              stroke-width="4"
+              stroke-linejoin="round"
+              style="filter:url(#dropshadow)"
+            />
+            <text
+              x="16"
+              [attr.y]="pointerLabelHeight / 2 + 1"
+              stroke="none"
+              fill="#fff"
+              text-anchor="middle"
+              alignment-baseline="middle"
+              style="font-weight: 100"
+            >
+              {{ invertY(pointerY) }}
+            </text>
+          </g>
+        </g>
+        <rect
+          x="0"
+          [attr.y]="contentTop"
+          [attr.width]="contentWidth"
+          [attr.height]="contentHeight"
+          fill="transparent"
+          (mousemove)="onMouseMove($event)"
+          (mouseover)="showPointer = true"
+          (mouseout)="showPointer = false"
+        />
+      </g>
+    </svg>
+  </div>
+</ng-container>
+<ng-template #tooltip>
+  <div
+    class="aui-tooltip aui-tooltip--default"
+    [style.transform]="tooltipTransform"
+    [style.display]="pointerData.time ? 'flex' : 'none'"
+  >
+    <div>{{pointerData.date}} {{ pointerData.start }}~{{ pointerData.end }}</div>
+    <div>
+      <em [style.background-color]="colors[1]"></em>
+      {{ 'reports.execute_succ' | translate }}: {{ pointerData.succ }}</div>
+    <div>
+      <em [style.background-color]="colors[0]"></em>
+      {{ 'reports.execute_failed' | translate }}: {{ pointerData.failed }}
+    </div>
+  </div>
+</ng-template>

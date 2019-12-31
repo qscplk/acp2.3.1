@@ -1,0 +1,67 @@
+@import 'var';
+
+.card {
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  margin-top: 16px;
+  border: 1px solid #ccc;
+  color: #333;
+  .v-line {
+    width: 1px;
+    background: #ededed;
+    margin: 0 20px;
+  }
+  &--checked {
+    border: 1px solid $color-primary;
+  }
+  hr {
+    border: 0.5px solid #ededed;
+    margin: 12px 0;
+  }
+  .checkbox {
+    width: 24px;
+    position: relative;
+    ::ng-deep {
+      aui-checkbox {
+        position: absolute;
+        margin-top: -12px;
+        top: 50%;
+        i {
+          width: 24px;
+          height: 24px;
+          border-radius: 12px;
+        }
+      }
+    }
+  }
+  .input {
+    width: 100%;
+    .title {
+      font-size: 16px;
+      color: #333;
+      aui-icon {
+        color: #999;
+        width: 24px;
+        height: 24px;
+      }
+      aui-icon.enabled {
+        color: $color-primary;
+      }
+    }
+    .tips {
+      color: #999;
+      font-size: 12px;
+      margin-top: -12px;
+    }
+    ::ng-deep {
+      .aui-form-item {
+        display: block !important;
+        .aui-form-item__label-wrapper {
+          justify-content: flex-start;
+          height: 32px;
+        }
+      }
+    }
+  }
+}

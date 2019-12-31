@@ -1,0 +1,41 @@
+@import 'var';
+
+.info-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+}
+
+.type-icon {
+  width: 48px;
+  margin-right: 8px;
+}
+
+.error-hint-icon {
+  color: $color-warning;
+}
+
+.pipeline-name-container {
+  display: flex;
+  img {
+    margin-right: 8px;
+  }
+  &_content {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    &_name {
+      font-size: 16px;
+      display: flex;
+      &_string {
+        text-overflow: ellipsis;
+        margin-right: 8px;
+        overflow: hidden;
+      }
+    }
+  }
+}

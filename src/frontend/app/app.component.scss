@@ -1,0 +1,26 @@
+a.active {
+  font-weight: 700;
+}
+
+.alo-layout {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}
+
+.application-error {
+  width: 100%;
+  padding-top: 160px;
+  display: flex;
+  justify-content: center;
+  &__info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    background: #fff;
+    width: 400px;
+    height: 120px;
+    box-shadow: 0 0 5px 0px #ccc;
+  }
+}

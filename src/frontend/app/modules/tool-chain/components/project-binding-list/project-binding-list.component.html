@@ -1,0 +1,58 @@
+<div class="alo-project-binding-list">
+    <div
+        *ngFor="let binding of bindings; trackBy: trackByName"
+        class="alo-project-binding-card"
+        (click)="cardClick.emit(binding)"
+    >
+        <div
+            *ngIf="binding.status.phase === 'Error'"
+            class="alert"
+            [auiTooltip]="binding.status.message"
+            [auiTooltipDisabled]="!binding.status.message"
+            auiTooltipPosition="top start"
+        >
+            <aui-icon icon="exclamation_circle_s"></aui-icon>
+        </div>
+        <div class="icon-stack">
+            <img
+                class="type-icon"
+                [src]="'icons/tool-chain/' + binding.tool.type.toLowerCase() + '.svg'"
+                alt="devops"
+            >
+            <img
+                *ngIf="binding.tool.enterprise"
+                class="enterprise-mark"
+                [src]="enterpriseIcon$ | async"
+                alt="devops"
+            >
+        </div>
+        <div
+            class="title"
+            [title]="binding.name"
+        >{{ binding.name }}</div>
+        <div class="description">
+            <aui-icon
+                icon="basic:devops_tools_s"
+                margin="right"
+            ></aui-icon>
+            <span>{{ binding.service }}</span>
+        </div>
+        <div class="description">
+            <aui-icon
+                icon="basic:secrets_s"
+                margin="right"
+            ></aui-icon>
+            <span>{{ binding.secret || ('no_auth' | translate) }}</span>
+        </div>
+        <div
+            class="tags"
+            *ngIf="showTag"
+        >
+            <aui-tag
+                type="info"
+                [round]="true"
+                size="mini"
+            >{{ snakeCase(binding.tool.toolType) | translate }}</aui-tag>
+        </div>
+    </div>
+</div>

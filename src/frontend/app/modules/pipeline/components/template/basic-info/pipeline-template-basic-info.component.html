@@ -1,0 +1,158 @@
+<div
+  class="pipeline-info"
+  *aloAsyncData="let syncData;
+  let loading = loading;
+  handler: fetchData;
+  pullIn: syncing ? 2000 : 0"
+>
+  <aui-card>
+    <div
+      auiCardHeader
+      class="header"
+    >
+      <span>
+        {{'pipeline.custom_template'| translate}}
+      </span>
+      <div>
+        <alo-menu-trigger [menu]="actionsMenu"></alo-menu-trigger>
+        <aui-menu #actionsMenu>
+          <acl-disabled-container [isAllowed]="(permissions$ | async)?.update" [isDisabled]="syncing || !templateSync">
+            <aui-menu-item (click)="sync()">
+              {{ (syncing ? 'pipeline.template_repository_syncing' : 'pipeline.template_repository_sync') | translate }}
+            </aui-menu-item>
+          </acl-disabled-container>
+          <acl-disabled-container [isAllowed]="(permissions$ | async)?.update">
+            <aui-menu-item (click)="setting()">
+              {{ 'pipeline.template_repository_setting' | translate }}
+            </aui-menu-item>
+          </acl-disabled-container>
+        </aui-menu>
+      </div>
+    </div>
+    <div
+      class="import-hint"
+      *ngIf="!loading && !syncData"
+    >
+      <aui-icon
+        icon="diablo:template_file_line"
+        size="40,40"
+      ></aui-icon>
+      <div>
+        {{'pipeline.template_empty_hint_prefix' | translate}}
+        <acl-disabled-container [isAllowed]="(permissions$ | async)?.update">
+          <button
+            aui-button="text"
+            size="small"
+            (click)="setting()"
+          >
+            {{'pipeline.template_repository_setting' | translate}}
+          </button>
+        </acl-disabled-container>
+        {{'pipeline.template_empty_hint_suffix' | translate}}
+      </div>
+    </div>
+    <div>
+      <div
+        class="basic-info"
+        *ngIf="syncData"
+      >
+        <div class="basic-body">
+          <div class="field">
+            <label>
+              {{ 'pipeline.template_address' | translate }}
+            </label>
+            <span [title]="syncData | pure:getTitle">
+              {{ syncData | pure:getTitle }}
+            </span>
+          </div>
+          <div class="field">
+            <label>
+              {{ 'pipeline.template_sync_start_at' | translate }}
+            </label>
+            <span>
+              {{ syncData?.status?.startTime | aclStandardTime }}
+            </span>
+          </div>
+          <div class="field">
+            <label>{{ 'pipeline.branch' | translate }}</label>
+            <span>
+              {{  syncData?.codeRepository?.ref || syncData?.git?.ref || '-' }}
+            </span>
+          </div>
+          <div class="field">
+            <label>{{ 'pipeline.consumed' | translate }}</label>
+            <span *ngIf="templateSyncStatus==='Pending'">
+              {{ ((currentDate|async) - getDateTimes(syncData?.status?.startTime)) | aloDuration }}
+            </span>
+            <span *ngIf="templateSyncStatus!=='Pending'">
+              {{(getDateTimes(syncData?.status?.endTime) - getDateTimes(syncData?.status?.startTime)) | aloDuration}}
+            </span>
+          </div>
+          <div class="field">
+            <label>
+              {{ 'pipeline.template_repository_sync_result' | translate }}
+            </label>
+            <span>
+              <span *ngIf="syncing">
+                <aui-icon
+                  class="color--pending icon-spin"
+                  icon="basic:sync_circle_s"
+                ></aui-icon>
+                {{'pipeline.template_repository_syncing'|translate}}
+              </span>
+              <ng-container *ngIf="!syncing">
+                <ng-container *ngIf="templateSyncStatus === 'Error'; else syncResultTemplate">
+                  <span class="color--failure" [auiTooltip]="templateSync?.status?.error">
+                    <aui-icon icon="basic:close_circle_s"></aui-icon>
+                    {{ 'pipeline.template_sync_result_fail' | translate }}
+                  </span>
+                </ng-container>
+                <ng-template #syncResultTemplate>
+                  <span class="sync-result"
+                       [auiTooltip]="countDetail"
+                       auiTooltipTrigger="hover"
+                       (click)="syncReport()"
+                  >
+                    <span class="color--success">
+                      <aui-icon icon="check_circle_s"></aui-icon>
+                      {{syncResultCount.success}}
+                    </span>
+                    <span class="color--failure">
+                      <aui-icon icon="basic:close_circle_s"></aui-icon>
+                      {{syncResultCount.failure}}
+                    </span>
+                    <span class="color--skip">
+                      <aui-icon icon="basic:minus_circle_s"></aui-icon>
+                      {{syncResultCount.skip}}
+                    </span>
+                  </span>
+                </ng-template>
+
+              </ng-container>
+
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aui-card>
+</div>
+<ng-template #countDetail>
+  <div>
+    <span class="field color--success">
+      {{syncResultCount.success}}
+          {{'pipeline.template_sync_unit'|translate}}{{'pipeline.template_sync_result_succ'|translate}},
+    </span>
+    <span class="field color--failure">
+      {{syncResultCount.failure}}
+          {{'pipeline.template_sync_unit'|translate}}{{'pipeline.template_sync_result_fail'|translate}},
+    </span>
+    <span class="field color--skip">
+      {{syncResultCount.skip}}
+            {{'pipeline.template_sync_unit'|translate}}{{'pipeline.template_sync_result_skip'|translate}},
+    </span>
+    <span>
+      {{'pipeline.click_to_view_detail'|translate}}
+    </span>
+  </div>
+</ng-template>

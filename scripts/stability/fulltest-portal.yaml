@@ -1,0 +1,72 @@
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: portal-fulltest
+  namespace: default
+  labels:
+    job-name: portal-fulltest
+spec:
+  parallelism: 1
+  completions: 1
+  backoffLimit: 1
+  template:
+    metadata:
+      name: portal-fulltest
+      labels:
+        job-name: portal-fulltest
+    spec:
+      volumes:
+        - name: shm
+          hostPath:
+            path: /dev/shm
+        - name: config
+          hostPath:
+            path: /etc/kubernetes/admin.conf
+        - name: e2e-reports
+          hostPath:
+            path: /root/alauda-uireport/portal/e2e-reports
+        - name: e2e-result
+          hostPath:
+            path: /tmp/results
+      containers:
+      # need fix 
+        - name: counter
+          image: '10.0.192.37:60080/alaudak8s/portal-tests:v0.1.26'
+          env:
+            - name: BASE_URL
+              value: https://94.191.14.186/
+            - name: USER_TOKEN
+              value: eyJhbGciOiJSUzI1NiIsImtpZCI6ImQ2Y2FkZmRlYjRhMzZiM2JjZjEwYjAwZDg0ZmViNDA4ZGFhNTE4MjMifQ.eyJpc3MiOiJodHRwczovLzk0LjE5MS4xNC4xODYvZGV4Iiwic3ViIjoiQ2lRd09HRTROamcwWWkxa1lqZzRMVFJpTnpNdE9UQmhPUzB6WTJReE5qWXhaalUwTmpZU0JXeHZZMkZzIiwiYXVkIjoiYWxhdWRhLWF1dGgiLCJleHAiOjE1NDAwMDUyMDEsImlhdCI6MTUzOTkxODgwMSwibm9uY2UiOiJybmciLCJhdF9oYXNoIjoiaFRqYkhGazJmbWRnRkMyT1ZSMEJCUSIsImVtYWlsIjoiYWRtaW5AYWxhdWRhLmlvIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJhZG1pbiIsImV4dCI6eyJpc19hZG1pbiI6ZmFsc2UsImNvbm5faWQiOiIifX0.fwEY7-8-VYeRQulX5gBGtlxyu7HzOOGCOGKYcTPQaVeRai-9llQKGtJIXMd7oHhRi_32IdSAGDoS9ZsVelO6TaRxvPo19tWTSV96OWvA951MVN4ywIZn42qCYn2Z4vbrZfd_o9oX8cqVa5ZEa3jPmyIUMbhPJmAsXQJqwoU8a_F6JrDgSvoyps7jPx9xpJBfsXqxZEHyusXoETrR_H7AVsF6Zi_xYvgrci_n7TdBAijvpV5T8vTC6DipWZfGdS-tF-X1Cmt3N30h_R23SGzWPmJU2Lq6AYjSnAYmDE4Ng5JJLBnOUjdfOI6OIbyNp-ZvShRvajqBe1tptus7HUiq9A
+            - name: TEST_TIME
+              value: '200'
+            - name: DING_DING_URL
+              value: https://oapi.dingtalk.com/robot/send
+            - name: DING_DING_ACCESS_TOKEN
+              value: 0af8c3916019275772160520b1d95abcc1740fa750ede45758148b564a5d1647
+          resources:
+            limits:
+              cpu: 1500m
+              memory: 1536Mi
+            requests:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: shm
+              mountPath: /dev/shm
+            - name: config
+              mountPath: /home/jenkins/.kube/config
+            - name: e2e-reports
+              mountPath: /portal/e2e-reports
+            - name: e2e-result
+              mountPath: /tmp/results
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Never
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      imagePullSecrets:
+        - name: alaudak8s
+      nodeSelector:
+        node-role.kubernetes.io/master: ''

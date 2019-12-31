@@ -1,0 +1,150 @@
+<aui-inline-alert *ngIf="mode === 'update' && toolService?.kind === 'jenkins'"
+                  type="primary">
+  <div>{{ 'tool_chain.jenkins_address_update_hint_1' | translate }}</div>
+  <div>{{ 'tool_chain.jenkins_address_update_hint_2' | translate }}</div>
+</aui-inline-alert>
+<form
+  #form="ngForm"
+  auiForm
+  [auiFormEmptyAddon]="mode === 'create' ? true : false"
+  [auiFormLabelWidth]="mode === 'create' ? '150px' : '112px'"
+  class="integrate-form"
+>
+  <aui-form-item *ngIf="mode === 'create'">
+    <label auiFormItemLabel>{{ 'name' | translate }}</label>
+    <input
+      name="name"
+      #name="ngModel"
+      aui-input
+      auiFormItemControl
+      required
+      [maxLength]="nameRule.maxLength"
+      [pattern]="nameRule.pattern"
+      [placeholder]="nameRule.placeholder | translate"
+      [(ngModel)]="model.name"
+    />
+    <div auiFormItemHint *ngIf="kind === 'jenkins'">
+      {{ 'tool_chain.integrate_jenkins_name_tips' | translate }}
+    </div>
+    <div auiFormItemError *ngIf="name.errors?.required">
+      {{ nameRule.requiredError | translate }}
+    </div>
+    <div auiFormItemError *ngIf="name.errors?.pattern">
+      {{ nameRule.patternError | translate }}
+    </div>
+  </aui-form-item>
+  <aui-form-item *ngIf="mode === 'update'">
+    <label auiFormItemLabel>{{ 'name' | translate }}</label>
+    <span auiFormItemControl>
+      {{ model.name }}
+    </span>
+  </aui-form-item>
+  <aui-form-item>
+    <label auiFormItemLabel>{{
+      'tool_chain.access_url' | translate
+    }}</label>
+    <input
+      name="accessAddress"
+      #accessAddress="ngModel"
+      aui-input
+      auiFormItemControl
+      [pattern]="urlPattern"
+      [disabled]="isPublic"
+      [(ngModel)]="model.accessUrl"
+      [placeholder]="'tool_chain.api_address_input_placeholder' | translate"
+    />
+    <div auiFormItemHint *ngIf="kind === 'imageregistry'">
+      {{ 'integrate_registry_protocol' | translate }}
+    </div>
+    <div auiFormItemError *ngIf="accessAddress.errors?.pattern">
+      {{ 'tool_chain.api_address_input_placeholder' | translate }}
+    </div>
+  </aui-form-item>
+  <aui-form-item>
+    <label auiFormItemLabel>{{ 'tool_chain.api_address' | translate }}</label>
+    <input
+      name="host"
+      #host="ngModel"
+      aui-input
+      auiFormItemControl
+      required
+      [pattern]="urlPattern"
+      [disabled]="isPublic"
+      [(ngModel)]="model.host"
+      [placeholder]="'tool_chain.api_address_input_placeholder' | translate"
+    />
+    <div auiFormItemHint *ngIf="kind === 'imageregistry'">
+      {{ 'integrate_registry_protocol' | translate }}
+    </div>
+    <div auiFormItemError *ngIf="host.errors?.required">
+      {{ 'required' | translate }}
+    </div>
+    <div auiFormItemError *ngIf="host.errors?.pattern">
+      {{ 'tool_chain.api_address_input_placeholder' | translate }}
+    </div>
+  </aui-form-item>
+  <!-- For Nexus -->
+  <ng-container *ngIf="type.toLowerCase() === 'nexus'">
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'auth_type' | translate }}</label>
+      <aui-radio-group
+        [(ngModel)]="model.secretType"
+        [isPlain]="true"
+        name="secretType"
+        (ngModelChange)="resetSecret()"
+      >
+        <aui-radio-button
+          *ngIf="supportAuthType(SecretType.BasicAuth)"
+          [value]="SecretType.BasicAuth"
+        >
+          {{ 'secret.basic_auth' | translate }}
+        </aui-radio-button>
+        <aui-radio-button
+          *ngIf="supportAuthType(SecretType.OAuth2)"
+          [value]="SecretType.OAuth2"
+        >
+          {{ 'secret.oauth2' | translate }}
+        </aui-radio-button>
+      </aui-radio-group>
+    </aui-form-item>
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'secret' | translate }}</label>
+      <div class="secret-group">
+        <aui-select
+          auiFormItemControl
+          name="secret"
+          #secret="ngModel"
+          [(ngModel)]="model.secretName"
+          filterable
+          required
+        >
+          <aui-option-group>
+            <aui-option
+              *ngFor="let item of secrets$ | async"
+              [value]="item.name"
+              [label]="item.name"
+              (click)="secretToValue(item)"
+            >
+              <span>{{ item.name }}</span>
+              <span class="secret-group__display-name" *ngIf="!!item.displayName">
+                ({{ item.displayName }})
+              </span>
+            </aui-option>
+          </aui-option-group>
+          <aui-option-placeholder>
+            {{ 'no_available_secrets' | translate }}
+          </aui-option-placeholder>
+        </aui-select>
+        <button aui-button type="button" class="add-secret" (click)="addSecret()">
+          {{ 'add_secret' | translate }}
+        </button>
+      </div>
+      <div auiFormItemHint>
+        {{ 'tool_chain.secret_form_item_hint' | translate }}
+      </div>
+      <div auiFormItemError>
+        {{ 'required' | translate }}
+      </div>
+    </aui-form-item>
+  </ng-container>
+</form>

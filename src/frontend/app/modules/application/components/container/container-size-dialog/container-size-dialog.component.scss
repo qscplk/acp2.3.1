@@ -1,0 +1,27 @@
+:host {
+  .select-size {
+    width: 60px;
+  }
+
+  aui-input-group {
+    flex: 1;
+  }
+
+  ::ng-deep {
+    form {
+      > :last-child {
+        .aui-form-item {
+          margin-bottom: 0px;
+        }
+      }
+      .aui-select__input {
+        border: unset;
+        margin: 1px 0;
+        max-height: 30px;
+      }
+      .aui-input-group__addon.aui-input-group__addon--after {
+        padding: 0;
+      }
+    }
+  }
+}

@@ -1,0 +1,91 @@
+@import 'var';
+
+.jenkinsfile-actions {
+  margin-top: 12px;
+}
+
+$history-block: aui-table;
+
+.#{$history-block} {
+  min-width: 0px;
+  &__column-name {
+    flex: 1;
+  }
+  &__column-status {
+    flex: 1;
+  }
+  &__column-time {
+    flex: 1;
+  }
+  &__column-cause {
+    flex: 1;
+  }
+  &__column-actions {
+    max-width: 40px;
+  }
+}
+
+$queued: $color-primary;
+$pending: $color-primary;
+$running: $color-primary;
+$failed: $color-error;
+$complete: $color-success;
+$cancelled: $color-info;
+$aborted: $color-warning;
+$unknown: $color-info;
+$paused: $color-primary;
+
+$status-color-map: (
+  pending: $pending,
+  queued: $queued,
+  running: $running,
+  failed: $failed,
+  complete: $complete,
+  cancelled: $cancelled,
+  aborted: $aborted,
+  unknown: $unknown,
+  paused: $paused,
+);
+
+.history-status {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  .aui-icon {
+    color: #ccc;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+
+  @each $status, $color in $status-color-map {
+    &.#{$status} {
+      .aui-icon {
+        color: $color;
+      }
+    }
+  }
+}
+
+.page-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.histories {
+  margin-top: 20px;
+
+  ::ng-deep {
+    .aui-tab-group__body-wrapper {
+      margin-top: 0;
+    }
+
+    .aui-card {
+      border-top: none;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+  }
+}

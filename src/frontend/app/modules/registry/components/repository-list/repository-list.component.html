@@ -1,0 +1,146 @@
+<aui-table
+  [dataSource]="repositories"
+  [trackBy]="trackByPath"
+  auiSort
+  active="image"
+  direction="asc"
+  (sortChange)="onSortChange($event)"
+>
+
+  <ng-container auiTableColumnDef="image">
+    <aui-table-header-cell
+      *auiTableHeaderCellDef
+      aui-sort-header
+    >
+      {{ 'registry.repository_address' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let repo" class="name-cell">
+      <img
+        class="repo-icon name-cell__icon"
+        [src]="'icons/tool-chain/list/' + repo.type.toLowerCase() + '.svg'"
+        alt="devops"
+      >
+      <div class="name-cell__content">
+        <div class="name-cell__name">
+          <a
+            *ngIf="repo.status.phase!=='Error' && repo.status.phase!=='WaitingToDelete'"
+
+            class="repo-path"
+            [routerLink]="[repo.name]"
+          >
+            <span class="prefix">{{ getImagePathPrefix(repo) }}</span>
+            <span class="suffix">{{ getImagePathSuffix(repo) }}</span>
+          </a>
+          <span
+            *ngIf="repo.status.phase==='Error' || repo.status.phase==='WaitingToDelete'"
+
+            class="repo-path"
+          >
+            <span class="prefix">{{ getImagePathPrefix(repo) }}</span>
+            <span class="suffix">{{ getImagePathSuffix(repo) }}</span>
+          </span>
+          <aui-icon
+            *ngIf="repo.status.phase==='Error'"
+            class="alert-icon"
+            icon="exclamation_circle_s"
+            [auiTooltip]="repo.status.message"
+            [auiTooltipDisabled]="!repo.status.message"
+          ></aui-icon>
+          <aui-icon
+            *ngIf="repo.status.phase==='WaitingToDelete'"
+            class="alert-icon"
+            icon="basic:trash_s"
+            [auiTooltip]="repo.status.message"
+            [auiTooltipDisabled]="!repo.status.message"
+          ></aui-icon>
+          <a
+            *ngIf="repo.type.toLowerCase()==='harbor' && repo.link"
+            class="jump-icon"
+            [title]="'jump_to' | translate:{ name: repo.type }"
+            auiTooltipType="info"
+            auiTooltipPosition="bottom start"
+            auiTooltipClass="jump-tooltip"
+            [href]="repo.link"
+            target="_blank"
+          >
+            <aui-icon icon="basic:jump"></aui-icon>
+          </a>
+        </div>
+        <div class="name-cell__description">
+          {{ repo.endpoint }}
+        </div>
+      </div>
+    </aui-table-cell>
+  </ng-container>
+
+  <ng-container auiTableColumnDef="recent_tags">
+    <aui-table-header-cell *auiTableHeaderCellDef>
+      {{ 'registry.recent_tags' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let repo">
+      <div *ngIf="repo.tags.length">
+        <span
+          class="recent-tags"
+          [auiTooltipCopy]="repo.tags[0].name"
+        >
+          {{ repo.tags[0].name }}
+        </span>
+        <aui-icon
+          class="copy-icon"
+          icon="copy"
+          margin="left"
+          [auiTooltipCopy]="getFullTagPath(repo,repo.tags[0])"
+          [auiTooltipCopyTip]="('registry.copy_full_tag_path' | translate) + getFullTagPath(repo,repo.tags[0])"
+        ></aui-icon>
+        <div *ngIf="repo.tags.length > 1"
+          class="recent-tags-count"
+        >
+          <span>{{ 'registry.recent' | translate }}</span>
+          <button
+            aui-button="text"
+            size="mini"
+            [auiTooltip]="recentTags"
+            auiTooltipType="info"
+            auiTooltipTrigger="click"
+            auiTooltipPosition="bottom"
+          >{{ repo.tags.slice(0,5).length }}</button>
+          <span>{{ 'registry.tag_unit' | translate }}</span>
+        </div>
+      </div>
+      <ng-template #recentTags>
+        <div class="tag-list">
+          <div
+            *ngFor="let tag of repo.tags.slice(0,5)"
+            class="tag-list-item"
+          >
+            <alo-tag-icon [type]="repo.type"></alo-tag-icon>
+            <span [auiTooltipCopy]="tag.name">
+              {{ tag.name }}
+            </span>
+            <aui-icon
+              class="copy-icon"
+              icon="copy"
+              margin="left"
+              [auiTooltipCopy]="getFullTagPath(repo,tag)"
+              [auiTooltipCopyTip]="('registry.copy_full_tag_path' | translate) + getFullTagPath(repo,tag)"
+            ></aui-icon>
+          </div>
+        </div>
+      </ng-template>
+      <span *ngIf="!repo.tags.length">-</span>
+    </aui-table-cell>
+  </ng-container>
+
+  <ng-container auiTableColumnDef="all_tags">
+    <aui-table-header-cell *auiTableHeaderCellDef>
+      {{ 'registry.all_tags' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let repo">
+      <alo-tag-icon [type]="repo.type"></alo-tag-icon>
+      <span>{{ repo.tags.length }}</span>
+    </aui-table-cell>
+  </ng-container>
+
+  <aui-table-header-row *auiTableHeaderRowDef="['image']"></aui-table-header-row>
+  <aui-table-row *auiTableRowDef="let row; columns: ['image']"></aui-table-row>
+</aui-table>

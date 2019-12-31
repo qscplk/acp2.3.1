@@ -1,0 +1,22 @@
+@import 'var';
+
+:host {
+  .bind-project-tips {
+    padding-top: 4px;
+    font-size: 12px;
+    color: $color-text-help;
+  }
+  .disabled-link {
+    cursor: not-allowed;
+    color: $color-info;
+  }
+  ::ng-deep {
+    form {
+      .aui-form-item {
+        &__addon-wrapper {
+          width: 150px;
+        }
+      }
+    }
+  }
+}

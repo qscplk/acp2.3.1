@@ -1,0 +1,51 @@
+<aui-inline-alert type="success">
+  {{ 'registry.bind_account_succ' | translate }}
+</aui-inline-alert>
+
+<div class="select-line">
+  <aui-tree-select
+    [value]="currentAddress"
+    (valueChange)="valueChange($event)"
+    [nodesData]="filteredAddressList$ | async"
+    [loading]="loading"
+    [filterFn]="filterAddressFn"
+  >
+    <aui-tree-node-placeholder>{{ 'registry.no_selectable_address' | translate }}</aui-tree-node-placeholder>
+  </aui-tree-select>
+  <button
+    aui-button="primary"
+    (click)="addAddress()"
+    [disabled]="!currentAddress"
+  >{{ 'registry.add_address' | translate }}</button>
+</div>
+
+<aui-table [dataSource]="selectedAddressList$ | async">
+  <ng-container auiTableColumnDef="address">
+    <aui-table-header-cell *auiTableHeaderCellDef>
+      {{ 'registry.repository_address' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let path">
+      {{ path }}
+    </aui-table-cell>
+  </ng-container>
+  <ng-container auiTableColumnDef="actions">
+    <aui-table-header-cell *auiTableHeaderCellDef>
+      {{ 'action' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let path">
+      <aui-icon
+        class="remove-button"
+        icon="basic:minus_circle"
+        (click)="removeAddress(path)"
+      ></aui-icon>
+    </aui-table-cell>
+  </ng-container>
+
+  <aui-table-header-row *auiTableHeaderRowDef="['address','actions']"></aui-table-header-row>
+  <aui-table-row *auiTableRowDef="let row; columns: ['address','actions'];"></aui-table-row>
+</aui-table>
+
+<div
+  *ngIf="!(selectedAddressList$ | async).length"
+  class="empty-hint"
+>{{ 'registry.no_selected_address' | translate }}</div>

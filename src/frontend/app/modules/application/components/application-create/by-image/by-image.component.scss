@@ -1,0 +1,14 @@
+.mutate-buttons {
+  justify-content: space-between;
+  .actions {
+    display: flex;
+    margin-left: 200px;
+    .total-component {
+      margin-left: 10px;
+      color: lightgray;
+    }
+  }
+}
+.app-card {
+  margin-bottom: 16px;
+}

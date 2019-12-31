@@ -1,0 +1,47 @@
+<ng-container *aloPageHeaderContent>
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['../']">{{ 'applications.list' | translate }}</a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <ng-container [ngSwitch]="method$ | async">
+        <ng-container *ngSwitchCase="'yaml'">
+          {{ 'create_application_by_yaml' | translate }}
+        </ng-container>
+        <ng-container *ngSwitchCase="'template'">
+          {{ 'create_application_by_template' | translate }}
+        </ng-container>
+        <ng-container *ngSwitchCase="'image'">
+          {{ 'applications.create' | translate }}
+        </ng-container>
+      </ng-container>
+    </ng-template>
+  </alo-breadcrumb>
+</ng-container>
+
+<ng-container [ngSwitch]="method$ | async">
+  <alo-create-application-by-yaml
+    *ngSwitchCase="'yaml'"
+    [params]="params$ | async"
+    (saved)="onCreated($event)"
+    (canceled)="onCanceled()"
+  >
+  </alo-create-application-by-yaml>
+  <!--<alo-create-application-by-template-->
+    <!--*ngSwitchCase="'template'"-->
+    <!--[project]="project$ | async"-->
+    <!--[template]="template$ | async"-->
+    <!--(saved)="onCreated($event)"-->
+    <!--(canceled)="onCanceled()"-->
+    <!--(detail)="onDetail($event)"-->
+    <!--(deleted)="onDelete($event)"-->
+  <!--&gt;-->
+  <!--</alo-create-application-by-template>-->
+  <alo-application-by-image
+    *ngSwitchCase="'image'"
+    [params]="params$ | async"
+    (saved)="onCreated($event)"
+    (canceled)="onCanceled()"
+  >
+  </alo-application-by-image>
+</ng-container>

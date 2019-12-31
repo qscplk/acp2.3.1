@@ -1,0 +1,68 @@
+<div class="chart-header">
+  <span class="chart-header__title">{{ 'reports.code_recent_commits' | translate }}</span>
+  <div class="chart-header__actions">
+    <button
+      class="redirect"
+      aui-button
+      [routerLink]="['/workspace', project, 'code-repositories']"
+    ><aui-icon icon="angle_right"></aui-icon></button>
+  </div>
+</div>
+<ng-container
+  *aloAsyncData="
+    let data;
+    let loading = loading;
+    let error = error;
+    let refresh = refetch;
+    handler: fetchCodeRecentCommits;
+    params: project
+  "
+>
+<ul *ngIf="data && data.length" class="report-container">
+  <li *ngFor="let item of data;" class="report-item">
+    <div class="report-item__content">
+      <div class="report-item__body">
+        <img [src]="getIcon(item)" width="32" height="32" alt="devops" />
+        <a [href]="item.httpURL" target="_blank">
+          <div>{{ item.fullName }}</div>
+        </a>
+        <div class="report-item__space"></div>
+        <div class="report-item__actions">
+          <aui-tag
+            size="mini"
+            type="info"
+            [auiTooltipCopy]="item.httpURL"
+            [auiTooltipCopyTip]="'[' + ('click_to_copy' | translate) + '] ' + item.httpURL"
+            [auiTooltipCopySuccessTip]="'copy_success_tip' | translate"
+          >HTTPS</aui-tag>
+          <aui-tag
+            size="mini"
+            type="info"
+            [auiTooltipCopy]="item.sshURL"
+            [auiTooltipCopyTip]="'[' + ('click_to_copy' | translate) + '] ' + item.sshURL"
+            [auiTooltipCopySuccessTip]="'copy_success_tip' | translate"
+          >SSH</aui-tag>
+        </div>
+      </div>
+     <!-- <div class="report-item__footer">
+        <div
+          class="commit-id"
+          [auiTooltipCopy]="item.status.repository.latestCommit.commitID"
+          [auiTooltipCopyTip]="'[' + ('click_to_copy' | translate) + '] ' + (item.status.repository.latestCommit.commitID || '')"
+          [auiTooltipCopySuccessTip]="'copy_success_tip' | translate"
+        >{{ (item.status.repository.latestCommit.commitID || '').substr(0, 7) || '-' }}</div>
+        <div class="report-item__space"></div>
+        <div>{{ item.status.repository.latestCommit.commitAt | aclRelativeTime }}</div>
+      </div>-->
+    </div>
+  </li>
+</ul>
+<div *ngIf="!data || !data.length" class="reports-no-data">
+  <span *ngIf="loading">{{ 'loading' | translate }}</span>
+  <span *ngIf="error">
+    <span>{{ 'retry_on_error' | translate }}</span>
+    <a href="javascript:;" (click)="refresh()">{{ 'retry' | translate }}</a>
+  </span>
+  <span *ngIf="!error && !loading">{{ 'no_data' | translate }}</span>
+</div>
+</ng-container>

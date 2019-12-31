@@ -1,0 +1,8 @@
+<ng-container *ngIf="templates?.length">
+  <div
+    style="margin-top: 12px;"
+    *ngFor="let template of templates"
+  >
+    <alo-pipeline-template-list-card [template]="template"></alo-pipeline-template-list-card>
+  </div>
+</ng-container>

@@ -1,0 +1,86 @@
+<div class="chart-header">
+  <span class="chart-header__title">{{ 'reports.registry_recent_pushs' |
+    translate }}</span>
+  <div class="chart-header__actions">
+    <button
+      class="redirect"
+      aui-button
+      [routerLink]="['/workspace', project, 'artifact-repositories']"
+    >
+      <aui-icon icon="angle_right"></aui-icon>
+    </button>
+  </div>
+</div>
+<ng-container *aloAsyncData="
+      let data;
+      let loading = loading;
+      let error = error;
+      let refresh = refetch;
+      handler: fetchRegistryRecentPushs;
+      params: project
+    ">
+  <ul
+    *ngIf="data && data.length"
+    class="report-container"
+  >
+    <li
+      *ngFor="let item of data;"
+      class="report-item"
+    >
+      <div class="report-item__content">
+        <div class="report-item__body">
+          <img
+            class="repo-icon"
+            [src]="'icons/tool-chain/list/' + item.type.toLowerCase() + '.svg'"
+            alt="devops"
+          />
+          <a
+            class="repo-path"
+            [routerLink]="['/workspace', project, 'artifact-repositories', item.name]"
+          >
+            <span class="prefix">{{ getImagePathPrefix(item) }}</span>
+            <span class="suffix">{{ getImagePathSuffix(item) }}</span>
+          </a>
+          <div class="report-item__space"></div>
+          <div class="report-item__actions">
+            <alo-tag-icon [type]="item.type"></alo-tag-icon>
+            <span>{{ item.tags.length }}</span>
+          </div>
+        </div>
+        <div class="report-item__footer">
+          <div
+            class="tag-name"
+            [auiTooltipCopy]="getLatestTag(item).name"
+          >
+            <div>{{ getLatestTag(item).name || '-' }}</div>
+          </div>
+          <aui-icon
+            class="copy-icon"
+            icon="copy"
+            margin="left"
+            size="12px"
+            [auiTooltipCopy]="getLatestTagPath(item)"
+            [auiTooltipCopyTip]="('reports.copy_full_tag_path' | translate) + getLatestTagPath(item)"
+          ></aui-icon>
+          <div class="report-item__space"></div>
+          <div class="tag-date">
+            {{ getLatestTag(item).createdAt | aclRelativeTime }}</div>
+        </div>
+      </div>
+    </li>
+  </ul>
+  <div
+    *ngIf="!data || !data.length"
+    class="reports-no-data"
+  >
+    <span *ngIf="loading">{{ 'loading' | translate }}</span>
+    <span *ngIf="error">
+      <span>{{ 'retry_on_error' | translate }}</span>
+      <a
+        href="javascript:;"
+        (click)="refresh()"
+      >{{ 'retry' | translate }}</a>
+    </span>
+    <span *ngIf="!error && !loading">{{ 'no_data' | translate }}</span>
+  </div>
+</ng-container>

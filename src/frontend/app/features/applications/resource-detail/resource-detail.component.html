@@ -1,0 +1,94 @@
+<ng-container
+  *aloAsyncData="
+    let resourceDetail;
+    let error = error;
+    let loading = loading;
+    let refresh = refetch;
+    handler: fetchResource;
+    params: identity$ | async;
+    pullIn: 10 * 1000
+  "
+>
+  <div *aloPageHeaderContent class="page-header">
+    <alo-breadcrumb>
+      <ng-template aloBreadcrumbItem>
+        <a [routerLink]="['../../../']">{{
+          'applications.list' | translate
+        }}</a>
+      </ng-template>
+      <ng-template aloBreadcrumbItem>
+        <a [routerLink]="['../../']">{{ (identity$ | async).name }}</a>
+      </ng-template>
+      <ng-template aloBreadcrumbItem>
+        <span> {{ (identity$ | async).resourceName }} </span>
+      </ng-template>
+    </alo-breadcrumb>
+    <div>
+      <ng-container *ngIf="detailComp.showStartStopButton">
+        <button
+          *ngIf="allowedStart$ | async"
+          aui-button="primary"
+          size="small"
+          [disabled]="!detailComp.canStart"
+          (click)="detailComp.toggleApp('start')"
+        >
+          <aui-icon icon="basic:play_12_s"></aui-icon>
+          {{ 'application.start' | translate }}
+        </button>
+        <button
+          *ngIf="allowedStop$ | async"
+          aui-button="default"
+          size="small"
+          [plain]="true"
+          [disabled]="!detailComp.canStop"
+          (click)="detailComp.toggleApp('stop')"
+        >
+          <aui-icon icon="basic:stop_12_s"></aui-icon>
+          {{ 'application.stop' | translate }}
+        </button>
+      </ng-container>
+      <button
+        aui-button="primary"
+        *ngIf="(identity$ | async).kind === 'Deployment'"
+        [plain]="true"
+        size="small"
+        [auiDropdown]="actions"
+        [disabled]="!detailComp?.ready"
+      >
+        {{ 'action' | translate }}
+        <aui-icon icon="angle_down" margin="left"></aui-icon>
+      </button>
+    </div>
+  </div>
+  <aui-menu #actions>
+    <aui-menu-item
+      [disabled]="!(allowedUpdate$ | async)"
+      [routerLink]="['./update']"
+      >{{ 'update' | translate }}</aui-menu-item
+    >
+    <aui-menu-item [disabled]="!(allowedUpdate$ | async)" (click)="rollback()">{{
+      'rollback' | translate
+    }}</aui-menu-item>
+    <aui-menu-item
+      *ngIf="isHorizontalPodAutoscalerListEmpty(resourceDetail); else updateHpa"
+      [disabled]="!(allowedUpdate$ | async)"
+      (click)="addAutoScaling()"
+      >{{ 'application.add_auto_scaling' | translate }}</aui-menu-item
+    >
+    <ng-template #updateHpa>
+      <aui-menu-item
+        [disabled]="!(allowedUpdate$ | async)"
+        (click)="updateAutoScaling()"
+        >{{ 'application.update_auto_scaling' | translate }}</aui-menu-item
+      >
+    </ng-template>
+  </aui-menu>
+  <alo-k8s-resource-detail
+    #detailRef
+    [params]="identity$ | async"
+    [data]="resourceDetail"
+    [allowedUpdate]="allowedUpdate$ | async"
+    (updated)="refresh()"
+  >
+  </alo-k8s-resource-detail>
+</ng-container>

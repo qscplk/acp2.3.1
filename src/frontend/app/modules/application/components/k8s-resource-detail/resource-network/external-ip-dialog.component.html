@@ -1,0 +1,56 @@
+<ng-container [ngSwitch]="actionType">
+  <ng-container *ngSwitchCase="'create'">
+    <aui-dialog-header>
+      {{ 'application.add_public_ip_access' | translate }}
+    </aui-dialog-header>
+  </ng-container>
+  <ng-container *ngSwitchCase="'update'">
+    <aui-dialog-header>
+      {{ 'application.update_public_ip_access' | translate }}
+    </aui-dialog-header>
+  </ng-container>
+</ng-container>
+<aui-dialog-content>
+  <form #form="ngForm" auiForm>
+    <aui-form-item>
+      <alo-public-ip-access
+        [(ngModel)]="publicIPAccess"
+        isSingle="ture"
+        [isUpdate]="actionType === 'update'"
+        name="publicIPAccess"
+      ></alo-public-ip-access>
+        <aui-icon
+          icon="basic:question"
+          style="color:#999"
+          [auiTooltip]="'application.node_port_form_desc' | translate"
+        ></aui-icon>
+    </aui-form-item>
+  </form>
+</aui-dialog-content>
+<aui-dialog-footer>
+  <ng-container [ngSwitch]="actionType">
+    <ng-container *ngSwitchCase="'create'">
+      <button
+        aui-button="primary"
+        [size]="small"
+        (click)="addNetwork('internal')"
+        [loading]="loading"
+      >
+        {{ 'add' | translate }}
+      </button>
+    </ng-container>
+    <ng-container *ngSwitchCase="'update'">
+      <button
+        aui-button="primary"
+        [size]="small"
+        (click)="updateNetwork('internal')"
+        [loading]="loading"
+      >
+        {{ 'update' | translate }}
+      </button>
+    </ng-container>
+  </ng-container>
+  <button aui-button [auiDialogClose]="false">
+    {{ 'cancel' | translate }}
+  </button>
+</aui-dialog-footer>

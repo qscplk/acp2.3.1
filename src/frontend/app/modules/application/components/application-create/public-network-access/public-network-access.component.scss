@@ -1,0 +1,6 @@
+:host {
+  width: 100%;
+  ::ng-deep .alo-form-table__action-col {
+    min-width: 0;
+  }
+}

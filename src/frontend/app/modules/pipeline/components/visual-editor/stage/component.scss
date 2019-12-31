@@ -1,0 +1,108 @@
+@import 'var';
+
+.side-form {
+  &__header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    > a {
+      &:link,
+      &:visited {
+        color: #979797;
+      }
+      &:hover {
+        color: $color-primary;
+      }
+    }
+  }
+
+  &__body {
+    padding: 0 20px 16px 20px;
+  }
+
+  &__group-header {
+    aui-icon {
+      margin-left: 8px;
+      color: #999;
+      &:hover {
+        color: $color-primary;
+      }
+    }
+  }
+}
+
+// TODO: temp hack
+:host {
+  acl-image-push-control {
+    ::ng-deep {
+      .select {
+        .modify {
+          word-break: break-all;
+        }
+      }
+    }
+  }
+
+  acl-image-pull-control {
+    ::ng-deep {
+      .select {
+        .modify {
+          word-break: break-all;
+        }
+      }
+    }
+  }
+}
+
+:host(.side-form) {
+  > .side-form__body {
+    margin: 0 0;
+  }
+}
+
+.error-hint {
+  color: $color-error;
+  display: none;
+}
+
+.ng-submitted {
+  .error-hint.has-error {
+    display: block;
+  }
+}
+
+aui-code-editor {
+  flex: 1;
+  ::ng-deep .aui-code-editor {
+    height: 100px;
+    min-height: 100px;
+  }
+}
+
+.advanced-fields-button {
+  display: flex;
+  background-color: #fafafa;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  font-size: 12px;
+}
+
+.field-description {
+  &:hover {
+    color: $color-primary;
+  }
+}
+
+.no-parameters {
+  height: 84px;
+  border: dashed 1px #ccc;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+}

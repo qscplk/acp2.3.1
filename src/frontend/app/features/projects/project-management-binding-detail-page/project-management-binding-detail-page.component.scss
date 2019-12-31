@@ -1,0 +1,57 @@
+@import 'var';
+
+:host {
+  .info-header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .header-title {
+    display: flex;
+    align-items: center;
+  }
+
+  .type-icon {
+    width: 48px;
+    margin-right: 8px;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .alert {
+    font-size: 16px;
+    color: #f8ac58;
+    margin-left: 8px;
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    font-size: 14px;
+    color: $color-text-main;
+    margin-bottom: -12px;
+
+    li {
+      width: 50%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-bottom: 12px;
+    }
+  }
+
+  .list-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 18px;
+    .actions {
+      display: flex;
+    }
+    .aui-button {
+      margin-right: 8px;
+    }
+  }
+}

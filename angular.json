@@ -1,0 +1,101 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "diablo-clone": {
+      "root": "",
+      "sourceRoot": "src/frontend",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@angular-builders/custom-webpack:browser",
+          "options": {
+            "customWebpackConfig": {
+              "path": "node_modules/@alauda/custom-webpack"
+            },
+            "outputPath": "dist/static",
+            "index": "src/frontend/index.html",
+            "main": "src/frontend/main.ts",
+            "tsConfig": "src/frontend/tsconfig.app.json",
+            "polyfills": "src/frontend/polyfills.ts",
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/frontend/styles",
+                "src/frontend/styles/variables"
+              ]
+            },
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "src/frontend/assets",
+                "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/monaco-editor/min/vs",
+                "output": "/lib/v1/vs"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/monaco-languages/release/min",
+                "output": "/lib/v1/vs/basic-languages"
+              }
+            ],
+            "styles": [
+              "src/frontend/styles/index.scss",
+              "node_modules/xterm/dist/xterm.css"
+            ],
+            "scripts": ["node_modules/sockjs-client/dist/sockjs.min.js"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/frontend/environments/environment.ts",
+                  "with": "src/frontend/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-builders/custom-webpack:dev-server",
+          "options": {
+            "browserTarget": "diablo-clone:build",
+            "proxyConfig": "./ng-serve-proxy.conf.json"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "diablo-clone:build:production"
+            }
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "diablo-clone",
+  "cli": {
+    "warnings": {
+      "typescriptMismatch": false
+    }
+  },
+  "schematics": {
+    "@schematics/angular:component": {
+      "prefix": "alo",
+      "styleext": "scss"
+    },
+    "@schematics/angular:directive": {
+      "prefix": "alo"
+    }
+  }
+}

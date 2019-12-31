@@ -1,0 +1,11 @@
+apiVersion: auth.alauda.io/v1alpha1
+kind: Project
+metadata:
+  name: ${PROJECT_NAME}
+  annotations:
+    alauda.io/displayName: ${PROJECT_NAME}
+    alauda.io/description: ${PROJECT_NAME}
+    alauda.io/product: 'Alauda DevOps'
+  labels:
+    integration: 'true'
+    alauda.test: 'true'

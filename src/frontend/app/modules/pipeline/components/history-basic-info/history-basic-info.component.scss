@@ -1,0 +1,133 @@
+@import '~@alauda/ui/theme/base-var';
+@import '../../shared-style/status';
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  color: $color-white;
+  align-items: center;
+  padding: 10px 20px;
+  .title-wrapper {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    aui-icon {
+      margin: 4px 12px 4px 4px;
+      height: 24px;
+      width: 24px;
+    }
+    .title {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      .pr-info > span {
+        margin-right: 4px;
+      }
+    }
+    .secondary-title {
+      font-size: 14px;
+      font-weight: normal;
+      opacity: 0.8;
+    }
+    .history-info {
+      display: flex;
+      align-items: center;
+      line-height: 1;
+      .point-separator {
+        margin: 0 8px;
+        width: 4px;
+        height: 4px;
+        background-color: $color-white;
+        border-radius: 50%;
+      }
+    }
+  }
+
+  ::ng-deep alo-menu-trigger {
+    .alo-menu-trigger {
+      &.aui-button--text {
+        width: 22px;
+        height: 22px;
+      }
+    }
+  }
+}
+.basic-body {
+  display: flex;
+  padding: 0 20px;
+  margin: 8px 0;
+  align-items: center;
+  justify-content: flex-start;
+  .fields {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+    .field {
+      margin: 0 8px;
+      aui-icon {
+        margin-right: 6px;
+      }
+    }
+  }
+}
+
+::ng-deep {
+  alo-pipeline-history-basic-info {
+    alo-menu-trigger {
+      button {
+        background-color: transparent !important;
+        aui-icon {
+          color: $color-white;
+        }
+      }
+    }
+  }
+}
+
+aui-tag {
+  ::ng-deep {
+    .aui-tag__content {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      img {
+        width: 16px;
+        height: 16px;
+        margin-right: 4px;
+      }
+    }
+  }
+}
+
+:host {
+  ::ng-deep {
+    .aui-tab-header {
+      border-bottom: none;
+    }
+    .pipeline-status {
+      @each $status, $color in $status-color-map {
+        &.#{$status} {
+          .aui-tab-header-active-indicator {
+            &::after {
+              background-color: $color;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .number-badge {
+    display: inline-block;
+    padding: 0 6px;
+    border-radius: 10px;
+    color: $color-white;
+    background-color: $color-error;
+    margin-left: 4px;
+    height: 16px;
+    line-height: 16px;
+  }
+}

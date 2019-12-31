@@ -1,0 +1,62 @@
+<aui-dialog-header>
+  {{ 'bind' | translate }}
+  <aui-icon
+    class="helper"
+    [auiTooltip]="hintContent"
+    auiTooltipType="info"
+    icon="basic:question"
+  ></aui-icon>
+</aui-dialog-header>
+<aui-dialog-content>
+  <alo-tool-type-bar
+    [(selectedType)]="selectedType"
+    (selectedTypeChange)="selectedType$$.next($event)"
+    [types]="data.types"
+    [resources]="allServices$ | async"
+    [additionalCount]="{ artifactRepository: registryCount }"
+  ></alo-tool-type-bar>
+  <alo-service-list
+    *ngIf="hasServices$ | async"
+    [services]="filteredServices$ | async"
+    [showTag]="selectedType === 'all'"
+    (cardClick)="selectService($event)"
+  ></alo-service-list>
+  <alo-artifact-registry-binding-options
+    *ngIf="hasManagers$ | async"
+    [project]="data.project"
+    [managers]="filteredManagers$ | async"
+    (cardClick)="selectService($event)"
+    [showTag]="selectedType === 'all'"
+    (close)="closeSelf()"
+    (registryAdd)="registryUpdate$.next()"
+  ></alo-artifact-registry-binding-options>
+  <div
+    *ngIf="!(hasServices$ | async) && !(hasManagers$ | async) && loading"
+    class="empty-list-hint"
+  >
+    <span>{{ 'loading' | translate }}</span>
+  </div>
+  <div
+    *ngIf="
+      !(filteredServices$ | async)?.length &&
+      !(filteredManagers$ | async)?.length &&
+      !loading
+    "
+    class="empty-list-hint"
+  >
+    <span>{{ 'tool_chain.none_tool_service' | translate }},</span>
+    <span>{{ 'tool_chain.integrate_tool_hint_prefix' | translate }}</span>
+    <a [routerLink]="'/admin/tool-chain'" (click)="closeSelf()">
+      {{ 'tool_chain.integrate_tool_hint_link' | translate }}
+    </a>
+    <span>{{ 'tool_chain.integrate_tool_hint_suffix' | translate }}</span>
+  </div>
+</aui-dialog-content>
+
+<ng-template #hintContent>
+  <span>{{ 'tool_chain.integrate_tool_hint_prefix' | translate }}</span>
+  <a [routerLink]="'/admin/tool-chain'" (click)="closeSelf()">
+    {{ 'tool_chain.integrate_tool_hint_link' | translate }}
+  </a>
+  <span>{{ 'tool_chain.integrate_tool_hint_suffix' | translate }}</span>
+</ng-template>

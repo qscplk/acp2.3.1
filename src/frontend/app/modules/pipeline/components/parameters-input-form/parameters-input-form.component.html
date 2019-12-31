@@ -1,0 +1,26 @@
+<form #form="ngForm"
+      auiForm
+      auiFormLabelWidth="100px"
+      (ngSubmit)="save($event)">
+    <ng-container *ngFor="let para of parameters">
+        <aui-form-item>
+            <label auiFormItemLabel>{{para?.name}}</label>
+            <div class="form-item">
+                <input
+                        *ngIf="inputTypes.includes(para?.type)"
+                        auiFormItemControl
+                        [(ngModel)]="model[para.name]"
+                        name="{{para.name}}"
+                        aui-input
+                >
+                <aui-switch
+                        *ngIf="booleanTypes.includes(para?.type)"
+                        [(ngModel)]="model[para.name]"
+                        name="{{para.name}}"
+                ></aui-switch>
+            </div>
+            <div auiFormItemHint *ngIf="para?.description">{{para?.description}}</div>
+        </aui-form-item>
+    </ng-container>
+</form>
+<ng-content></ng-content>

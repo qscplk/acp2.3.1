@@ -1,0 +1,41 @@
+<div class="alo-tool-list">
+    <div
+        *ngFor="let tool of tools;trackBy: trackByName"
+        class="alo-tool-card"
+        [class.isSelected]="selectedTool === tool.name"
+        (click)="handleCardClicked(tool)"
+        [auiTooltip]="'shallow_integrate_tips' | translate"
+        [auiTooltipDisabled]="!(tool.shallow)"
+    >
+        <div class="icon-stack">
+            <img
+                class="type-icon"
+                [src]="'icons/tool-chain/' + tool.type.toLowerCase() + '.svg'"
+                alt="devops"
+            >
+            <img
+                *ngIf="tool.enterprise"
+                class="enterprise-mark"
+                [src]="enterpriseIcon$ | async"
+                alt="devops"
+            >
+            <div
+              *ngIf="tool.shallow"
+              class="shallow-mark"
+            >
+              <aui-icon icon="info_circle_s"></aui-icon>
+            </div>
+        </div>
+        <div class="name">
+            {{ (translate.locale$ | async) === 'zh' ? tool.displayName.zh : tool.displayName.en}}</div>
+        <div
+            *ngIf="showType"
+            class="tool-type"
+        >{{ getToolType(tool.kind, tool.toolType) }}</div>
+        <aui-icon
+            *ngIf="selectedTool === tool.name"
+            class="selected-mark"
+            icon="check_triangle_s"
+        ></aui-icon>
+    </div>
+</div>

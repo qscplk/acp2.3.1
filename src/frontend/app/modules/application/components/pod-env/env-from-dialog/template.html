@@ -1,0 +1,19 @@
+<aui-dialog-header>
+  {{ 'update' | translate }} {{ 'env_from' | translate }}
+</aui-dialog-header>
+
+<aui-dialog-content>
+  <alo-env-from-form [namespace]="namespace"
+                     [cluster]="cluster"
+                     [(ngModel)]="envFrom">
+  </alo-env-from-form>
+</aui-dialog-content>
+
+<aui-dialog-footer>
+  <div>
+    <button aui-button="primary"
+            (click)="onConfirm()">{{ 'confirm' | translate }}</button>
+    <button aui-button
+            auiDialogClose>{{ 'cancel' | translate }}</button>
+  </div>
+</aui-dialog-footer>

@@ -1,0 +1,31 @@
+<aui-dialog-header>
+  <span>{{ 'code.assign_repository' | translate }}</span>
+</aui-dialog-header>
+<aui-dialog-content>
+  <aui-inline-alert type="primary">
+    <span>{{ 'code.update_binding_tips' | translate }}</span>
+  </aui-inline-alert>
+  <alo-code-repository-assign
+    mode="update"
+    [namespace]="data.namespace"
+    [name]="data.name"
+    (saved)="close(true)"
+    #editor
+  ></alo-code-repository-assign>
+</aui-dialog-content>
+<aui-dialog-footer>
+  <button
+    aui-button="primary"
+    [disabled]="editor.loading || editor.saving || editor.hasError"
+    [loading]="editor.saving"
+    (click)="editor.submit()"
+  >
+    {{ 'update' | translate }}
+  </button>
+  <button
+    aui-button
+    auiDialogClose
+  >
+    {{ 'cancel' | translate }}
+  </button>
+</aui-dialog-footer>

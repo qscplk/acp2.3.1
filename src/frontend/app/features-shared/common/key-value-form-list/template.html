@@ -1,0 +1,81 @@
+<form auiForm
+      auiFormLabelWidth="50px"
+      [auiFormEmptyAddon]="false"
+      [formGroup]="form">
+  <alo-array-form-table [noRowSeparator]="true"
+                        (add)="add(form.length)"
+                        (remove)="remove($event)"
+                        [rows]="form.controls">
+    <!-- Input row -->
+    <ng-container *aloArrayFormTableRow="let control" [formGroup]="control">
+      <td>
+        <div class="key-value-form-item-group">
+          <aui-form-item>
+            <label auiFormItemLabel>
+              {{ 'key' | translate }}
+            </label>
+            <input (blur)="onBlur()"
+                   maxlength="63"
+                   auiFormItemControl
+                   aui-input
+                   formControlName="0">
+
+            <div auiFormItemError>
+              <ng-container *ngIf="control.errors?.duplicateKey">
+                {{ 'duplicate_key_error_message' | translate: {key: control?.errors?.duplicateKey} }}
+              </ng-container>
+
+              <ng-container *ngIf="control.errors?.keyIsMissing">
+                {{ 'key_is_missing_error_message' | translate }}
+              </ng-container>
+            </div>
+
+          </aui-form-item>
+
+          <aui-form-item>
+            <label auiFormItemLabel>
+              {{ 'value' | translate }}
+            </label>
+            <textarea auiFormItemControl
+                      aui-input
+                      [rows]="getTextareaRows(control.controls[1].value)"
+                      formControlName="1"
+                      (blur)="onBlur()">
+            </textarea>
+            <!-- <aui-code-editor [actionsConfig]="editorActions"
+                             auiFormItemControl
+                             [formControl]="control.controls[1]">
+            </aui-code-editor> -->
+          </aui-form-item>
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- Row controls -->
+    <ng-container *aloArrayFormTableFooter>
+      <button aui-button="primary"
+              size="mini"
+              [plain]="true"
+              (click)="add()">
+        <aui-icon icon="basic:add_circle">
+        </aui-icon>
+        {{ 'add' | translate }}
+      </button>
+      <button aui-button
+              size="mini"
+              [plain]="true"
+              (click)="fileUploadInput.click()">
+        <aui-icon icon="import">
+        </aui-icon>
+        {{ 'import' | translate }}
+      </button>
+    </ng-container>
+  </alo-array-form-table>
+</form>
+
+<input #fileUploadInput
+       hidden
+       (change)="onImport($event)"
+       type="file"
+       multiple
+       name="files[]" />

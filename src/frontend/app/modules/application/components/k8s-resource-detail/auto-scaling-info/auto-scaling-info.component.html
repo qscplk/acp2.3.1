@@ -1,0 +1,50 @@
+<div class="alo-detail__group-header">
+  <span
+    >{{ 'application.auto_scaling' | translate }}
+    <aui-icon
+      class="error-icon"
+      *ngIf="missingCpuRequests || missingMemRequests"
+      [auiTooltip]="autoScalingWarningTips"
+      auiTooltipPosition="end"
+      icon="exclamation_triangle_s"
+    ></aui-icon
+  ></span>
+  <div class="actions">
+    <button aui-button="text" [disabled]="!allowedUpdate" (click)="update()">
+      {{ 'update' | translate }}
+    </button>
+    <button aui-button="text" [disabled]="!allowedUpdate" (click)="delete()">
+      {{ 'delete' | translate }}
+    </button>
+  </div>
+</div>
+<div auiCardBody class="base-body">
+  <div class="field">
+    <label>{{ 'application.min_replicas' | translate }}</label>
+    <span>{{ minReplicas || '-' }}</span>
+  </div>
+  <div class="field">
+    <label>{{
+      'application.cpu_target_average_utilization' | translate
+    }}</label>
+    <span>{{
+      cpuTargetAverageUtilization ? cpuTargetAverageUtilization + '%' : '-'
+    }}</span>
+  </div>
+  <div class="field">
+    <label>{{ 'application.max_replicas' | translate }}</label>
+    <span>{{ maxReplicas || '-' }}</span>
+  </div>
+  <div class="field">
+    <label>{{
+      'application.mem_target_average_utilization' | translate
+    }}</label>
+    <span>{{
+      memTargetAverageUtilization ? memTargetAverageUtilization + '%' : '-'
+    }}</span>
+  </div>
+  <div class="field">
+    <label>{{ 'application.recent_scaling_time' | translate }}</label>
+    <span>{{ lastScaleTime | aclStandardTime }}</span>
+  </div>
+</div>

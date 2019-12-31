@@ -1,0 +1,43 @@
+@import 'var';
+
+.list-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+aui-paginator {
+  margin-top: 12px;
+}
+
+.no-data {
+  display: flex;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  border-bottom: 1px solid #eee;
+}
+
+.alo-search {
+  aui-select {
+    margin-right: 16px;
+  }
+}
+.waiting-title {
+  display: flex;
+  align-items: center;
+}
+//todo: replace this with aui badge
+.waiting-count {
+  padding: 0 6px;
+  margin-left: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  height: 16px;
+  line-height: 16px;
+  border-radius: 10px;
+  color: #fff;
+  background-color: $color-primary;
+}

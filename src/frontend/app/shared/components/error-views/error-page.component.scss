@@ -1,0 +1,30 @@
+:host {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.alo-error-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  img {
+    margin-bottom: 20px;
+    width: 320px;
+    height: 320px;
+    background-color: #fff;
+    border-radius: 50%;
+    border: solid 1px #e8e8e8;
+  }
+  &__title {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 8px;
+  }
+
+  &__description {
+    color: #4d4d4d;
+  }
+}

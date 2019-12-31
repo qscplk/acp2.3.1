@@ -1,0 +1,56 @@
+<aui-card>
+  <div class="list-card-header">
+    <div class="repo-info">
+      <ng-container *ngIf="repository">
+        <img
+          class="header-icon"
+          [src]="'icons/tool-chain/list/' + repository.type.toLowerCase() + '.svg'"
+          alt="devops"
+        >
+        <div
+          class="header-text repo-path"
+          [auiTooltipCopy]="getFullImagePath(repository)"
+          [auiTooltipCopyTip]="('registry.copy_full_path' | translate) + getFullImagePath(repository)"
+        >
+          <span>
+            <span class="prefix">{{ getImagePathPrefix(repository) }}</span>
+            <span class="prefix">{{ getImagePathSuffix(repository) }}</span>
+          </span>
+        </div>
+        <a
+          *ngIf="repository.type.toLowerCase()==='harbor' && repository.link"
+          class="jump-icon"
+          [title]="'jump_to' | translate:{ name: repository.type }"
+          auiTooltipType="info"
+          auiTooltipPosition="bottom start"
+          auiTooltipClass="jump-tooltip"
+          [href]="repository.link"
+          target="_blank"
+        >
+          <aui-icon icon="basic:jump"></aui-icon>
+        </a>
+      </ng-container>
+    </div>
+    <aui-search
+      [placeholder]="'registry.filter_by_repo_version' | translate"
+      (keywordChange)="filterChange.emit($event)"
+    ></aui-search>
+  </div>
+  <alo-image-tag-list
+    [type]="repository?.type"
+    [repository]="repository?.name"
+    [namespace]="repository?.namespace"
+    [imagePath]="getFullImagePath(repository || {})"
+    [tags]="tags"
+    [scanDisabled]="repository?.scanDisabled"
+    (scanTrigger)="scanTrigger.emit($event)"
+  ></alo-image-tag-list>
+  <alo-no-data
+    *ngIf="!tags?.length"
+    [resourceName]="'image_tag' | translate"
+    [loading]="loading"
+    [error]="error"
+    (retry)="refetch.emit(null)"
+  >
+  </alo-no-data>
+</aui-card>

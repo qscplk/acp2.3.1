@@ -1,0 +1,25 @@
+@import 'var';
+
+:host {
+  .name-cell {
+    display: flex;
+    .jump-icon {
+      color: #999;
+      margin-left: 4px;
+      cursor: pointer;
+      :hover {
+        color: $color-primary;
+      }
+    }
+  }
+  ::ng-deep {
+    .aui-table {
+      &__cell {
+        white-space: unset;
+      }
+    }
+    aui-paginator {
+      margin-top: 13px;
+    }
+  }
+}

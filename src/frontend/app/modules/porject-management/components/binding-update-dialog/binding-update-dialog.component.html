@@ -1,0 +1,98 @@
+<aui-dialog-header>{{ 'update' | translate }}</aui-dialog-header>
+
+<aui-dialog-content>
+  <form
+    [formGroup]="form"
+    auiForm
+    auiFormLabelWidth="120px"
+  >
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'name' | translate }}</label>
+      {{ form.get('name').value }}
+    </aui-form-item>
+
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'description' | translate }}</label>
+      <textarea
+        formControlName="description"
+        aui-input
+        auiFormItemControl
+        name="description"
+      ></textarea>
+    </aui-form-item>
+
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'auth_type' | translate }}</label>
+      <aui-radio-group formControlName="authType">
+        <aui-radio-button [value]="SecretType.BasicAuth">
+          {{ 'secret.basic_auth' | translate }}
+        </aui-radio-button>
+      </aui-radio-group>
+    </aui-form-item>
+
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'secret' | translate }}</label>
+      <aui-select
+        formControlName="secret"
+        auiFormItemControl
+        required
+        filterable
+        [placeholder]="'please_select_secret' | translate"
+      >
+        <aui-option-group class="secret-group">
+          <div auiOptionGroupTitle class="secret-group__title">
+            <img src="icons/secret-public.svg" alt="devops" />
+            <span>{{ 'secret.global' | translate }}</span>
+          </div>
+          <aui-option
+            *ngFor="let item of (secrets$ | async)?.public"
+            [value]="secretToValue(item)"
+            [label]="item.name"
+          >
+            <span>{{ item.name }}</span>
+            <span
+              class="secret-group__display-name"
+              *ngIf="!!item.displayName"
+            >({{ item.displayName }})</span>
+          </aui-option>
+        </aui-option-group>
+        <aui-option-group class="secret-group">
+          <div auiOptionGroupTitle class="secret-group__title">
+            <img src="icons/secret-private.svg" alt="devops" />
+            <span>{{ 'secret.private' | translate }}</span>
+          </div>
+          <aui-option
+            *ngFor="let item of (secrets$ | async)?.private"
+            [value]="secretToValue(item)"
+            [label]="item.name"
+          >
+            <span>{{ item.name }}</span>
+            <span class="secret-group__display-name" *ngIf="!!item.displayName">({{ item.displayName }})</span>
+          </aui-option>
+        </aui-option-group>
+        <aui-option-placeholder>{{ 'no_available_secrets' | translate }}</aui-option-placeholder>
+      </aui-select>
+
+      <button
+        aui-button
+        type="button"
+        style="margin-left: 8px"
+        (click)="addSecret()"
+      >{{ 'add_secret' | translate }}</button>
+      <div
+        auiFormItemError
+        *ngIf="form.controls?.secret?.errors?.required"
+      >{{ 'required' | translate }}</div>
+    </aui-form-item>
+  </form>
+</aui-dialog-content>
+
+<aui-dialog-footer>
+  <button
+    aui-button="primary"
+    [loading]="loading"
+    [disabled]="form.invalid"
+    (click)="submit()"
+  >{{ 'update' | translate }}</button>
+  <button [disabled]="loading" aui-button auiDialogClose>{{ 'cancel' | translate }}</button>
+</aui-dialog-footer>

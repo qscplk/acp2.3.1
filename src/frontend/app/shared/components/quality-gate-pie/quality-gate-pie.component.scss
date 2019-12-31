@@ -1,0 +1,16 @@
+.aui-tooltip {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: nowrap;
+  em {
+    width: 6px;
+    height: 6px;
+    display: block;
+    border-radius: 50%;
+  }
+  * + * {
+    margin: 4px;
+  }
+}

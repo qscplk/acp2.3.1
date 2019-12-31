@@ -1,0 +1,123 @@
+@import 'var';
+
+@mixin description-font {
+  font-size: 12px;
+  color: #999999;
+}
+
+.card-container {
+  background-color: white;
+  margin: 2px 0;
+  padding: 3px;
+  .app-info {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    .row-image {
+      padding-left: 14px;
+      cursor: pointer;
+    }
+    .app-name {
+      font-size: 19px;
+      padding-left: 10px;
+      .display-name {
+        @include description-font;
+      }
+    }
+    .app-status {
+      display: flex;
+      width: 150px;
+      margin-right: 20px;
+      .status-gauge-bar {
+        width: 100px;
+        margin-right: 5px;
+      }
+    }
+    .app-links {
+      width: 70px;
+      aui-icon {
+        padding-right: 5px;
+      }
+    }
+  }
+  .resource-list-container {
+    max-height: 230px;
+    .resource-list {
+      margin-left: 40px;
+      margin-right: 20px;
+      .resource-list-item {
+        min-height: 45px;
+        display: flex;
+        align-items: center;
+        border-top: 2px solid #f1f1f1;
+        .resource-icon-container {
+          min-width: 35px;
+          display: flex;
+          justify-content: center;
+        }
+        .resoure-name {
+          margin-left: 4px;
+        }
+        .resoure-status {
+          padding: 15px;
+          span {
+            padding-left: 3px;
+          }
+        }
+        .resoure-images {
+          width: 360px;
+          display: flex;
+          align-items: center;
+          .image-title {
+            @include description-font;
+          }
+          .image-info {
+            font-size: 12px;
+            margin-left: 6px;
+            > .copy-item {
+              font-size: 14px;
+            }
+          }
+        }
+        .resource-action {
+          margin-right: 30px;
+        }
+      }
+    }
+  }
+  .aviliable-data {
+    cursor: pointer;
+    color: #24a7e3;
+    &:hover {
+      background-color: #e5f5fc;
+    }
+  }
+}
+.tooltip-container {
+  .addresses-title {
+    font-size: 14px;
+    color: black;
+  }
+  .tooltip-list {
+    margin-left: 30px;
+    padding: 10px 20px 10px 0;
+    color: black;
+    font-size: 14px;
+    a {
+      cursor: pointer;
+      color: $color-primary;
+      &:hover {
+        color: #0079c2;
+      }
+    }
+    .external-link {
+      color: $color-primary;
+    }
+  }
+}
+.copy-item {
+  cursor: pointer;
+  &:hover {
+    background-color: #f2f2f2;
+  }
+}

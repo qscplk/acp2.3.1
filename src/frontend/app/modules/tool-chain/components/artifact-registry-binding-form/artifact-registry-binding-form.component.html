@@ -1,0 +1,125 @@
+<form
+  #form="ngForm"
+  auiForm
+  [auiFormLabelWidth]="mode === 'create' ? '135px' : '90px'"
+  [auiFormEmptyAddon]="mode === 'create'"
+>
+  <ng-container *ngIf="mode === 'create'">
+    <aui-section>
+      <div auiSectionTitle>{{ 'base_info' | translate }}</div>
+      <ng-container *ngTemplateOutlet="basicInfoTemplate"></ng-container>
+    </aui-section>
+    <aui-section>
+      <div auiSectionTitle>{{ 'auth' | translate }}</div>
+      <ng-container *ngTemplateOutlet="authTemplate"></ng-container>
+    </aui-section>
+  </ng-container>
+  <ng-container *ngIf="mode === 'update'">
+    <ng-container *ngTemplateOutlet="basicInfoTemplate"></ng-container>
+    <ng-container *ngTemplateOutlet="authTemplate"></ng-container>
+  </ng-container>
+  <ng-template #basicInfoTemplate>
+    <aui-form-item *ngIf="mode === 'create'">
+      <label auiFormItemLabel>{{ 'name' | translate }}</label>
+      <input
+        aui-input
+        auiFormItemControl
+        #name="ngModel"
+        [(ngModel)]="formData.name"
+        name="name"
+        required
+        [maxlength]="nameRule.maxLength"
+        [pattern]="nameRule.pattern"
+        [placeholder]="nameRule.placeholder | translate"
+      />
+      <div auiFormItemError *ngIf="name.errors?.required">
+        {{ nameRule.requiredError | translate }}
+      </div>
+      <div auiFormItemError *ngIf="name.errors?.pattern">
+        {{ nameRule.patternError | translate }}
+      </div>
+    </aui-form-item>
+    <aui-form-item *ngIf="mode === 'update'">
+      <label auiFormItemLabel>{{ 'name' | translate }}</label>
+      <span>{{ formData.name }}</span>
+    </aui-form-item>
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'description' | translate }}</label>
+      <textarea
+        aui-input
+        auiFormItemControl
+        name="description"
+        [(ngModel)]="formData.description"
+      ></textarea>
+    </aui-form-item>
+  </ng-template>
+  <ng-template #authTemplate>
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'auth_type' | translate }}</label>
+      <aui-radio-group auiFormItemControl [value]="secretType.BasicAuth">
+        <aui-radio-button [value]="secretType.BasicAuth">
+          {{ 'secret.basic_auth' | translate }}
+        </aui-radio-button>
+      </aui-radio-group>
+    </aui-form-item>
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'secret' | translate }}</label>
+      <aui-select
+        auiFormItemControl
+        name="secret"
+        #secret="ngModel"
+        [(ngModel)]="formData.secretName"
+        required
+        filterable
+        [placeholder]="'please_select_secret' | translate"
+      >
+        <aui-option-group class="secret-group">
+          <div auiOptionGroupTitle class="secret-group__title">
+            <img src="icons/secret-public.svg" alt="secret-public" />
+            <span>{{ 'secret.global' | translate }}</span>
+          </div>
+          <aui-option
+            *ngFor="let item of (secrets$ | async)?.public"
+            [value]="item.name"
+            [label]="item.name"
+            (click)="secretToValue(item)"
+          >
+            <span>{{ item.name }}</span>
+            <span class="secret-group__display-name" *ngIf="!!item.displayName"
+              >({{ item.displayName }})</span
+            >
+          </aui-option>
+        </aui-option-group>
+        <aui-option-group class="secret-group">
+          <div auiOptionGroupTitle class="secret-group__title">
+            <img src="icons/secret-private.svg" alt="secret-private" />
+            <span>{{ 'secret.private' | translate }}</span>
+          </div>
+          <aui-option
+            *ngFor="let item of (secrets$ | async)?.private"
+            [value]="item.name"
+            [label]="item.name"
+            (click)="secretToValue(item)"
+          >
+            <span>{{ item.name }}</span>
+            <span class="secret-group__display-name" *ngIf="!!item.displayName"
+              >({{ item.displayName }})</span
+            >
+          </aui-option>
+        </aui-option-group>
+        <aui-option-placeholder>{{
+          'no_available_secrets' | translate
+        }}</aui-option-placeholder>
+      </aui-select>
+      <button aui-button type="button" class="add-secret" (click)="addSecret()">
+        {{ 'add_secret' | translate }}
+      </button>
+      <div auiFormItemHint class="bind-secret-tips">
+        {{ 'bind_artifact_registry_tips' | translate }}
+      </div>
+      <div auiFormItemError *ngIf="secret.errors?.required">
+        {{ 'required' | translate }}
+      </div>
+    </aui-form-item>
+  </ng-template>
+</form>

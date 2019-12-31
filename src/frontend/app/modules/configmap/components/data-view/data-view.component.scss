@@ -1,0 +1,86 @@
+@import 'var';
+@import 'variables';
+@import '../../../../shared/mixins';
+
+$label-width: 142px;
+$keys-container-width: 150px;
+
+:host {
+  display: flex;
+  position: relative;
+  max-height: calc(100vh - 210px);
+  alo-no-data {
+    width: 100%;
+  }
+}
+
+.config-data-keys {
+  overflow: auto;
+  padding-top: 20px;
+
+  &__label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+    cursor: pointer;
+
+    &-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 4px;
+      margin-right: 4px;
+      background-color: #666;
+      flex-shrink: 0;
+    }
+
+    &-key {
+      @include text-overflow();
+      width: $label-width;
+      color: #666;
+    }
+
+    &:hover {
+      color: $color-primary;
+    }
+
+    &.isActive &-key {
+      font-weight: 500;
+      color: $color-primary;
+    }
+  }
+}
+
+.config-data-values {
+  overflow: auto;
+  position: relative;
+  margin-left: 30px;
+  flex: 1;
+}
+
+.config-data-section {
+  padding-right: 20px;
+  &:not(:last-child) {
+    padding-bottom: 20px;
+    margin-bottom: 24px;
+    border-bottom: $default-border;
+  }
+  &:last-child {
+    // Make sure scrolling works properly.
+    min-height: calc(100vh - 210px);
+  }
+  &__header {
+    padding-top: 20px;
+    padding-bottom: 10px;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  &__content {
+    word-break: break-all;
+    white-space: pre-wrap;
+    color: #333;
+  }
+}

@@ -1,0 +1,158 @@
+<ng-container *ngIf="user$ | async as user">
+  <div class="user-actions">
+    <div
+      class="user-action user-action-view"
+      *ngIf="role.adminDoings$ | async"
+      (click)="switchView()"
+    >
+      <span class="view-switch">
+        <span class="view-switch-bg"></span>
+        <span
+          class="view-switch-btn"
+          [class.admin]="isAdminView"
+          [@viewState]="currentView">
+          <aui-icon
+            icon="basic:project_s"
+            title="{{ 'switch_to_admin' | translate }}"
+            size="14px"
+            *ngIf="!isAdminView">
+          </aui-icon>
+          <aui-icon
+            icon="basic:setting"
+            title="{{ 'switch_to_user' | translate }}"
+            size="14px"
+            *ngIf="isAdminView">
+          </aui-icon>
+        </span>
+      </span>
+    </div>
+
+    <!--<a
+      href="javascript:void(0)"
+      [auiDropdown]="addActionMenus"
+      [auiDropdownPosition]="'bottom center'"
+      class="user-action user-action-create">
+      <aui-icon icon="basic:plus"></aui-icon>
+      <aui-icon icon="angle_down" size="12px"></aui-icon>
+    </a>-->
+
+    <!-- <a
+      [href]="helpUrl"
+      target="_blank"
+      title="{{ 'view_help' | translate}}"
+      class="user-action user-action-help">
+      <aui-icon icon="basic:question"></aui-icon>
+    </a> -->
+    
+    <a
+      href="javascript:void(0)"
+      [auiDropdown]="userActionsMenu"
+      class="user-action user-action-account"
+    >
+      <aui-icon icon="basic:account_circle_s"></aui-icon>
+      <span>{{ user.email || user.name }}</span>
+      <aui-icon icon="angle_down" size="12px"></aui-icon>
+    </a>
+  </div>
+
+  <aui-menu #addActionMenus>
+    <aui-menu-item
+      (click)="openYamlCreateDialog()"
+      [divide]="true"
+      class="user-action-create-item">
+      <div>
+        <aui-icon icon="basic:yaml"></aui-icon>
+        {{ 'create_resource' | translate }}
+      </div>
+      <div>
+        {{ 'create_resource_hint' | translate }}
+      </div>
+    </aui-menu-item>
+  </aui-menu>
+
+  <aui-menu #userActionsMenu>
+    <ng-container *ngIf="permissions$ | async as permissions">
+      <aui-menu-item
+        *ngIf="permissions.projectview"
+        (click)="navigateToPlatform('/home')"
+        class="account-menu-item"
+      >
+        <aui-icon icon="basic:project_management_s"></aui-icon>
+        {{ 'home' | translate }}
+      </aui-menu-item>
+
+      <aui-menu-item
+        *ngIf="permissions.clusterview && (envs | pure: checkEnv: clusterEnv)"
+        (click)="navigateToClusterManagement()"
+        class="account-menu-item"
+      >
+        <aui-icon icon="basic:server_management_s"></aui-icon>
+        {{ 'cluster_management' | translate }}
+      </aui-menu-item>
+
+      <aui-menu-item
+        *ngIf="permissions.platformview"
+        (click)="navigateToPlatform('/manage')"
+        class="account-menu-item"
+      >
+        <aui-icon icon="basic:setting_home"></aui-icon>
+        {{ 'admin' | translate }}
+      </aui-menu-item>
+    </ng-container>
+    <aui-menu-item
+      (click)="navigateToPlatform('/home/personal-info')"
+      class="account-menu-item"
+    >
+      <aui-icon icon="basic:user_s"></aui-icon>
+      {{ 'my_profile' | translate }}
+    </aui-menu-item>
+    <aui-menu-item
+      (click)="toggleLanguage()"
+      class="account-menu-item"
+    >
+      <aui-icon
+        icon="{{ currentLanguage === 'zh' ? 'basic:switch_to_english' : 'basic:switch_to_chinese' }}"
+      ></aui-icon>
+      <!--todo: translate key-->
+      {{ currentLanguage === 'zh' ? 'English' : '简体中文' }}
+    </aui-menu-item>
+    <aui-menu-item
+      (click)="logout()"
+      [divide]="true"
+      class="account-menu-item"
+    >
+      <aui-icon icon="basic:sign_out_s"></aui-icon>
+      {{ 'logout' | translate }}
+    </aui-menu-item>
+  </aui-menu>
+
+  <ng-template #yamlCreateDialog>
+    <aui-dialog-header>
+      {{ 'create_resource' | translate }}
+    </aui-dialog-header>
+    <aui-dialog-content>
+      <aui-code-editor
+        [options]="editorOptions"
+        [actionsConfig]="editorConfig"
+        [originalValue]="orignalYaml"
+        [(ngModel)]="yaml"
+      >
+      </aui-code-editor>
+    </aui-dialog-content>
+    <aui-dialog-footer>
+      <button
+        aui-button="primary"
+        [size]="small"
+        (click)="createResource()"
+      >
+        {{ 'create' | translate }}
+      </button>
+      <button
+        aui-button
+        [auiDialogClose]="false"
+      >
+        {{ 'cancel' | translate }}
+      </button>
+    </aui-dialog-footer>
+  </ng-template>
+</ng-container>

@@ -1,0 +1,175 @@
+@import 'var';
+
+:host {
+  a {
+    &:link,
+    &:visited {
+      color: #979797;
+    }
+    &:hover {
+      color: #006eff;
+    }
+  }
+}
+
+.sort-btn ::ng-deep .aui-button {
+  &__content {
+    padding: 0;
+  }
+}
+
+.list-header {
+  display: flex;
+  flex-direction: row;
+  > :first-child {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    > a {
+      margin-left: 8px;
+    }
+  }
+  > :last-child {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    font-size: 14px;
+    align-items: center;
+    justify-content: flex-end;
+    > button {
+      font-size: 14px;
+      height: 32px;
+      padding: 0 8px;
+      border: none;
+    }
+    > aui-search {
+      margin-left: 8px;
+    }
+  }
+}
+
+.card-list {
+  .card {
+    &__header {
+      height: 40px;
+      background-color: #fafafa;
+      border-color: #ededed;
+      border-width: 1px 0 1px 0;
+      border-style: solid;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+    &__title {
+      display: flex;
+      flex-direction: row;
+      flex: 1;
+      align-items: center;
+      > img {
+        margin: 0 4px;
+      }
+      > aui-tag {
+        margin-left: 8px;
+      }
+
+      > span {
+        font-weight: 300;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+    &__status {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      > div {
+        max-width: 200px;
+        line-height: 16px;
+        font-size: 12px;
+        color: #999;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: 300;
+        aui-icon {
+          margin-right: 8px;
+          color: $color-warning;
+        }
+      }
+    }
+    &__actions {
+      padding: 8px;
+    }
+    &__body {
+      display: flex;
+      flex-direction: row;
+      .report-item {
+        height: 90px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        min-width: 0;
+        padding-right: 20px;
+        white-space: nowrap;
+        font-weight: 300;
+        &__status {
+          display: flex;
+          flex-direction: row;
+          padding-left: 20px;
+          margin-bottom: 6px;
+          align-items: center;
+          height: 32px;
+        }
+        &__status-body {
+          padding-left: 8px;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        &__status-value {
+          font-size: 18px;
+          color: #333;
+          line-height: 18px;
+        }
+        &__status-text {
+          font-size: 12px;
+          color: #666;
+        }
+        &__text {
+          padding-left: 28px;
+          font-size: 14px;
+          color: #666;
+          max-width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+      .empty {
+        height: 90px;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #999;
+      }
+    }
+  }
+  &:last-child {
+    border-bottom: solid 1px #ededed;
+  }
+}
+
+::ng-deep .aui-menu {
+  max-width: unset;
+}
+
+.menu_description {
+  color: #999;
+  margin: 0 4px;
+}

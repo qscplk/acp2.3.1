@@ -1,0 +1,78 @@
+/* You can add global styles to this file, and also import other style files */
+html {
+  width: 100%;
+  min-height: 100%;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+*,
+:after,
+:before {
+  box-sizing: border-box;
+}
+
+body {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: auto;
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+  font-family: $font-family-primary;
+  background-color: #f1f1f1;
+  color: #333;
+}
+
+button,
+p,
+a {
+  font-family: $font-family-primary;
+  outline: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+.h1,
+.h2,
+.h3,
+.h4,
+.lead {
+  font-family: $font-family-secondary;
+}
+
+.table-placeholder {
+  padding: 12px 8px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+  font-size: 14px;
+  color: #999;
+}
+
+.list-card-header {
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+}
+
+aui-paginator {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+pre {
+  word-wrap: normal;
+  font-size: 12px;
+  overflow-x: auto;
+  padding: 4px 8px;
+  background: #ededed;
+  border-radius: 3px;
+}

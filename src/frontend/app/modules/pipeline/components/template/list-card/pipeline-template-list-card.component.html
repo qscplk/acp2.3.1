@@ -1,0 +1,88 @@
+<div class="card">
+  <div class="info">
+    <div class="name-wrapper">
+      <a *ngIf="!showSelect"
+         class="name-link"
+         (click)="detail(showSelect, disableSelect); $event.stopPropagation()">
+        {{template.displayName[(translateKey$|async)]}}
+      </a>
+      <span *ngIf="showSelect"
+            class="name-text">{{template.displayName[(translateKey$|async)]}}</span>
+      <span class="version">{{template.version}}</span>
+      <button *ngIf="showSelect"
+              aui-button="text"
+              type="button"
+              size="small"
+              class="detail"
+              (click)="detail(showSelect, disableSelect); $event.stopPropagation()">{{ 'pipeline.details' | translate }}</button>
+      <span
+        class="style-icons"
+        *ngFor="let icon of template.styleIcon.split(',')"
+      >
+        <img
+          *ngIf="styleIcons.includes(icon)"
+          class="style-icon"
+          title="{{icon}}"
+          src="icons/pipeline/template-category/{{icon}}.svg"
+          alt="devops"
+        >
+      </span>
+    </div>
+    <div class="labels-container">
+      <div class="labels">
+        <span
+          class="label"
+          *ngIf="template.kind === 'clusterpipelinetemplate'"
+        >
+          {{'pipeline.official'|translate}}
+        </span>
+        <span
+          *ngFor="let label of template.labels"
+          class="label"
+        >
+          <aui-icon *ngIf="customLabelIndex.includes(label.key); else labelText">{{label.value}}</aui-icon>
+          <ng-template #labelText>{{label.key + ':' + label.value}}</ng-template>
+        </span>
+      </div>
+      <span
+        class="label-more"
+        *ngIf="template?.labels?.length > 1"
+        [auiTooltip]="labelAll"
+        auiTooltipTrigger="hover"
+        auiTooltipClass="label-tooltip"
+      >
+        ···
+      </span>
+      <span
+        *ngIf="!template?.labels?.length"
+        class="no-label"
+      >
+        {{'pipeline.no_label'|translate}}
+      </span>
+    </div>
+  </div>
+  <div class="stage">
+    <acl-pipeline-preview-diagram
+      *ngIf="template?.stages?.length"
+      [hideStatus]="true"
+      [stages]="template?.stages"
+    ></acl-pipeline-preview-diagram>
+  </div>
+  <div *ngIf="showSelect" class="select">
+    <button aui-button="primary"
+            type="button"
+            [plain]="true"
+            [disabled]="disableSelect"
+            (click)="onTemplateSelect(template)">{{ 'pipeline.select' | translate }}</button>
+  </div>
+</div>
+<ng-template #labelAll>
+  <div>
+    <span
+      *ngFor="let label of template.labels"
+      class="tooltip-label"
+    >
+      {{label.key + ':' + label.value}}
+    </span>
+  </div>
+</ng-template>

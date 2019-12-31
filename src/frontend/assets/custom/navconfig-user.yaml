@@ -1,0 +1,48 @@
+- name: nav_dashboard
+  icon: basic:bar_chart_s
+  href: overview
+- name: nav_continuous_delivery
+  icon: basic:devops
+  children:
+    - name: nav_pipelines
+      href: pipelines/all
+    - name: nav_pipelines_build
+      href: pipelines/Build
+    - name: nav_pipelines_deploy_service
+      href: pipelines/DeployService
+    - name: nav_pipelines_sync_image
+      href: pipelines/SyncImage
+- name: nav_agile_project_management
+  icon: basic:scrum
+  gate: devops-agile
+  children:
+    - name: nav_issues_list
+      href: agile-project-management/issues
+- name: nav_code_repos
+  icon: basic:code
+  href: code-repositories
+- name: nav_artifact_repository
+  icon: basic:artifactory
+  href: artifact-repositories
+- name: nav_code_quality_tool
+  icon: basic:code_quality
+  href: code-quality-projects
+- name: nav_secrets
+  icon: basic:secrets_s
+  href: secrets
+- name: nav_applications
+  icon: basic:application_s
+  href: applications
+  gate: devops-app
+- name: nav_config
+  icon: basic:gears_s
+  gate: devops-app
+  children:
+    - name: nav_configmap
+      href: configmaps
+    - name: nav_secret
+      href: configsecrets
+- name: nav_storage
+  icon: basic:storage_s
+  href: storages
+  gate: devops-app

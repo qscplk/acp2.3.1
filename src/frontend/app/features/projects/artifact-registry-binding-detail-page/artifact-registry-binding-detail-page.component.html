@@ -1,0 +1,121 @@
+<div *aloPageHeaderContent class="page-header">
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['/admin/projects']">{{ 'project.list' | translate }}</a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <a
+        [routerLink]="['/admin/projects', (identity$ | async)?.namespace]"
+        [queryParams]="{ tab: '1' }"
+      >
+        {{ (identity$ | async)?.namespace }}
+      </a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <span>{{ (identity$ | async)?.name }}</span>
+    </ng-template>
+  </alo-breadcrumb>
+</div>
+
+<acl-page-state
+  [adapter]="dataLoader"
+  (redirect)="back()"
+  [autoRedirect]="false"
+>
+  <ng-template let-data>
+    <aui-card>
+      <div auiCardHeader class="info-header">
+        <div class="header-title">
+          <img
+            alt="maven"
+            class="type-icon"
+            [src]="'icons/tool-chain/maven.svg'"
+          />
+          <span>{{ (identity$ | async)?.name }}</span>
+          <span
+            class="warning-icon"
+            *ngIf="data?.status.phase === 'Error'"
+            [auiTooltip]="data?.status.message"
+            [auiTooltipDisabled]="!data?.status.message"
+            auiTooltipPosition="top start"
+          >
+            <aui-icon icon="exclamation_circle_s"></aui-icon>
+          </span>
+        </div>
+        <alo-menu-trigger [menu]="actionsMenu"></alo-menu-trigger>
+      </div>
+      <aui-menu #actionsMenu>
+        <aui-menu-group>
+          <acl-disabled-container [isAllowed]="(permission$ | async)?.update">
+            <aui-menu-item (click)="update()">{{
+              'update' | translate
+            }}</aui-menu-item>
+          </acl-disabled-container>
+        </aui-menu-group>
+        <aui-menu-group>
+          <acl-disabled-container
+            [isAllowed]="(permission$ | async)?.delete"
+            [isDisabled]="!data"
+          >
+            <aui-menu-item type="danger" (click)="unbind(data)">
+              {{ 'project.unbind' | translate }}
+            </aui-menu-item>
+          </acl-disabled-container>
+        </aui-menu-group>
+      </aui-menu>
+      <div class="alo-detail">
+        <div class="alo-detail__row">
+          <div class="alo-detail__field">
+            <label>{{ 'project.binding_integration_name' | translate }}</label>
+            <span class="value">
+              <a
+                *ngIf="data?.artifactRegistryName"
+                [routerLink]="[
+                  '/admin/tool-chain/artifactregistry',
+                  data?.artifactRegistryName
+                ]"
+                >{{ data?.artifactRegistryName }}</a>
+            </span>
+          </div>
+          <div class="alo-detail__field">
+            <label>{{ 'auth_type' | translate }}</label>
+            <span>
+              {{ getSecretType(data?.secretType) | translate }}
+            </span>
+          </div>
+        </div>
+        <div class="alo-detail__row">
+          <div class="alo-detail__field">
+            <label>{{ 'type' | translate }}</label>
+            <span>{{ 'artifact_registry' | translate }}</span>
+          </div>
+          <div class="alo-detail__field">
+            <label>{{ 'secret' | translate }}</label>
+            <span>
+              <a
+                *ngIf="data && data.secretNamespace && data.secretName"
+                [routerLink]="[
+                  '/admin/secrets',
+                  data.secretNamespace,
+                  data.secretName
+                ]"
+              >
+                {{ data?.secretName }}
+              </a>
+            </span>
+          </div>
+        </div>
+        <div class="alo-detail__row">
+          <div class="alo-detail__field">
+            <label>{{ 'project.bind_at' | translate }}</label>
+            <span>{{ data?.creationTimestamp | aclStandardTime }}</span>
+          </div>
+          <div class="alo-detail__field">
+            <label>{{ 'description' | translate }}</label>
+            <span>{{ data?.description || '-' }}</span>
+          </div>
+        </div>
+      </div>
+    </aui-card>
+  </ng-template>
+</acl-page-state>

@@ -1,0 +1,227 @@
+@import 'var';
+
+@import 'variables';
+
+@mixin toc-link-separator {
+  display: block;
+  content: '';
+  background-color: #999;
+  width: 2px;
+  height: 20px;
+  transform: translateX(-50%);
+}
+
+@mixin toc-link {
+  color: #777;
+  display: flex;
+  align-items: center;
+  word-break: break-all;
+  &:focus {
+    text-decoration: none;
+  }
+  &.isActive {
+    font-weight: 600;
+    color: #4d4d4d;
+    &::before {
+      background-color: #4d4d4d;
+    }
+  }
+  .link-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 24px;
+    width: 24px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 50%;
+  }
+}
+
+:host {
+  display: block;
+  height: 100%;
+  .create-by-image-container {
+    position: absolute;
+    top: 92px;
+    bottom: 0;
+    left: 200px;
+    right: 0;
+    overflow: hidden;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+  }
+  ul.toc-links {
+    width: 175px;
+    height: calc(100% - 61px);
+    position: absolute;
+    top: 0;
+    left: 30px;
+    padding: 30px 16px 16px;
+    overflow: auto;
+    > li {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      > a {
+        @include toc-link;
+        font-size: 14px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        .link-label {
+          margin-left: -4px;
+        }
+        .link-icon {
+          flex-shrink: 0;
+          transform: translateX(-50%);
+          transition: all 0.2s ease-in;
+        }
+        .icon-app {
+          color: #fff;
+          background-color: $color-primary;
+        }
+        .icon-component {
+          color: #1fbcd2;
+          background-color: transparent;
+        }
+        .icon-container {
+          border: none;
+          color: #63d283;
+          background-color: transparent;
+        }
+        .icon-network {
+          color: #7c70e2;
+          background-color: #fff;
+        }
+      }
+      > a.isActive {
+        .icon-component {
+          color: #fff;
+          background-color: #1fbcd2;
+        }
+        .icon-container {
+          color: #fff;
+          background-color: #63d283;
+        }
+        .icon-preview {
+          color: #fff;
+          background-color: #2fa7df;
+        }
+        .icon-service {
+          color: #fff;
+          background-color: #7c70e2;
+        }
+      }
+      > .link-separator {
+        @include toc-link-separator;
+      }
+    }
+    .secondary-links {
+      li {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        a {
+          @include toc-link;
+          font-size: 12px;
+          &::before {
+            display: block;
+            content: '';
+            background-color: #999;
+            width: 8px;
+            height: 8px;
+            border-radius: 4px;
+            transform: translateX(-50%);
+            margin-right: 12px;
+            transition: all 0.2s ease-in;
+          }
+        }
+        &::after {
+          @include toc-link-separator;
+        }
+      }
+    }
+
+    > li:not(.disabled) {
+      a:hover {
+        color: #2fa7df;
+      }
+    }
+
+    > li.disabled {
+      opacity: 0.3;
+      a {
+        cursor: default;
+      }
+    }
+  }
+  .toc-container {
+    position: absolute;
+    top: 0;
+    bottom: 61px;
+    left: 180px;
+    right: 18px;
+    overflow: auto;
+    > :first-child {
+      margin-top: 20px;
+    }
+    &.keep-left {
+      left: 18px;
+    }
+    > .app-card,
+    .container-card,
+    .network-card {
+      margin-bottom: 16px;
+    }
+    > .comp-card {
+      margin-bottom: 16px;
+      ::ng-deep .aui-card {
+        border-bottom: unset;
+      }
+      > alo-foldable-block {
+        ::ng-deep .aui-card {
+          border-top: unset;
+        }
+      }
+    }
+    .empty-access {
+      display: flex;
+      flex: 1;
+      height: 32px;
+      justify-content: center;
+      align-items: center;
+      color: lightgray;
+      background-color: #fafafa;
+      a {
+        margin-left: 5px;
+        color: $color-primary;
+        cursor: pointer;
+      }
+    }
+  }
+  .card-body {
+    padding-right: 30px;
+  }
+  .inject-tip {
+    margin-left: 20px;
+    color: #999;
+    font-size: 12px;
+  }
+  .inject-form-item {
+    border-top: 1px dashed #ddd;
+    padding-top: 10px;
+  }
+  .instance-number {
+    width: 80px;
+    margin: 0 5px;
+    text-align: center;
+  }
+  input {
+    &[readonly] {
+      background-color: #f0f0f0;
+    }
+  }
+}

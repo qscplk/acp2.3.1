@@ -1,0 +1,44 @@
+<aui-dialog-header>
+  <span class="title">
+    <aui-icon
+      icon="basic:check_circle_s"
+      class="success"
+      *ngIf="failOrSuccess==='success'"
+    ></aui-icon>
+    <aui-icon
+      icon="basic:close_circle_s"
+      class="fail"
+      *ngIf="failOrSuccess==='fail'"
+    ></aui-icon>
+    {{ title }}
+  </span>
+</aui-dialog-header>
+<aui-dialog-content>
+  <alo-application-resource-report-detail
+    [reports]="reports"
+    [failOrSuccess]="failOrSuccess"
+  >
+  </alo-application-resource-report-detail>
+</aui-dialog-content>
+<aui-dialog-footer>
+  <button
+    *ngIf="updateButton==='again'"
+    aui-button
+    (click)="update()"
+  >
+    {{ 'application.update_again' | translate }}
+  </button>
+  <button
+    *ngIf="updateButton==='continue'"
+    aui-button
+    (click)="update()"
+  >
+    {{ 'application.update_continue' | translate }}
+  </button>
+  <button
+    aui-button="primary"
+    (click)="cancel()"
+  >
+    {{ 'application.got_it' | translate }}
+  </button>
+</aui-dialog-footer>

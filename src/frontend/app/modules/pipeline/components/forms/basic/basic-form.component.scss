@@ -1,0 +1,36 @@
+@import 'var';
+
+.alo-pipeline-create {
+  &__label {
+    width: 100px;
+  }
+}
+.aui-form-item {
+  &__label-wrapper {
+    &--right {
+      width: 200px;
+    }
+  }
+}
+.policy_question {
+  color: #979797;
+  margin-left: 8px;
+  &:hover {
+    color: $color-primary;
+  }
+}
+
+::ng-deep {
+  .aui-tooltip ul {
+    padding-left: 15px;
+    li span {
+      position: relative;
+      left: -6px;
+    }
+  }
+}
+
+.run-policy-description {
+  padding: 0 0 0 16px;
+  margin: 0;
+}

@@ -1,0 +1,68 @@
+<div class="resource-requests" *ngIf="resources">
+  <div class="size-name">{{'resource_requests' | translate}}</div>
+  <aui-input-group>
+    <span auiInputAddonBefore>
+      <div class="size-title">CPU</div>
+    </span>
+    <span auiInputAddonAfter>
+      <div class="select-size">
+        <aui-select [(ngModel)]="cpuRequestUnit" (ngModelChange)="inputChange()">
+          <aui-option *ngFor="let cpuUnit of cpuUnits" 
+            [value]="cpuUnit"
+            [label]="cpuUnit === 'c' ? ('application.cpu_core_unit' | translate) : cpuUnit">
+            {{ cpuUnit === 'c' ? ('application.cpu_core_unit' | translate) : cpuUnit}}
+          </aui-option>
+        </aui-select>
+      </div>
+    </span>
+    <input aui-input [(ngModel)]="cpuRequestValue" (ngModelChange)="inputChange()" type="number">
+  </aui-input-group>
+  <span class="transit"></span>
+  <aui-input-group>
+    <span auiInputAddonBefore>
+      <div class="size-title">{{'memory' | translate}}</div>
+    </span>
+    <span auiInputAddonAfter>
+      <div class="select-size">
+        <aui-select [(ngModel)]="memRequestUnit" (ngModelChange)="inputChange()">
+          <aui-option *ngFor="let memUnit of memUnits" [value]="memUnit">{{memUnit}}</aui-option>
+        </aui-select>
+      </div>
+    </span>
+    <input aui-input [(ngModel)]="memRequestValue" (ngModelChange)="inputChange()" type="number">
+  </aui-input-group>
+</div>
+<div class="resource-limits" *ngIf="resources">
+  <div class="size-name">{{'resource_limits' | translate}}</div>
+  <aui-input-group>
+    <span auiInputAddonBefore>
+      <div class="size-title">CPU</div>
+    </span>
+    <span auiInputAddonAfter>
+      <div class="select-size">
+        <aui-select [(ngModel)]="cpuLimitUnit" (ngModelChange)="inputChange()">
+          <aui-option *ngFor="let cpuUnit of cpuUnits"
+            [value]="cpuUnit"
+            [label]="cpuUnit === 'c' ? ('application.cpu_core_unit' | translate) : cpuUnit">
+            {{ cpuUnit === 'c' ? ('application.cpu_core_unit' | translate) : cpuUnit}}
+          </aui-option>
+        </aui-select>
+      </div>
+    </span>
+    <input aui-input [(ngModel)]="cpuLimitValue" (ngModelChange)="inputChange()" type="number">
+  </aui-input-group>
+  <span class="transit"></span>
+  <aui-input-group>
+    <span auiInputAddonBefore>
+      <div class="size-title">{{'memory' | translate}}</div>
+    </span>
+    <span auiInputAddonAfter>
+      <div class="select-size">
+        <aui-select [(ngModel)]="memLimitUnit" (ngModelChange)="inputChange()">
+          <aui-option *ngFor="let memUnit of memUnits" [value]="memUnit">{{memUnit}}</aui-option>
+        </aui-select>
+      </div>
+    </span>
+    <input aui-input [(ngModel)]="memLimitValue" (ngModelChange)="inputChange()" type="number">
+  </aui-input-group>
+</div>

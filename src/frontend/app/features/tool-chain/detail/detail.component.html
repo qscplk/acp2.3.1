@@ -1,0 +1,257 @@
+<ng-container *aloPageHeaderContent>
+  <alo-breadcrumb
+    *ngIf="referedManager$ | async as referedManager; else noReferedManager"
+  >
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['/', 'admin', 'tool-chain']">
+        {{ 'nav_tool_chain' | translate }}
+      </a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <a
+        [routerLink]="[
+          '/',
+          'admin',
+          'tool-chain',
+          referedManager.kind,
+          referedManager.name
+        ]"
+      >
+        {{ referedManager.name }}
+      </a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <span>{{ name }}</span>
+    </ng-template>
+  </alo-breadcrumb>
+  <ng-template #noReferedManager>
+    <alo-breadcrumb>
+      <ng-template aloBreadcrumbItem>
+        <a [routerLink]="['/', 'admin', 'tool-chain']">
+          {{ 'nav_tool_chain' | translate }}
+        </a>
+      </ng-template>
+      <ng-template aloBreadcrumbItem>
+        <span>{{ name }}</span>
+      </ng-template>
+    </alo-breadcrumb>
+  </ng-template>
+</ng-container>
+<acl-page-state
+  [adapter]="dataLoader"
+  (redirect)="back()"
+  [autoRedirect]="false"
+>
+  <ng-template let-detail>
+    <aui-card>
+      <div auiCardHeader class="info-header">
+        <div class="header-title">
+          <div *ngIf="info$ | async"
+               class="icon-stack"
+               [title]="(info$ | async)?.type"
+          >
+            <img
+              class="type-icon"
+              [src]="
+                'icons/tool-chain/' +
+                (info$ | async)?.type.toLowerCase() +
+                '.svg'
+              "
+              alt="devops"
+            />
+            <img
+              *ngIf="(info$ | async)?.enterprise"
+              class="enterprise-mark"
+              [src]="enterpriseIcon$ | async"
+              alt="devops"
+            />
+            <div
+              *ngIf="(info$ | async)?.shallow"
+              class="shallow-mark"
+              [auiTooltip]="'shallow_integrate_tips' | translate"
+            >
+              <aui-icon icon="info_circle_s"></aui-icon>
+            </div>
+          </div>
+          <span>{{ name }}</span>
+          <aui-icon
+            *ngIf="(info$ | async)?.status.phase === 'Error'"
+            class="alert"
+            [auiTooltip]="(info$ | async)?.status.message"
+            [auiTooltipDisabled]="!(info$ | async)?.status.message"
+            auiTooltipPosition="top start"
+            icon="exclamation_circle_s"
+          ></aui-icon>
+          <aui-icon
+            *ngIf="(info$ | async)?.integratedBy as projectName"
+            class="integrate-icon"
+            icon="basic:project_circle_s"
+            auiTooltip="{{
+              'tool_chain.service_integrated_by'
+                | translate: { name: projectName }
+            }}"
+            [auiTooltipPosition]="'top'"
+          ></aui-icon>
+        </div>
+        <alo-menu-trigger [menu]="actionsMenu"></alo-menu-trigger>
+      </div>
+      <aui-menu #actionsMenu>
+        <ng-container *ngIf="toolPermission$ | async as _toolPermission">
+          <aui-menu-group *ngIf="!(info$ | async)?.public">
+            <acl-disabled-container [isAllowed]="_toolPermission?.update">
+              <aui-menu-item
+                (click)="update()"
+              >{{ 'update' | translate }}</aui-menu-item>
+            </acl-disabled-container>
+          </aui-menu-group>
+          <aui-menu-group>
+          <acl-disabled-container [isAllowed]="_toolPermission?.delete">
+            <aui-menu-item type="danger" [divide]="!(info$ | async)?.public && true" (click)="delete()">{{
+              'delete' | translate
+            }}</aui-menu-item>
+          </acl-disabled-container>
+        </aui-menu-group>
+        </ng-container>
+      </aui-menu>
+
+      <div auiCardBody class="base-body" *ngIf="info$ | async as info">
+        <!-- base info -->
+        <div class="field">
+          <label>{{ 'type' | translate }}</label>
+          <span>
+            <ng-container *ngIf="isManager$ | async">
+              <span>
+                {{ info.toolType }}
+              </span>
+              <span>/ </span>
+            </ng-container>
+            <span>{{ info.type }}</span>
+            <span *ngIf="info.enterprise">
+              {{ 'tool_chain.enterprise' | translate }}</span
+            >
+          </span>
+        </div>
+        <div class="field">
+          <label>{{ 'tool_chain.integrate_at' | translate }}</label>
+          <span>{{ info.creationTimestamp | aclStandardTime }}</span>
+        </div>
+        <div class="field">
+          <label>{{ 'tool_chain.access_url' | translate }}</label>
+          <span>{{ info.accessUrl || '-' }}</span>
+        </div>
+        <div class="field" *ngIf="!hideSecret(info)">
+          <label>{{ 'auth_type' | translate }}</label>
+          <span>
+            {{ getSecretType(info.secretType) | translate }}
+          </span>
+        </div>
+        <div class="field">
+          <label>{{ 'tool_chain.api_address' | translate }}</label>
+          <span>{{ info.host }}</span>
+        </div>
+        <div class="field" *ngIf="!hideSecret(info)">
+          <label>{{ 'secret' | translate }}</label>
+          <span>
+            <a
+              [routerLink]="[
+                '/admin/secrets/',
+                info.secretNamespace,
+                info.secretName
+              ]"
+              *ngIf="info.secretName; else noSecret"
+            >
+              {{ info.secretName }}
+            </a>
+            <ng-template #noSecret>-</ng-template>
+          </span>
+        </div>
+        <div class="field" *ngIf="info.versionPolicy">
+          <label>{{ 'tool_chain.version_policy' | translate }}</label>
+          <span>
+            {{ info.versionPolicy }}
+          </span>
+        </div>
+        <div class="field" *ngIf="info.blobStore">
+          <label>{{ 'tool_chain.file_location' | translate }}</label>
+          <span>
+            {{ info.blobStore }}
+          </span>
+        </div>
+      </div>
+    </aui-card>
+
+    <ng-container *ngIf="isManager$ | async; else bindingList">
+      <aui-card>
+        <div auiCardHeader class="list-card-header">
+          <div class="manager-registries-title">
+            {{ 'artifact_repository' | translate }}
+            <aui-icon
+              icon="basic:question"
+              auiTooltip="{{
+                'tool_chain.manager_registries_help' | translate
+              }}"
+            ></aui-icon>
+          </div>
+          <aui-dropdown-button type="default" [plain]="true">
+            <span (click)="addRegistry('create')">
+              {{ 'tool_chain.create_registry' | translate }}
+            </span>
+            <aui-menu>
+              <aui-menu-item (click)="addRegistry('integrate')">
+                {{ 'tool_chain.integrate_existed_registry' | translate }}
+              </aui-menu-item>
+            </aui-menu>
+          </aui-dropdown-button>
+        </div>
+        <div auiCardBody>
+          <ng-container *ngIf="subRegistries$ | async">
+            <alo-service-list
+              *ngIf="(subRegistries$ | async).length"
+              [services]="subRegistries$ | async"
+              [showTag]="true"
+              (cardClick)="navigateToDetail($event)"
+            ></alo-service-list>
+            <div class="no-registries" *ngIf="!(subRegistries$ | async).length">
+              {{ 'tool_chain.nexus_no_registries_hint_start' | translate }}
+              <a href="javascript:void(0);" (click)="addRegistry('create')">{{
+                'tool_chain.create_registry' | translate
+              }}</a>
+              {{ 'tool_chain.nexus_no_registries_hint_center' | translate }}
+              <a
+                href="javascript:void(0);"
+                (click)="addRegistry('integrate')"
+                >{{ 'tool_chain.integrate_existed_registry' | translate }}</a
+              >
+              {{ 'tool_chain.nexus_no_registries_hint_end' | translate }}
+            </div>
+          </ng-container>
+        </div>
+      </aui-card>
+    </ng-container>
+
+    <ng-template #bindingList>
+      <aui-card *ngIf="(info$ | async) && !(info$ | async).shallow">
+        <div class="list-card-header">
+          <div>
+            {{ 'binding_account' | translate }}
+          </div>
+          <acl-disabled-container [isAllowed]="bindingsPermission$ | async">
+            <button aui-button (click)="bind()">
+              {{ 'bind' | translate }}
+            </button>
+          </acl-disabled-container>
+        </div>
+        <alo-binding-list
+          [bindings]="bindings$ | async"
+          (updateTable)="updated$.next()"
+        >
+        </alo-binding-list>
+        <alo-no-data
+          *ngIf="!(bindings$ | async)?.length"
+          [resourceName]="'binding_account' | translate"
+          [loading]="loadingBindings"
+        ></alo-no-data>
+      </aui-card>
+    </ng-template>
+  </ng-template>
+</acl-page-state>

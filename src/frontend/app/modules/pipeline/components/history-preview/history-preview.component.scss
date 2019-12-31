@@ -1,0 +1,91 @@
+@import 'var';
+
+$status-color-map: (
+  queued: $color-primary,
+  pending: $color-primary,
+  running: $color-primary,
+  failed: $color-error,
+  complete: $color-success,
+  cancelled: #999,
+  aborted: #999,
+  unknown: $color-info,
+);
+
+.alo-history-preview {
+  display: flex;
+  color: #999999;
+
+  &__overview {
+    cursor: pointer;
+    &:hover {
+      color: $color-primary;
+    }
+    &--actived {
+      color: $color-primary;
+    }
+  }
+  &__disabled {
+    color: #ccc;
+    cursor: not-allowed;
+  }
+
+  &__list {
+    color: #999999;
+    font-size: 14px;
+    display: table;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+
+    &-item {
+      display: table-row;
+      & > div {
+        display: table-cell;
+        &:first-of-type {
+          margin-right: 4px;
+          & + div {
+            margin-right: 8px;
+          }
+        }
+      }
+    }
+  }
+
+  &__num {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    ::ng-deep {
+      button {
+        height: 13px;
+        .aui-button__content {
+          line-height: 14px;
+          padding: 0 4px;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+
+  &__status {
+    @each $status, $color in $status-color-map {
+      &--#{$status} {
+        color: $color;
+      }
+    }
+  }
+}
+
+.history_id {
+  min-width: 30px;
+  display: inline-block;
+  margin-left: 4px;
+}
+
+.branch-id {
+  display: inline-block;
+  margin: 0 4px;
+}
+
+::ng-deep .aui-tooltip.records {
+  padding: 4px 16px;
+}

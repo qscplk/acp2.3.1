@@ -1,0 +1,22 @@
+:host {
+  .basic-info-container {
+    display: flex;
+  }
+
+  margin-bottom: 15px;
+  .base-body-left {
+    flex: 2;
+    padding-right: 12px;
+  }
+
+  .base-body-right {
+    flex: 1;
+    align-items: center;
+  }
+
+  alo-k8s-resource-icon {
+    display: flex;
+    align-items: center;
+    margin-right: 5px;
+  }
+}

@@ -1,0 +1,74 @@
+<form
+  #form="ngForm"
+  auiForm
+  auiFormLabelWidth="150px"
+>
+  <aui-card [divider]="false">
+    <div auiCardHeader>
+      {{'applications.list'| translate}}
+    </div>
+    <div>
+      <aui-form-item>
+        <label auiFormItemLabel>{{'application_name' | translate}}</label>
+        <input
+          auiFormItemControl
+          [(ngModel)]="model.appName"
+          name="appName"
+          #appName="ngModel"
+          aui-input
+          required
+          [maxlength]="nameRule.maxLength"
+          [pattern]="nameRule.pattern"
+          [placeholder]="nameRule.placeholder | translate:{count: nameRule.maxLength}"
+        />
+        <div
+          auiFormItemError
+          *ngIf="appName.errors?.required"
+        >{{ nameRule.requiredError | translate }}</div>
+        <div
+        auiFormItemError
+        *ngIf="appName.errors?.pattern"
+      >{{ nameRule.patternError | translate }}</div>
+      </aui-form-item>
+      <aui-form-item>
+        <label auiFormItemLabel>{{'display_name' | translate}}</label>
+        <input
+          auiFormItemControl
+          [(ngModel)]="model.displayName"
+          name="displayName"
+          maxlength="63"
+          #displayName="ngModel"
+          aui-input
+        />
+      </aui-form-item>
+    </div>
+  </aui-card>
+</form>
+
+<div class="yaml-card-container">
+  <aui-card [divider]="false">
+    <div auiCardHeader>
+      {{'create_application_by_yaml'| translate}}
+    </div>
+    <div>
+      <aui-code-editor
+        [options]="editorOptions"
+        [(ngModel)]="yaml"
+      ></aui-code-editor>
+    </div>
+  </aui-card>
+</div>
+
+<div class="mutate-buttons">
+  <div>
+    <button
+      aui-button="primary"
+      [loading]="creating"
+      (click)="create()"
+    >{{ 'create' | translate }}</button>
+    <button
+      aui-button
+      (click)="canceled.emit()"
+    >{{ 'cancel' | translate }}</button>
+  </div>
+</div>

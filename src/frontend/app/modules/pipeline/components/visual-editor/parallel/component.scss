@@ -1,0 +1,37 @@
+@import 'var';
+
+.side-form {
+  &__header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    > a {
+      &:link,
+      &:visited {
+        color: #979797;
+      }
+      &:hover {
+        color: $color-primary;
+      }
+    }
+  }
+  &__body {
+    padding: 16px 20px;
+    &:last-child {
+      margin-bottom: 16px;
+    }
+  }
+  &__group-header {
+    aui-icon {
+      margin-left: 8px;
+    }
+  }
+}
+
+:host(.side-form) {
+  > .side-form__body {
+    margin: 0 0;
+  }
+}

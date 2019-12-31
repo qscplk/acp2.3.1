@@ -1,0 +1,9 @@
+- name: nav_projects
+  icon: basic:project_s
+  href: projects
+- name: nav_tool_chain
+  icon: basic:devops_tools_s
+  href: tool-chain
+- name: nav_secrets
+  icon: basic:secrets_s
+  href: secrets

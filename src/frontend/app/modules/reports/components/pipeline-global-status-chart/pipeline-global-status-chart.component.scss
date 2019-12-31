@@ -1,0 +1,73 @@
+@import 'var';
+
+.chart-container {
+  overflow: hidden;
+  height: 207px;
+  svg {
+    overflow: hidden;
+    font-size: 12px;
+  }
+}
+
+.chart-legends {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-bottom: 8px;
+  color: #666666;
+  &__axis {
+    padding-left: 24px;
+  }
+  &__info {
+    display: flex;
+    flex-direction: row;
+    .succ {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      &:before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background-color: $color-success;
+        border-radius: 50%;
+        margin-right: 4px;
+      }
+    }
+    .failed {
+      margin-left: 20px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      &:before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background-color: $color-error;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 4px;
+      }
+    }
+  }
+}
+
+.aui-tooltip {
+  display: flex;
+  flex-direction: column;
+  > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    height: 20px;
+    em {
+      width: 6px;
+      height: 6px;
+      display: block;
+      border-radius: 50%;
+      margin-right: 4px;
+    }
+  }
+}

@@ -1,0 +1,33 @@
+<aui-dialog-header>
+  <span>
+    <span>{{ data.name }}</span>
+    <span>{{ 'logs' | translate }}</span>
+  </span>
+</aui-dialog-header>
+<aui-dialog-content>
+  <ng-container *aloAsyncData="let history;
+        let loading = loading;
+        handler: fetchData;
+        pullIn: running ? 4000 : 0">
+    <div class="diagram" *ngIf="history?.jenkins?.stages && history?.jenkins?.stages?.length">
+      <acl-pipeline-preview-diagram
+        [stages]="history?.jenkins?.stages"
+      ></acl-pipeline-preview-diagram>
+    </div>
+  </ng-container>
+
+  <div
+    class="logs-content"
+    *aloAsyncData="let loading;
+    handler: fetchLogs;
+    pullIn: more ? 2000 : 0"
+  >
+    <alo-log-view
+      [logs]="text"
+      [paginated]="false"
+      [pullEnabled]="true"
+      [pullToggleEnabled]="false"
+      [dialogEmbedded]="true"
+    ></alo-log-view>
+  </div>
+</aui-dialog-content>

@@ -1,0 +1,98 @@
+<aui-table
+  [dataSource]="tags"
+  [trackBy]="trackByName"
+>
+
+  <ng-container auiTableColumnDef="name">
+    <aui-table-header-cell *auiTableHeaderCellDef>
+      {{ 'registry.version' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let tag">
+      <div class="tag-info">
+        <alo-tag-icon
+          [type]="type"
+          size="large"
+        ></alo-tag-icon>
+        <div class="tag-grid">
+          <div
+            class="tag-text"
+            [auiTooltipCopy]="getFullTagPath(tag)"
+            [auiTooltipCopyTip]="('registry.copy_full_tag_path' | translate) + getFullTagPath(tag)"
+          >
+            <span>{{ tag.name }}</span>
+          </div>
+          <div
+            *ngIf="(tag.author || '-')+' '+('created_at' | translate)+(tag.createdAt | aclRelativeTime) as info"
+            class="tag-status"
+            [title]="info"
+          >{{ info }}</div>
+        </div>
+      </div>
+    </aui-table-cell>
+  </ng-container>
+
+  <ng-container auiTableColumnDef="vulnerability">
+    <aui-table-header-cell *auiTableHeaderCellDef>
+      {{ 'registry.vulnerability' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let tag">
+      <alo-scan-status
+        [tag]="tag"
+      ></alo-scan-status>
+    </aui-table-cell>
+  </ng-container>
+
+  <ng-container auiTableColumnDef="size">
+    <aui-table-header-cell *auiTableHeaderCellDef>
+      {{ 'size' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let tag">
+      {{ tag.size }}
+    </aui-table-cell>
+  </ng-container>
+
+  <ng-container auiTableColumnDef="digest">
+    <aui-table-header-cell *auiTableHeaderCellDef>
+      {{ 'registry.digest' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let tag">
+      <aui-icon
+        class="copy-icon"
+        margin="left"
+        icon="copy"
+        [auiTooltipCopyTip]="'[' + ('click_to_copy' | translate) +'] ' + tag.digest"
+        [auiTooltipCopy]="tag.digest"
+      >
+      </aui-icon>
+    </aui-table-cell>
+  </ng-container>
+
+  <ng-container auiTableColumnDef="action">
+    <aui-table-header-cell *auiTableHeaderCellDef>
+      {{ 'action' | translate }}
+    </aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let tag">
+      <alo-menu-trigger
+        [menu]="actions"
+        [context]="{tag:tag}"
+      >
+      </alo-menu-trigger>
+    </aui-table-cell>
+  </ng-container>
+
+  <aui-table-header-row *auiTableHeaderRowDef="getRowDef()"></aui-table-header-row>
+  <aui-table-row *auiTableRowDef="let row;columns: getRowDef()"></aui-table-row>
+</aui-table>
+
+<aui-menu #actions>
+  <ng-template
+    auiMenuContent
+    let-tag="tag"
+  >
+    <acl-disabled-container [isAllowed]="scanPermission$ | async" [isDisabled]="scanDisabled">
+      <aui-menu-item (click)="scan(tag)">
+        {{ 'registry.scan' | translate }}
+      </aui-menu-item>
+    </acl-disabled-container>
+  </ng-template>
+</aui-menu>

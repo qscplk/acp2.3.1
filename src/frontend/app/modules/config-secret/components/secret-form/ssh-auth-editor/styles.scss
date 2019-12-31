@@ -1,0 +1,15 @@
+:host::ng-deep {
+  .alo-form-table input.aui-input.aui-input--medium {
+    height: 32px;
+    width: 40%;
+  }
+}
+
+aui-code-editor {
+  height: 200px;
+}
+
+textarea {
+  font-family: monospace;
+  height: auto;
+}

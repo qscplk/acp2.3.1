@@ -1,0 +1,33 @@
+<aui-card>
+  <div auiCardHeader class="header">
+    <button
+      aui-button="primary"
+      [disabled]="!(toolTypes$ | async)"
+      (click)="bindTool()"
+    >
+      {{ 'bind' | translate }}
+    </button>
+    <aui-search
+      (keywordChange)="filterKey$$.next($event)"
+      [placeholder]="'filter_by_name_placeholder' | translate"
+    ></aui-search>
+  </div>
+  <div class="content">
+    <alo-tool-type-bar
+      [(selectedType)]="selectedType"
+      (selectedTypeChange)="selectedType$$.next($event)"
+      [types]="toolTypes$ | async"
+      [resources]="resourceBindings"
+      [additionalCount]="{ artifactRepository: registryCount }"
+    ></alo-tool-type-bar>
+    <alo-project-binding-list
+      *ngIf="hasBindings$ | async"
+      [bindings]="filteredBindings$ | async"
+      [showTag]="selectedType === 'all'"
+      (cardClick)="navigateToDetail($event)"
+    ></alo-project-binding-list>
+    <div *ngIf="!(filteredBindings$ | async)?.length" class="empty-list-hint">
+      {{ (loading ? 'loading' : 'project.no_binding_tool') | translate }}
+    </div>
+  </div>
+</aui-card>

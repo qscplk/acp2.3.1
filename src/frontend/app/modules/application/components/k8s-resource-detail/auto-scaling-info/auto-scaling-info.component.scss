@@ -1,0 +1,9 @@
+@import 'var';
+
+.alo-detail__group-header {
+  display: flex;
+  justify-content: space-between;
+  .error-icon {
+    color: $color-error;
+  }
+}

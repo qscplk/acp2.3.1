@@ -1,0 +1,57 @@
+<form [formGroup]="form" auiForm auiFormLabelWidth="90px" (submit)="submit()">
+  <aui-dialog-header>{{ 'pipeline_global_settings' | translate }}</aui-dialog-header>
+  <aui-dialog-content>
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'pipeline.build_node' | translate }}</label>
+      <ng-container *ngIf="form.controls.mode.value as mode">
+        <div auiFormItemControl required class="build-node">
+          <aui-radio-group formControlName="mode">
+            <aui-radio value="label">{{ 'label' | translate }}</aui-radio>
+            <aui-radio value="raw">{{ 'pipeline.custom' | translate }}</aui-radio>
+          </aui-radio-group>
+
+          <ng-container *ngIf="mode==='label' && (agentLabels$ | async) as agentLabels">
+            <aui-select required formControlName="label" [clearable]="true" [allowCreate]="true" [filterable]="true">
+              <aui-option-group>
+                <div auiOptionGroupTitle>{{ 'pipeline.matched' | translate }}</div>
+                <aui-option *ngFor="let label of agentLabels?.matched" [value]="label">
+                  {{label}}
+                </aui-option>
+              </aui-option-group>
+              <aui-option-group>
+                <div auiOptionGroupTitle>{{ 'pipeline.others' | translate }}</div>
+                <aui-option *ngFor="let label of agentLabels?.others" [value]="label">
+                  {{label}}
+                </aui-option>
+              </aui-option-group>
+              <aui-option *ngFor="let label of agentLabels?.labels" [value]="label">
+                {{label}}
+              </aui-option>
+            </aui-select>
+          </ng-container>
+          <textarea required aui-input formControlName="raw" *ngIf="mode==='raw'"></textarea>
+        </div>
+      </ng-container>
+      <div auiFormItemError *ngIf="form?.errors?.label?.required || form?.errors?.raw?.required">
+        {{'required' | translate}}
+      </div>
+    </aui-form-item>
+
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'pipeline.configuration_item' | translate }}</label>
+      <aui-code-editor
+        formControlName="options"
+        [plain]="true"
+        [options]="{language: 'Jenkinsfile'}"
+      ></aui-code-editor>
+    </aui-form-item>
+  </aui-dialog-content>
+  <aui-dialog-footer>
+    <button type="submit" aui-button="primary">
+      {{ 'confirm' | translate }}
+    </button>
+    <button type="button" aui-button auiDialogClose>
+      {{ 'cancel' | translate }}
+    </button>
+  </aui-dialog-footer>
+</form>

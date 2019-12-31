@@ -1,0 +1,64 @@
+<ng-container *aloAsyncData="
+  let data;
+  let loading = loading;
+  let error = error;
+  handler: fetchStatus;
+  params: params"
+>
+  <div class="chart-content" *ngIf="!!data">
+    <div class="status-summary">
+      <alo-quality-gate-pie
+        [data]="data | pure: summary: ['Failed', 'Skipped', 'Passed']"
+      ></alo-quality-gate-pie>
+      <ul class="legends">
+        <li class="legend" *ngFor="let item of data | pure: summary: ['Failed', 'Skipped', 'Passed']">
+          <div class="title">
+            <em [style.background-color]="item.status | pure:statusColor"></em>
+            <span>{{ item.count }}</span>
+          </div>
+          <div class="description">
+            <ng-container [ngSwitch]="item?.status">
+              <span *ngSwitchCase="'FAILED'">{{ 'pipeline.test_failed' | translate }}</span>
+              <span *ngSwitchCase="'SKIPPED'">{{ 'pipeline.test_skipped' | translate }}</span>
+              <span *ngSwitchCase="'PASSED'">{{ 'pipeline.test_passed' | translate }}</span>
+            </ng-container>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="expand-summary">
+      <ul class="legends">
+        <li class="legend" *ngFor="let item of data | pure: summary: ['Regressions', 'Fixed']">
+          <div class="title">
+            <em [style.background-color]="item.status | pure:statusColor"></em>
+            <span>{{ item.count }}</span>
+          </div>
+          <div class="description">
+            <ng-container [ngSwitch]="item?.status">
+              <span *ngSwitchCase="'REGRESSIONS'">{{ 'regression' | translate }}</span>
+              <span *ngSwitchCase="'FIXED'">{{ 'fixed' | translate }}</span>
+            </ng-container>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <ng-container *ngFor="let item of ['Regression', 'Failed', 'Skipped', 'Fixed', 'Passed']; trackBy: trackLogs">
+    <ng-container *ngIf="data && data[item.toUpperCase()]?.length > 0">
+      <alo-pipeline-history-test-report-log
+        [data]="data"
+        [item]="item"
+      ></alo-pipeline-history-test-report-log>
+      <ng-container *ngIf="concatReport[item.toUpperCase()]">
+        <div class="load-more-btn">
+          <button
+            (click)="loadMore(data, item)"
+            aui-button="text"
+          >{{ 'pipeline.load_more' | translate }}</button>
+        </div>
+      </ng-container>
+      <div *ngIf="!concatReport[item.toUpperCase()]" style="height: 16px"></div>
+    </ng-container>
+  </ng-container>
+</ng-container>

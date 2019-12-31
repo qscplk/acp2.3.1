@@ -1,0 +1,43 @@
+@import 'variables';
+
+.aui-table {
+  min-width: 0px;
+  &__column-actions {
+    max-width: 40px;
+  }
+  &__column-name {
+    > a {
+      font-weight: 500;
+    }
+  }
+  .display-name {
+    color: #999;
+  }
+}
+
+.tooltip-container {
+  .tooltip-list {
+    font-size: 14px;
+    color: $color-primary;
+    margin-left: 15px;
+    padding: 5px 10px 5px 0;
+    a {
+      cursor: pointer;
+      color: $color-primary;
+      &:hover {
+        color: $color-primary;
+      }
+    }
+  }
+}
+
+.keys-container-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 300px;
+  .keys-container {
+    background-color: #fafafa;
+    margin: 2px;
+    padding: 1px;
+  }
+}

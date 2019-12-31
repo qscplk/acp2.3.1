@@ -1,0 +1,13 @@
+<div class="alo-logo">
+  <ng-container *ngIf="envs.LOGO_URL as logoUrl; else img">
+    <a [href]="logoUrl">
+      <img class="alo-logo__img" alt="devops" src="logos/logo.svg" />
+    </a>
+  </ng-container>
+  <em></em>
+  <span>DevOps</span>
+  <acl-product-select current="console-devops"></acl-product-select>
+</div>
+<ng-template #img>
+  <img class="alo-logo__img" alt="devops" src="logos/logo.svg" />
+</ng-template>

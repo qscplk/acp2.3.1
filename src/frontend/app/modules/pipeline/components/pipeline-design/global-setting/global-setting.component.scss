@@ -1,0 +1,15 @@
+.field {
+  display: flex;
+  min-height: 34px;
+  border: 1px solid #eee;
+  margin-top: -1px;
+  .field-name {
+    min-width: 200px;
+    background-color: #f4f4f4;
+    text-align: right;
+    padding: 6px;
+  }
+  .field-value {
+    padding: 6px;
+  }
+}

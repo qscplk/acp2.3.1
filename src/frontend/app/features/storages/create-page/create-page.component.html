@@ -1,0 +1,29 @@
+<ng-container *aloPageHeaderContent>
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['../']">
+        {{ 'storage.list' | translate }}
+      </a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <span>
+        {{ 'storage.create' | translate }}
+      </span>
+    </ng-template>
+  </alo-breadcrumb>
+  <!-- <div fxFlex></div>
+  <aui-radio-group
+    [isPlain]="false"
+    (ngModelChange)="storageForm.modeChange($event)"
+    [(ngModel)]="displayModel"
+  >
+    <aui-radio-button value="form">{{'form' | translate}}</aui-radio-button>
+    <aui-radio-button value="yaml">YAML</aui-radio-button>
+  </aui-radio-group> -->
+</ng-container>
+
+<alo-storage-create
+  #storageForm
+  [displayModel]="displayModel"
+  (created)="onCreated($event)"
+></alo-storage-create>

@@ -1,0 +1,254 @@
+<aui-dialog-header>
+  <ng-container *ngIf="data.mode === 'create'">
+    {{ 'tool_chain.create_registry' | translate }}
+  </ng-container>
+  <ng-container *ngIf="data.mode === 'integrate'">
+    {{ 'tool_chain.integrate_existed_registry' | translate }}
+  </ng-container>
+</aui-dialog-header>
+<aui-dialog-content>
+  <aui-inline-alert type="error" *ngIf="data.error">
+    {{ 'tool_chain.add_registry_secret_error_tip' | translate }}
+  </aui-inline-alert>
+  <aui-inline-alert>
+    {{
+      (data.mode === 'create'
+        ? 'tool_chain.new_registry_help'
+        : 'tool_chain.integrate_registry_help') | translate
+    }}
+  </aui-inline-alert>
+  <form
+    #formRef="ngForm"
+    [formGroup]="form"
+    auiForm
+    [auiFormEmptyAddon]="false"
+    auiFormLabelWidth="114px"
+  >
+    <aui-section>
+      <div auiSectionTitle>{{ 'tool_chain.create_registry' | translate }}</div>
+      <aui-form-item>
+        <label auiFormItemLabel>{{
+          'tool_chain.registry_type' | translate
+          }}</label>
+        <aui-radio-group
+          [isPlain]="true"
+          auiFormItemControl
+          formControlName="artifactType"
+          class="registry-type-group"
+        >
+          <aui-radio-button [value]="'Maven'">
+            <img [src]="'icons/tool-chain/list/maven2.svg'" alt="Maven" />
+            Maven
+          </aui-radio-button>
+          <aui-radio-button
+            [value]="'NPM'"
+            [disabled]="true"
+            auiTooltip="{{ 'stay_tuned' | translate }}"
+          >
+            <img [src]="'icons/tool-chain/list/npm.svg'" alt="NPM" />
+            NPM
+          </aui-radio-button>
+          <aui-radio-button
+            [value]="'PyPl'"
+            [disabled]="true"
+            auiTooltip="{{ 'stay_tuned' | translate }}"
+          >
+            <img [src]="'icons/tool-chain/list/pypl.svg'" alt="PyPl" />
+            PyPl
+          </aui-radio-button>
+        </aui-radio-group>
+      </aui-form-item>
+      <aui-form-item *ngIf="data.mode === 'create'">
+        <label auiFormItemLabel>{{ 'code.repository_name' | translate }}</label>
+        <input
+          formControlName="name"
+          aui-input
+          auiFormItemControl
+          required
+          [placeholder]="nameRule.placeholder | translate"
+        />
+        <div auiFormItemError *ngIf="form.get('name').errors?.required">
+          {{ nameRule.requiredError | translate }}
+        </div>
+        <div auiFormItemError *ngIf="form.get('name').errors?.pattern">
+          {{ nameRule.patternError | translate }}
+        </div>
+        <div auiFormItemError *ngIf="form.get('name').errors?.maxlength">
+          {{ nameRule.maxLengthError | translate }}
+        </div>
+        <div auiFormItemError *ngIf="form.get('name').errors?.existing">
+          {{ 'tool_chain.artifact_registry_existing' | translate }}
+        </div>
+      </aui-form-item>
+      <aui-form-item *ngIf="data.mode === 'integrate'">
+        <label auiFormItemLabel>{{ 'code.repository_name' | translate }}</label>
+        <aui-select
+          auiFormItemControl
+          formControlName="selectName"
+          required
+        >
+          <aui-option-group>
+            <aui-option
+              *ngFor="let registry of existedRegistries$ | async"
+              [value]="registry.name"
+              [label]="registry.name"
+            >
+              <span>{{ registry.name }}</span>
+            </aui-option>
+          </aui-option-group>
+        </aui-select>
+        <div auiFormItemError *ngIf="form.get('selectName').errors?.required">
+          {{ 'required' | translate }}
+        </div>
+      </aui-form-item>
+      <aui-form-item *ngIf="data.mode === 'create'">
+        <label auiFormItemLabel>{{
+          'tool_chain.version_policy' | translate
+          }}</label>
+        <aui-radio-group
+          [isPlain]="true"
+          auiFormItemControl
+          formControlName="versionPolicy"
+        >
+          <aui-radio-button [value]="'Release'">
+            Release
+          </aui-radio-button>
+          <aui-radio-button [value]="'Snapshot'">
+            Snapshot
+          </aui-radio-button>
+        </aui-radio-group>
+      </aui-form-item>
+      <aui-form-item *ngIf="data.mode === 'create'">
+        <label auiFormItemLabel>{{
+          'tool_chain.file_location' | translate
+          }}</label>
+        <aui-select
+          auiFormItemControl
+          formControlName="fileLocation"
+          required
+        >
+          <aui-option-group>
+            <aui-option
+              *ngFor="let location of fileLocations$ | async"
+              [value]="location.name"
+              [label]="location.name"
+            >
+              <span>{{ location.name }}</span>
+            </aui-option>
+          </aui-option-group>
+        </aui-select>
+        <div auiFormItemError *ngIf="form.get('fileLocation').errors?.required">
+          {{ 'required' | translate }}
+        </div>
+      </aui-form-item>
+    </aui-section>
+    <aui-section>
+      <div auiSectionTitle>{{ 'tool_chain.integrate' | translate }}</div>
+      <aui-form-item>
+        <label auiFormItemLabel>{{ 'project.binding_integration_name' | translate }}</label>
+        <input
+          formControlName="integrateName"
+          auiFormItemControl
+          aui-input
+          [aloDisableControl]="disable"
+          [placeholder]="'tool_chain.integrate_name_tips' | translate"
+          required>
+        <div auiFormItemError *ngIf="form.get('integrateName').errors?.required">
+          {{ nameRule.requiredError | translate }}
+        </div>
+        <div auiFormItemError *ngIf="form.get('integrateName').errors?.pattern">
+          {{ nameRule.patternError | translate }}
+        </div>
+        <div auiFormItemError *ngIf="form.get('integrateName').errors?.maxlength">
+          {{ nameRule.maxLengthError | translate }}
+        </div>
+      </aui-form-item>
+      <!-- advanced -->
+      <ng-container *ngIf="showAdvanced">
+        <aui-form-item>
+          <label auiFormItemLabel>{{ 'auth_type' | translate }}</label>
+          <aui-radio-group
+            [isPlain]="true"
+            formControlName="secretType"
+            auiFormItemControl
+          >
+            <aui-radio-button [value]="SecretType.BasicAuth">
+              {{ 'secret.basic_auth' | translate }}
+            </aui-radio-button>
+          </aui-radio-group>
+        </aui-form-item>
+        <aui-form-item>
+          <label auiFormItemLabel>{{ 'secret' | translate }}</label>
+          <div class="secret-group">
+            <aui-select
+              auiFormItemControl
+              formControlName="secretName"
+              filterable
+              required
+            >
+              <aui-option-group>
+                <aui-option
+                  *ngFor="let item of secrets$ | async"
+                  [value]="item.name"
+                  [label]="item.name"
+                  (click)="secretToValue(item)"
+                >
+                  <span>{{ item.name }}</span>
+                  <span
+                    class="secret-group__display-name"
+                    *ngIf="!!item.displayName"
+                  >
+                  ({{ item.displayName }})
+                </span>
+                </aui-option>
+              </aui-option-group>
+              <aui-option-placeholder>
+                {{ 'no_available_secrets' | translate }}
+              </aui-option-placeholder>
+            </aui-select>
+            <button
+              aui-button
+              type="button"
+              class="add-secret"
+              (click)="addSecret()"
+            >
+              {{ 'add_secret' | translate }}
+            </button>
+          </div>
+          <div auiFormItemHint>
+            {{ 'tool_chain.add_registry_secret_help' | translate }}
+          </div>
+          <div auiFormItemError *ngIf="form.get('secretName').errors?.required">
+            {{ 'required' | translate }}
+          </div>
+        </aui-form-item>
+      </ng-container>
+    </aui-section>
+  </form>
+  <div class="advanced-switch" (click)="showAdvanced = !showAdvanced">
+    <ng-container *ngIf="!showAdvanced">
+      <span>{{ 'tool_chain.expand_advanced_items' | translate }}</span>
+      <aui-icon icon="basic:angle_double_down"></aui-icon>
+    </ng-container>
+    <ng-container *ngIf="showAdvanced">
+      <span>{{ 'tool_chain.collapse_advanced_items' | translate }}</span>
+      <aui-icon icon="basic:angle_double_up"></aui-icon>
+    </ng-container>
+  </div>
+</aui-dialog-content>
+<aui-dialog-footer>
+  <button
+    aui-button="primary"
+    [loading]="submitting"
+    [disabled]="submitting"
+    (click)="submit()"
+  >
+    {{
+      (data.mode === 'create' ? 'tool_chain.new' : 'tool_chain.integrate')
+        | translate
+    }}
+  </button>
+  <button aui-button [auiDialogClose]="null" [disabled]="submitting">
+    {{ 'cancel' | translate }}
+  </button>
+</aui-dialog-footer>

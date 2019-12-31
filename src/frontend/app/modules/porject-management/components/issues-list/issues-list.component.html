@@ -1,0 +1,136 @@
+<ng-container
+  *aloAsyncData="
+    let issues;
+    let loading = loading;
+    let error = error;
+    let refetch = refetch;
+    params: query;
+    handler: fetchIssuesList;
+  "
+>
+  <aui-table
+    auiSort
+    active="updated"
+    direction="desc"
+    [dataSource]="issues?.items"
+    (sortChange)="onSortChange($event)"
+    [trackBy]="trackById"
+  >
+    <ng-container auiTableColumnDef="id">
+      <aui-table-header-cell *auiTableHeaderCellDef>ID</aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let issues">
+        <div class="name-cell">
+          {{ issues.key }}
+          <a
+            *ngIf="!!bind?.accessUrl"
+            class="jump-icon"
+            [auiTooltip]="'jump_to' | translate:{ name: 'Jira' }"
+            auiTooltipType="info"
+            auiTooltipPosition="bottom start"
+            auiTooltipClass="jump-tooltip"
+            [href]="(bind?.accessUrl + issues.selflink) | pure:dropDuplicateUrlSlash"
+            target="_blank"
+          ><aui-icon icon="basic:jump"></aui-icon></a>
+        </div>
+      </aui-table-cell>
+    </ng-container>
+
+    <ng-container auiTableColumnDef="summary">
+      <aui-table-header-cell *auiTableHeaderCellDef>
+        {{ 'summary' | translate }}
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let issues">
+        <a
+          [routerLink]="[bind.name, issues.key]"
+          [title]="issues.summary"
+        >
+          {{ issues.summary }}
+        </a>
+      </aui-table-cell>
+    </ng-container>
+
+    <ng-container auiTableColumnDef="belong_project">
+      <aui-table-header-cell *auiTableHeaderCellDef>
+        {{ 'secret.belongs_project' | translate }}
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let issues">
+        {{ issues?.project?.metadata?.name }}
+      </aui-table-cell>
+    </ng-container>
+
+    <ng-container auiTableColumnDef="type">
+      <aui-table-header-cell *auiTableHeaderCellDef>
+        {{ 'type' | translate }}
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let issues">
+        {{ issues?.issuetype?.name }}
+      </aui-table-cell>
+    </ng-container>
+
+    <ng-container auiTableColumnDef="priority">
+      <aui-table-header-cell *auiTableHeaderCellDef aui-sort-header>
+        {{ 'priority' | translate }}
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let issues">
+        {{ issues?.priority?.name }}
+      </aui-table-cell>
+    </ng-container>
+
+    <ng-container auiTableColumnDef="status">
+      <aui-table-header-cell *auiTableHeaderCellDef aui-sort-header>
+        {{ 'status' | translate }}
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let issues">
+        {{ issues?.status?.name }}
+      </aui-table-cell>
+    </ng-container>
+
+    <ng-container auiTableColumnDef="assign">
+      <aui-table-header-cell *auiTableHeaderCellDef>
+        {{ 'project_management.assign_to' | translate }}
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let issues">
+        {{ issues?.assignee?.username || ('project_management.unassigned' | translate) }}
+      </aui-table-cell>
+    </ng-container>
+
+    <ng-container auiTableColumnDef="updated">
+      <aui-table-header-cell *auiTableHeaderCellDef aui-sort-header>
+        {{ 'code.update_at' | translate }}
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let issues">
+        {{ issues.updated | aclRelativeTime }}
+      </aui-table-cell>
+    </ng-container>
+
+    <ng-container auiTableColumnDef="reporter">
+      <aui-table-header-cell *auiTableHeaderCellDef>
+        {{ 'create_by' | translate }}
+      </aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let issues">
+        {{ issues?.creator?.username }}
+      </aui-table-cell>
+    </ng-container>
+
+    <aui-table-header-row *auiTableHeaderRowDef="displayedColumns"></aui-table-header-row>
+    <aui-table-row *auiTableRowDef="let row; columns: displayedColumns;"></aui-table-row>
+  </aui-table>
+  <alo-no-data
+    *ngIf="!issues?.total"
+    [resourceName]="'data' | translate"
+    [loading]="loading"
+    [error]="error"
+    (retry)="refetch()"
+  >
+  </alo-no-data>
+  <aui-paginator
+    *ngIf="issues?.total"
+    layout="total,pager,sizes,jumper"
+    [(currentPage)]="pagination.page"
+    [(pageSize)]="pagination.pagesize"
+    [total]="issues?.total"
+    (currentPageChange)="currentPageChange($event)"
+    (pageSizeChange)="pageSizeChange($event)"
+    [pageSizeOptions]="[20, 50, 100]"
+  ></aui-paginator>
+</ng-container>

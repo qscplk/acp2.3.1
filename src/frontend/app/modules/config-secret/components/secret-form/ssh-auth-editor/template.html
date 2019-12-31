@@ -1,0 +1,19 @@
+<form auiForm
+      auiFormLabelWidth="150px"
+      [auiFormEmptyAddon]="true">
+    <!-- Input row -->
+    
+    <div class="ssh-auth-form-item-group">
+      <aui-form-item [formGroup]="form">
+        <label auiFormItemLabel>
+          {{ 'configsecret.ssh-privatekey' | translate }}
+        </label>
+        <textarea (blur)="onBlur()"
+                auiFormItemControl
+                aui-input
+                required
+                formControlName="ssh-privatekey"></textarea>
+      </aui-form-item>
+    </div>
+  
+</form>

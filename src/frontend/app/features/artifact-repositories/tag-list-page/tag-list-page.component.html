@@ -1,0 +1,19 @@
+<alo-breadcrumb *aloPageHeaderContent>
+  <ng-template aloBreadcrumbItem>
+    <a [routerLink]="['../']">{{ 'artifact_repository' | translate }}</a>
+  </ng-template>
+  <ng-template aloBreadcrumbItem>
+    <span>{{ (repoName$ | async) }}</span>
+  </ng-template>
+</alo-breadcrumb>
+
+<alo-tag-list-section
+  [loading]="loading"
+  [error]="error"
+  [repository]="(repo$ | async)"
+  [tags]="tags$ | async"
+  (filterChange)="keyword$$.next($event)"
+  (scanTrigger)="updated$$.next(null)"
+  (refetch)="updated$$.next(null)"
+>
+</alo-tag-list-section>

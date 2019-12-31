@@ -1,0 +1,33 @@
+:host {
+  .resource-requests,
+  .resource-limits {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 5px 10px;
+    .size-name {
+      margin-right: 8px;
+      font-weight: bold;
+      min-width: 60px;
+      text-align: center;
+    }
+    .size-title {
+      min-width: 65px;
+      text-align: center;
+    }
+    .select-size {
+      width: 60px;
+    }
+    .transit {
+      margin: 0 8px;
+      color: lightgray;
+    }
+    aui-input-group {
+      flex: 1;
+    }
+  }
+
+  ::ng-deep .aui-input-group__addon.aui-input-group__addon--after {
+    padding: 0;
+  }
+}

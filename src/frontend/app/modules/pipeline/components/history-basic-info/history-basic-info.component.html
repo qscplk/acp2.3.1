@@ -1,0 +1,161 @@
+<div
+  class="header"
+  [ngClass]="['history-status', 'bg', history?.status?.phase?.toLowerCase()||'']"
+>
+  <div class="title-wrapper">
+    <aui-icon
+      class="icon-spin"
+      size="24,24"
+      [ngClass]="{'icon-spin': getHistoryStatusIcon(history?.status, 'detail').icon === 'basic:sync'}"
+      [icon]="getHistoryStatusIcon(history?.status, 'detail').icon"
+    ></aui-icon>
+    <div class="title">
+      <div class="history-info" [ngClass]="{'secondary-title': !!history?.branch}">
+        <span>{{ history?.pipeline || '-' }}</span>
+        <span class="point-separator"></span>
+        <span>#{{ history?.jenkins?.build || '-' }}</span>
+      </div>
+      <div *ngIf="history?.branch">
+        <ng-container *ngIf="getMultiBranchCategory(history) === 'branch';else prInfo">{{ history?.branch }}</ng-container>
+        <ng-template #prInfo>
+          <div [title]="getPrInfo(history)" class="pr-info">
+            <span>{{ history?.branch }}</span>
+            <span *ngIf="history?.prSourceBranch && history?.prTargetBranch">({{ history?.prSourceBranch }}) → ({{ history?.prTargetBranch }})</span>
+            <span>{{ history?.prTitle }}</span>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <alo-menu-trigger [menu]="actionsMenu"></alo-menu-trigger>
+    <aui-menu #actionsMenu>
+      <acl-disabled-container [isAllowed]="permissions?.pipelines?.create"
+                              *ngIf="(history?.status?.phase === 'Complete' || history?.status?.phase === 'Failed')"
+      >
+        <aui-menu-item (click)="replay()">
+          {{ 'pipeline.replay' | translate }}
+        </aui-menu-item>
+      </acl-disabled-container>
+      <acl-disabled-container [isAllowed]="permissions?.pipelines?.update"
+                              *ngIf="history?.status?.phase === 'Running'">
+        <aui-menu-item (click)="cancel()">
+          {{ 'pipeline.cancel' | translate }}
+        </aui-menu-item>
+      </acl-disabled-container>
+      <acl-disabled-container [isAllowed]="permissions?.pipelines?.delete">
+        <aui-menu-item (click)="delete()">{{ 'delete' | translate }}</aui-menu-item>
+      </acl-disabled-container>
+    </aui-menu>
+  </div>
+</div>
+<div class="basic-body">
+  <aui-tab-group
+    [(selectedIndex)]="activeTab"
+    [size]="size.Small"
+    style="width: 100%"
+    [ngClass]="['pipeline-status', history?.status?.phase?.toLowerCase()||'']"
+  >
+    <aui-tab>
+      <ng-container *auiTabLabel>{{'pipeline.log'|translate}}</ng-container>
+      <ng-container *auiTabContent>
+        <alo-pipeline-history-detail-log
+          [project]="project"
+          [history]="history"
+          [permissions]="permissions"
+          (stageStatusChanged)="onStageStatusChanged()"
+        ></alo-pipeline-history-detail-log>
+      </ng-container>
+    </aui-tab>
+    <aui-tab *ngIf="reportCounts?.total">
+      <ng-container *auiTabLabel>
+        <span>{{'pipeline.test_report'|translate}}</span>
+        <div class="number-badge" *ngIf="reportCounts?.failed">{{ reportCounts?.failed }}</div>
+      </ng-container>
+      <ng-container *auiTabContent>
+        <alo-pipeline-history-test-report
+          [project]="project"
+          [name]="history?.name"
+        ></alo-pipeline-history-test-report>
+      </ng-container>
+    </aui-tab>
+
+    <ng-container *auiTabHeaderAddon>
+      <div class="fields">
+        <div class="field" *ngFor="let badge of history?.badges">
+          <ng-container [ngSwitch]="badge.id">
+            <a
+              *ngSwitchCase="'QualityGate'"
+              class="badges"
+              [href]="badge.link"
+              [auiTooltip]="sonarQube"
+              target="_blank"
+            >
+              <aui-tag size="small" [color]="badge.text | pure:sonarQubeStatusColor ">
+                <img src="icons/pipeline/badges/sonarqube-{{ badge.text.toLowerCase() }}.svg" alt="devops" />
+                <span>{{ badge.text | pure:sonarQubeStatus | translate }}</span>
+              </aui-tag>
+            </a>
+            <a
+              *ngSwitchDefault
+              class="badges"
+              [href]="badge.link"
+              [auiTooltip]="badge.text"
+              target="_blank"
+            >
+              <aui-tag *ngSwitchDefault size="small">{{ badge.text }}</aui-tag>
+            </a>
+            <ng-template #sonarQube>
+              <div>{{ 'pipeline.pipeline_history_sonarqube_hint' | translate }}</div>
+            </ng-template>
+          </ng-container>
+        </div>
+        <div class="field">
+          <ng-container [ngSwitch]="history?.cause?.type">
+            <ng-container *ngSwitchCase="'cron'">
+              <aui-icon icon="basic:time"></aui-icon>
+              <span>{{'pipeline.cron'|translate}}</span>
+            </ng-container>
+            <ng-container *ngSwitchCase="'codeChange'">
+              <aui-icon icon="basic:code"></aui-icon>
+              <span>{{'pipeline.code_change'|translate}}</span>
+            </ng-container>
+            <ng-container *ngSwitchCase="'manual'">
+              <aui-icon icon="basic:wrench_s"></aui-icon>
+              <span>{{'pipeline.manual'|translate}}</span>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'branchScan'">
+              <aui-icon icon="basic:multi_branch_trigger_method"></aui-icon>
+              <span>{{'pipeline.branch_scan'|translate}}</span>
+            </ng-container>
+            <ng-container *ngSwitchCase="'upstreamCause'">
+              <aui-icon icon="basic:pipeline"></aui-icon>
+              <span>{{'pipeline.upstream_cause'|translate}}</span>
+            </ng-container>
+            <ng-container *ngSwitchCase="'unknownCause'">
+              <aui-icon icon="basic:other_trigger_method"></aui-icon>
+              <span>{{'pipeline.unknown_cause'|translate}}</span>
+            </ng-container>
+            <ng-container *ngSwitchDefault>{{ '-' }}</ng-container>
+          </ng-container>
+        </div>
+        <div class="field">
+          <aui-icon icon="basic:calendar"
+                    [title]="'pipeline.start_time' | translate"></aui-icon>
+          <span>
+            {{ history?.status?.startedAt | aclRelativeTime }}
+          </span>
+        </div>
+        <div class="field">
+          <aui-icon icon="history_s"
+                    [title]="'pipeline.consumed' | translate"></aui-icon>
+          <span>
+        {{ getDuration(history?.status) | aloDuration }}
+      </span>
+        </div>
+      </div>
+    </ng-container>
+  </aui-tab-group>
+</div>

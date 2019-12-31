@@ -1,0 +1,76 @@
+@import 'var';
+
+:host {
+  flex: 1;
+  margin-right: 20px;
+  display: flex;
+  flex-direction: column;
+  max-width: 250px;
+  .progress {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    div {
+      border-right: 1px solid white;
+      background-color: $color-error;
+      &:first-of-type {
+        background-color: $color-success;
+      }
+      &:nth-of-type(2) {
+        background-color: $color-primary;
+      }
+      &:last-of-type {
+        background-color: $color-info;
+      }
+    }
+    .aui-button {
+      width: 16px;
+      height: 16px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      margin: 0 5px;
+    }
+    ::ng-deep .aui-button {
+      line-height: 16px;
+    }
+  }
+  .info {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    height: 24px;
+    justify-content: center;
+    .count {
+      font-size: 24px;
+      line-height: 24px;
+      font-weight: 500;
+    }
+    .label {
+      max-height: 24px;
+      margin-left: 8px;
+      font-weight: 200;
+    }
+  }
+}
+.status-scaler-tooltip {
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+
+  &__label {
+    margin-left: 6px;
+    font-size: 12px;
+  }
+  .status {
+    width: 100%;
+    display: flex;
+  }
+  .desc {
+    padding-left: 20px;
+  }
+}

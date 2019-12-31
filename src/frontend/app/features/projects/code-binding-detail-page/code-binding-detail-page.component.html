@@ -1,0 +1,33 @@
+<div *aloPageHeaderContent class="page-header">
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['/admin/projects']">{{ 'project.list' | translate }}</a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <a
+        [routerLink]="['/admin/projects', (params$ | async).namespace]"
+        [queryParams]="{ tab: '1' }"
+      >
+        {{ (params$ | async)?.namespace }}
+      </a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <span>
+        {{ (params$ | async)?.name }}
+      </span>
+    </ng-template>
+  </alo-breadcrumb>
+</div>
+<acl-page-state
+  [adapter]="dataLoader"
+  (redirect)="back()"
+  [autoRedirect]="false"
+>
+  <ng-template let-data>
+    <alo-code-binding-detail
+      *ngIf="data"
+      [data]="data"
+      (updated)="refresh()"
+    ></alo-code-binding-detail>
+  </ng-template>
+</acl-page-state>

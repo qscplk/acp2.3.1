@@ -1,0 +1,23 @@
+<div class="row" *ngFor="let item of pairs; let i = index">
+  <div class="control">
+    <input type="text" [(ngModel)]="item.name" (ngModelChange)="inputChange()"/>
+    <input type="text" [(ngModel)]="item.value" (ngModelChange)="inputChange()"/>
+    <div class="actions">
+      <button
+        *ngIf="i === pairs.length - 1"
+        aui-button
+        type="button"
+        (click)="add()"
+      ><aui-icon icon="basic:plus"></aui-icon></button>
+      <button
+        *ngIf="pairs.length > 1"
+        aui-button
+        type="button"
+        (click)="remove(i)"
+      ><aui-icon icon="basic:minus"></aui-icon></button>
+    </div>
+  </div>
+  <div class="error">
+    <span></span>
+  </div>
+</div>

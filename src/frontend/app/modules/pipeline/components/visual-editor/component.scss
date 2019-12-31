@@ -1,0 +1,79 @@
+@mixin container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.pipeline-visual-editor {
+  @include container;
+
+  align-items: stretch;
+  &__form {
+    margin-left: 4px;
+    width: 320px;
+    flex-shrink: 0;
+    background-color: #fff;
+    box-shadow: -2px 0 4px 0 rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+  }
+  &__form-content {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+  &__actions {
+    flex: 0 0 auto;
+    padding: 20px 0;
+    margin: 0 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-end;
+    border-top: solid 1px #dedede;
+  }
+}
+
+.empty {
+  @include container;
+
+  align-items: flex-start;
+  justify-content: center;
+
+  .loading,
+  .error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    > aui-icon {
+      font-size: 26px;
+      color: #999;
+      margin-bottom: 24px;
+    }
+
+    > img {
+      margin-bottom: 16px;
+    }
+
+    > span {
+      font-size: 18px;
+    }
+
+    > button {
+      margin-top: 12px;
+    }
+  }
+
+  .loading {
+    margin-top: 160px;
+  }
+
+  .error {
+    margin-top: 80px;
+  }
+}

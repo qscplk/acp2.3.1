@@ -1,0 +1,154 @@
+<div class="alo-container">
+  <div class="base-body info">
+    <div *ngIf="displayContainerName" class="field name">
+      <label>{{ 'container' | translate }}</label>
+      <span>{{ container.name }}</span>
+    </div>
+    <div class="field requests">
+      <label>{{ 'resource_requests' | translate }}</label>
+      <span>CPU {{ container.resources.requests.cpu || ' -' }}</span>
+      <span
+        >{{ 'memory' | translate }}
+        {{ container.resources.requests.memory || ' -' }}</span
+      >
+      <aui-icon
+        *ngIf="displayAdvanced"
+        [ngClass]="{ pencil: allowedUpdate, 'not-allowed-update': !allowedUpdate }"
+        (click)="showContainerSizeUpdate('requests')"
+        icon="basic:pencil_s"
+      ></aui-icon>
+    </div>
+    <div class="field image">
+      <label>{{ 'image' | translate }}</label>
+      <span [title]="container.image">{{ container.image }}</span>
+      <aui-icon
+        *ngIf="displayAdvanced || allowUpdateImage"
+        [ngClass]="{ pencil: allowedUpdate, 'not-allowed-update': !allowedUpdate }"
+        (click)="showImageUpdate()"
+        icon="basic:pencil_s"
+      ></aui-icon>
+    </div>
+    <div class="field limits">
+      <label>{{ 'resource_limits' | translate }}</label>
+      <span>CPU {{ container.resources.limits.cpu || ' -' }}</span>
+      <span
+        >{{ 'memory' | translate }}
+        {{ container.resources.limits.memory || '
+        -' }}
+      </span>
+      <aui-icon
+        *ngIf="displayAdvanced"
+        [ngClass]="{ pencil: allowedUpdate, 'not-allowed-update': !allowedUpdate }"
+        (click)="showContainerSizeUpdate('limits')"
+        icon="basic:pencil_s"
+      ></aui-icon>
+    </div>
+    <div *ngIf="displayAdvanced" class="field command">
+      <label>{{ 'command' | translate }}</label>
+      <span
+        *ngIf="container.command; else: emptyCommandBlock"
+        [auiTooltip]="command"
+        auiTooltipType="info"
+        auiTooltipPosition="top"
+        >{{ container.command }}</span
+      >
+      <ng-template #command>
+        <div>{{ container.command }}</div>
+      </ng-template>
+      <ng-template #emptyCommandBlock>
+        <span>{{ '-' }}</span>
+      </ng-template>
+    </div>
+    <div *ngIf="displayAdvanced" class="field args">
+      <label>{{ 'args' | translate }}</label>
+      <span
+        *ngIf="
+          !container.args || container.args.length === 0;
+          else: multiArgsBlock
+        "
+        >{{ '-' }}</span
+      >
+      <ng-template #multiArgsBlock>
+        <div class="args-container">
+          <span *ngFor="let arg of (container.args | slice: 0:1)">{{
+            arg
+          }}</span>
+          <span *ngIf="(container.args || []).length > 1">
+            {{ 'total' | translate }}
+            <span
+              class="aviliable-data"
+              [auiTooltip]="args"
+              auiTooltipType="info"
+              auiTooltipTrigger="click"
+              auiTooltipPosition="bottom"
+            >
+              {{ container.args.length }}
+            </span>
+            {{ 'application.image_num' | translate }}
+          </span>
+          <ng-template #args>
+            <div class="tooltip-container">
+              <div class="tooltip-list">
+                <ul>
+                  <li *ngFor="let arg of container.args">{{ arg }}</li>
+                </ul>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+  <div class="actions">
+    <button aui-button="text" [auiDropdown]="menu" [disabled]="!allowedUpdate">
+      <aui-icon icon="basic:window" margin="right"></aui-icon>
+      EXEC
+    </button>
+    <button aui-button="text" (click)="showLogs()">
+      <aui-icon icon="basic:log" margin="right"></aui-icon>
+      {{ 'logs' | translate }}
+    </button>
+    <button
+      *ngIf="displayAdvanced"
+      aui-button="text"
+      [auiDropdown]="actionMenu"
+    >
+      <aui-icon icon="basic:ellipsis_v_s"></aui-icon>
+    </button>
+  </div>
+</div>
+
+<aui-menu #menu>
+  <ng-container
+    *ngIf="this.resource.podInfo && this.resource.podInfo.pods.length"
+  >
+    <ng-container>
+      <aui-menu-group>
+        <span auiMenuGroupTitle class="menu-group-title">{{
+          container.name
+        }}</span>
+        <aui-menu-item
+          *ngFor="let pod of this.resource.podInfo.pods"
+          (click)="onContainerSelected(pod.name)"
+          >{{ pod.name }}</aui-menu-item
+        >
+      </aui-menu-group>
+    </ng-container>
+  </ng-container>
+
+  <div
+    class="no-pod-hint"
+    *ngIf="!this.resource.podInfo || !this.resource.podInfo.pods.length"
+  >
+    {{ 'zero_state_hint' | translate: { resourceName: 'pods' | translate } }}
+  </div>
+</aui-menu>
+
+<aui-menu #actionMenu>
+  <aui-menu-item [disabled]="!allowedUpdate" (click)="volumeMount()">{{
+    'application.add_volume_mounts' | translate
+  }}</aui-menu-item>
+  <aui-menu-item [disabled]="!allowedUpdate" (click)="updateContainer()">{{
+    'update_container' | translate
+  }}</aui-menu-item>
+</aui-menu>

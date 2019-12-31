@@ -1,0 +1,47 @@
+@import 'var';
+
+.secret-group {
+  display: flex;
+  flex: 1;
+  > button {
+    margin-left: 8px;
+  }
+}
+.advanced-switch {
+  margin-top: 16px;
+  height: 20px;
+  background-color: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #006eff;
+  cursor: pointer;
+  > span {
+    font-size: 12px;
+  }
+
+  &:hover {
+    background-color: $button-default-bg-hover;
+    cursor: pointer;
+  }
+}
+.registry-type-group {
+  ::ng-deep {
+    .aui-radio-button__content {
+      display: flex;
+      align-items: center;
+      img {
+        width: 16px;
+        height: 16px;
+        margin-right: 4px;
+      }
+    }
+    .isDisabled {
+      .aui-radio-button__content {
+        img {
+          opacity: 0.6;
+        }
+      }
+    }
+  }
+}

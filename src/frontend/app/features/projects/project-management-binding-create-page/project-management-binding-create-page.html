@@ -1,0 +1,26 @@
+<div
+  *aloPageHeaderContent
+  class="page-header"
+>
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['/admin/projects']">{{ 'project.list' | translate }}</a>
+    </ng-template>
+    <ng-container *ngIf="(params$ | async) as params">
+      <ng-template aloBreadcrumbItem>
+        <a [routerLink]="['/admin/projects', params?.namespace]" [queryParams]="{ tab: '1' }">
+          {{ params?.namespace }}
+        </a>
+      </ng-template>
+      <ng-template aloBreadcrumbItem>
+        <span>{{ 'project.bind_project_management' | translate }}({{ params?.service }})</span>
+      </ng-template>
+    </ng-container>
+  </alo-breadcrumb>
+</div>
+<ng-container *ngIf="(params$ | async) as params">
+  <alo-project-management-binding-wizard
+    [namespace]="params?.namespace"
+    [service]="params?.service"
+  ></alo-project-management-binding-wizard>
+</ng-container>

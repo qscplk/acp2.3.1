@@ -1,0 +1,131 @@
+<form
+  class="alo-code-binding-basic-edit"
+  auiForm
+  auiFormLabelWidth="120px"
+  auiFormEmptyAddon="true"
+  (ngSubmit)="save()"
+  novalidate
+  #form="ngForm"
+>
+  <aui-form-item>
+    <label auiFormItemLabel>{{ 'name' | translate }}</label>
+    <input
+      [type]="mode === 'create' ? 'text' : 'hidden'"
+      auiFormItemControl
+      name="name"
+      #name="ngModel"
+      aui-input
+      required
+      [maxlength]="nameRule.maxLength"
+      [pattern]="nameRule.pattern"
+      [placeholder]="nameRule.placeholder | translate"
+      [(ngModel)]="model.name"
+    />
+    <span
+      *ngIf="mode !== 'create'"
+      auiFormItemControl
+    >{{ model.name }}</span>
+    <div
+      auiFormItemError
+      *ngIf="name.errors?.required"
+    >
+      {{ nameRule.requiredError | translate }}
+    </div>
+    <div
+      auiFormItemError
+      *ngIf="name.errors?.pattern"
+    >
+      {{ nameRule.patternError | translate }}
+    </div>
+  </aui-form-item>
+  <aui-form-item>
+    <label auiFormItemLabel>{{ 'description' | translate }}</label>
+    <textarea
+      auiFormItemControl
+      name="description"
+      #description="ngModel"
+      aui-input
+      [(ngModel)]="model.description"
+    ></textarea>
+  </aui-form-item>
+  <aui-form-item>
+    <label auiFormItemLabel>{{ 'auth_type' | translate }}</label>
+    <aui-radio-group
+      auiFormItemControl
+      name="secretType"
+      [(ngModel)]="model.secretType"
+      (ngModelChange)="onSecretTypeChange()"
+    >
+      <aui-radio-button [value]="secretTypes.BasicAuth">
+        {{ basicAuthText | translate }}
+      </aui-radio-button>
+      <aui-radio-button [value]="secretTypes.OAuth2" *ngIf="!disabledOauth2">
+        {{ 'code.oauth' | translate }}
+      </aui-radio-button>
+    </aui-radio-group>
+    <div auiFormItemHint *ngIf="model.secretType === secretTypes.BasicAuth && !isGitea">
+      <a [href]="createAppUrl" target="_blank" *ngIf="!!createAppUrl">{{ 'code.goto_service' | translate:{ service: service } }}</a>
+      <span *ngIf="!createAppUrl">{{ 'code.goto_service' | translate:{ service: service } }}</span>
+      <span>{{ 'code.goto_service_create_token' | translate }}</span>
+    </div>
+    <div auiFormItemHint *ngIf="model.secretType === secretTypes.OAuth2">
+      <a [href]="createAppUrl" target="_blank" *ngIf="!!createAppUrl">{{ 'code.goto_service' | translate:{ service: service } }}</a>
+      <span *ngIf="!createAppUrl">{{ 'code.goto_service' | translate:{ service: service } }}</span>
+      <span>{{ 'code.goto_service_create_oauth_app' | translate:{ url: redirectUrlHint} }}</span>
+    </div>
+  </aui-form-item>
+  <aui-form-item>
+    <label auiFormItemLabel>{{ 'code.secret' | translate }}</label>
+    <aui-select
+      auiFormItemControl
+      name="secret"
+      #secret="ngModel"
+      [(ngModel)]="model.secret"
+      filterable
+      [placeholder]="'please_select_secret' | translate"
+      required
+    >
+      <aui-option-group class="secret-group">
+        <div auiOptionGroupTitle class="secret-group__title">
+          <img src="icons/secret-public.svg" alt="devops" />
+          <span>{{ 'secret.global' | translate }}</span>
+        </div>
+        <aui-option
+          *ngFor="let item of secrets.public"
+          [value]="secretToValue(item)"
+          [label]="item.name"
+        >
+          <span>{{ item.name }}</span>
+          <span class="secret-group__display-name" *ngIf="!!item.displayName">({{ item.displayName }})</span>
+        </aui-option>
+      </aui-option-group>
+      <aui-option-group class="secret-group">
+        <div auiOptionGroupTitle class="secret-group__title">
+          <img src="icons/secret-private.svg" alt="devops" />
+          <span>{{ 'secret.private' | translate }}</span>
+        </div>
+        <aui-option
+          *ngFor="let item of secrets.private"
+          [value]="secretToValue(item)"
+          [label]="item.name"
+        >
+          <span>{{ item.name }}</span>
+          <span class="secret-group__display-name" *ngIf="!!item.displayName">({{ item.displayName }})</span>
+        </aui-option>
+      </aui-option-group>
+      <aui-option-placeholder>{{ 'no_available_secrets' | translate }}</aui-option-placeholder>
+    </aui-select>
+    <div
+      auiFormItemError
+      *ngIf="secret.errors?.required"
+    >
+      {{ 'required' | translate }}
+    </div>
+    <button
+      aui-button
+      class="add-secret"
+      type="button"
+      (click)="openCreateSecretDialog()"
+    >{{ 'code.create_secret' | translate }}</button>
+  </aui-form-item>
+</form>

@@ -1,0 +1,13 @@
+@import 'var';
+
+.form-divider {
+  display: block;
+  margin: 16px 0;
+  border-top: $border-width $border-style-dashed $border-color;
+}
+.no-tools-placeholder {
+  border: 1px dashed #ededed;
+  padding: 70px 0;
+  text-align: center;
+  color: #999;
+}

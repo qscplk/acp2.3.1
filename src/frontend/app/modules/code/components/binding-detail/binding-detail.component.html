@@ -1,0 +1,121 @@
+<aui-card>
+  <div auiCardHeader fxLayout>
+    <div fxLayoutAlign="start center">
+      <div class="icon-stack">
+        <img
+          class="type-icon"
+          [src]="'icons/tool-chain/' + data.serviceType.toLowerCase() + '.svg'"
+          alt="devops"
+        />
+        <img
+          *ngIf="!data.servicePublic"
+          class="enterprise-mark"
+          [src]="enterpriseIcon$ | async"
+          alt="devops"
+        />
+      </div>
+      <span>{{ data.name }}</span>
+      <aui-icon
+        *ngIf="data.status.phase === 'Error'"
+        class="alert"
+        [auiTooltip]="data.status.message"
+        [auiTooltipDisabled]="!data.status.message"
+        auiTooltipPosition="top start"
+        icon="exclamation_circle_s"
+      ></aui-icon>
+    </div>
+    <div fxFlex></div>
+    <alo-menu-trigger [menu]="actions"></alo-menu-trigger>
+    <aui-menu #actions>
+      <ng-container *ngIf="bindingPermission$ | async as _bindingPermission">
+        <aui-menu-group>
+        <acl-disabled-container [isAllowed]="_bindingPermission?.update">
+          <aui-menu-item (click)="update()">{{
+            'update' | translate
+          }}</aui-menu-item>
+        </acl-disabled-container>
+      </aui-menu-group>
+    <aui-menu-group>
+        <acl-disabled-container [isAllowed]="_bindingPermission?.delete">
+          <aui-menu-item (click)="delete()" type="danger" [divide]="true">{{
+            'code.delete_binding' | translate
+          }}</aui-menu-item>
+        </acl-disabled-container>
+      </aui-menu-group>
+      </ng-container>
+    </aui-menu>
+  </div>
+  <div class="base-body">
+    <div class="field">
+      <label>{{ 'project.binding_integration_name' | translate }}</label>
+      <span>
+        <a [routerLink]="['/admin/tool-chain/codereposervice', data.service]">
+          {{ data.service }}
+        </a>
+      </span>
+    </div>
+    <div class="field">
+      <label>{{ 'secret' | translate }}</label>
+      <span>
+        <a [routerLink]="secretRoute(data.secret)">
+          {{ secretName(data.secret) }}
+        </a>
+      </span>
+    </div>
+    <div class="field">
+      <label>{{ 'code.repo_type' | translate }}</label>
+      <span>{{ data.serviceType }}</span>
+    </div>
+    <div class="field">
+      <label>{{ 'auth_type' | translate }}</label>
+      <span *ngIf="data.secretType === secretTypes.BasicAuth">
+        {{ 'code.token' | translate }}</span
+      >
+      <span *ngIf="data.secretType === secretTypes.OAuth2">
+        {{ 'code.oauth' | translate }}</span
+      >
+    </div>
+    <div class="field">
+      <label>{{ 'code.bind_at' | translate }}</label>
+      <span>{{ data.creationTimestamp | aclStandardTime }}</span>
+    </div>
+    <div class="field">
+      <label>{{ 'description' | translate }}</label>
+      <span>{{ data.description || '-' }}</span>
+    </div>
+  </div>
+</aui-card>
+<aui-card>
+  <div class="list-card-header" fxLayout>
+    <span fxLayoutAlign="start center">{{
+      'code.repository_name' | translate
+    }}</span>
+    <div fxFlex></div>
+    <acl-disabled-container [isAllowed]="assignRepoPermission$ | async">
+      <button aui-button (click)="assignRepository()">
+        {{ 'code.assign_repository' | translate }}
+      </button>
+    </acl-disabled-container>
+  </div>
+  <ng-container
+    *aloAsyncData="
+      let data;
+      let refetch = refetch;
+      let loading = loading;
+      let error = error;
+      handler: fetchCodeRepositories;
+      params: data;
+      pullIn: 10 * 1000
+    "
+  >
+    <alo-code-repository-list [data]="data"></alo-code-repository-list>
+    <alo-no-data
+      *ngIf="!data || !data.length"
+      [resourceName]="'code_repository' | translate"
+      [loading]="loading"
+      [error]="error"
+      (retry)="(refetch)"
+    >
+    </alo-no-data>
+  </ng-container>
+</aui-card>

@@ -1,0 +1,17 @@
+<alo-breadcrumb *aloPageHeaderContent>
+  <ng-template aloBreadcrumbItem>
+    <span>{{ 'nav_agile_project_management' | translate }}</span>
+  </ng-template>
+  <ng-template aloBreadcrumbItem>
+    <a [routerLink]="['../../']">{{ 'nav_issues_list' | translate }}</a>
+  </ng-template>
+  <ng-template aloBreadcrumbItem>
+    <span>{{ (issueDetail$ | async)?.summary }}</span>
+  </ng-template>
+</alo-breadcrumb>
+
+<alo-project-management-issue-detail
+  *ngIf="(issueDetail$ | async) as issueDetail"
+  [issueDetail]="issueDetail"
+  [accessUrl]="(binding$ | async)?.accessUrl"
+></alo-project-management-issue-detail>

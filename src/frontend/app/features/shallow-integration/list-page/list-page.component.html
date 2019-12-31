@@ -1,0 +1,69 @@
+<alo-breadcrumb *aloPageHeaderContent>
+  <ng-template aloBreadcrumbItem>
+    <span>DevOps</span>
+  </ng-template>
+  <ng-template aloBreadcrumbItem>
+    <span>{{ toolType$ | async | translate }}</span>
+  </ng-template>
+</alo-breadcrumb>
+
+<aui-card>
+  <div auiCardHeader>
+    {{ toolType$ | async | translate }}
+  </div>
+
+  <div class="alo-service-list">
+    <a
+      *ngFor="let service of (services$ | async)"
+      target="_blank"
+      [href]="service.host"
+    >
+      <div class="alo-service-card">
+        <div
+          *ngIf="service.status.phase === 'Error'"
+          class="alert"
+          [auiTooltip]="service.status.message"
+          [auiTooltipDisabled]="!service.status.message"
+          auiTooltipPosition="top start"
+        >
+          <aui-icon icon="exclamation_circle_s"></aui-icon>
+        </div>
+        <div class="icon-stack">
+          <div
+            class="jump-icon"
+            [title]="'jump_to' | translate:{ name: service.name }"
+          >
+            <aui-icon icon="basic:jump"></aui-icon>
+          </div>
+          <img
+            class="type-icon"
+            [src]="'icons/tool-chain/' + service.type.toLowerCase() + '.svg'"
+            alt="devops"
+          >
+          <img
+            *ngIf="service.enterprise"
+            class="enterprise-mark"
+            [src]="enterpriseIcon$ | async"
+            alt="devops"
+          >
+        </div>
+        <div
+          class="title"
+          [title]="service.name"
+        >{{ service.name }}</div>
+        <div class="description">{{ service.host }}</div>
+      </div>
+    </a>
+  </div>
+
+  <alo-no-data
+    *ngIf="!(services$ | async)?.length || error"
+    mode="card"
+    [resourceName]="toolType$ | async | translate"
+    [loading]="loading"
+    [error]="error"
+    (retry)="refetch$$.next()"
+  >
+  </alo-no-data>
+
+</aui-card>

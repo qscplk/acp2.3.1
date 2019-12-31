@@ -1,0 +1,92 @@
+@import 'var';
+@import '~@alauda/ui/theme/base-var';
+
+.aui-table {
+  &__header-cell,
+  &__cell {
+    padding-right: 8px;
+    &:last-child {
+      padding-right: 0px;
+    }
+  }
+
+  &__cell {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__column-name {
+    flex: 1.5;
+  }
+  &__column-organization {
+    flex: 1;
+  }
+  &__column-address {
+    flex: 1;
+  }
+  &__column-capacity {
+    flex: 1;
+  }
+  &__column-commit {
+    flex: 1;
+  }
+  &__column-type {
+    flex: 1;
+  }
+  &__column-account {
+    flex: 1;
+  }
+}
+
+.warning-icon {
+  margin-left: 4px;
+  color: #f8ac58;
+}
+
+.repo-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.jump-icon {
+  color: #999;
+  margin-left: 4px;
+  cursor: pointer;
+  :hover {
+    color: $color-primary;
+  }
+}
+
+.copy-tag {
+  cursor: pointer;
+}
+
+:host {
+  ::ng-deep {
+    aui-tag {
+      > div:hover {
+        background-color: $menu-item-primary-bg;
+        border-color: #e5f5fc;
+      }
+    }
+  }
+}
+
+.commit-info {
+  & span:nth-last-child(2) {
+    cursor: pointer;
+    color: $color-text-main;
+    margin-bottom: 4px;
+  }
+  & span:nth-last-child(1) {
+    display: block;
+    color: $color-text-help;
+    font-size: 12px;
+    line-height: 16px;
+  }
+}

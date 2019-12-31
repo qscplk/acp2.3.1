@@ -1,0 +1,49 @@
+<div class="header-action">
+  <div>
+    <ng-container *ngIf="navCategory === 'all'">
+      <aui-checkbox
+        *ngFor="let category of categories"
+        [(ngModel)]="category.selected"
+        (ngModelChange)="fetchDataWithCategory(categories)"
+        type="tag"
+      >
+        {{ category.name }}
+      </aui-checkbox>
+    </ng-container>
+  </div>
+  <aui-search
+    [placeholder]="'search_by_display_name_placeholder' | translate"
+    [searchButton]="true"
+    [searching]="loading"
+    (search)="search($event)"
+  ></aui-search>
+</div>
+<div
+  class="cards-container"
+  *ngIf="type !== 'copy' || form?.controls?.template?.value as templateValue"
+>
+  <div
+    class="card"
+    *ngFor="let template of templates$ | async; let id = index"
+    [ngClass]="{
+      selected: isSelectedTemplate(template, templateValue)
+    }"
+  >
+    <alo-pipeline-template-list-card
+      [template]="template"
+      [showSelect]="true"
+      [disableSelect]="
+        type === 'copy' && !isSelectedTemplate(template, templateValue)
+      "
+      (templateSelected)="selectTemplate($event)"
+    ></alo-pipeline-template-list-card>
+    <aui-icon icon="check_triangle_s" class="check-icon"></aui-icon>
+  </div>
+</div>
+<alo-no-data
+  *ngIf="!(templates$ | async)?.length"
+  [error]="error$ | async"
+  [resourceName]="'pipeline.templates' | translate"
+  [loading]="loading"
+  mode="list"
+></alo-no-data>

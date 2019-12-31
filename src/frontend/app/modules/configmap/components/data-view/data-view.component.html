@@ -1,0 +1,33 @@
+<ng-container *ngIf="configs && configs.length > 0">
+  <div class="config-data-keys">
+    <div
+      class="config-data-keys__label"
+      [auiTocLink]="handleTocLink(config[0])"
+      [for]="toc"
+      *ngFor="let config of configs"
+    >
+      <div class="config-data-keys__label-dot"></div>
+      <div class="config-data-keys__label-key">{{ config[0] }}</div>
+    </div>
+  </div>
+
+  <div
+    class="config-data-values"
+    auiTocContainer
+    #toc=auiTocContainer
+  >
+    <div
+      class="config-data-section"
+      [auiTocContent]="handleTocLink(config[0])"
+      *ngFor="let config of configs"
+    >
+      <div class="config-data-section__header">
+        {{ config[0] }}
+      </div>
+      <pre class="config-data-section__content">{{ config[1] }}</pre>
+    </div>
+  </div>
+</ng-container>
+
+<alo-no-data *ngIf="configs.length === 0">
+</alo-no-data>

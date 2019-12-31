@@ -1,0 +1,9 @@
+<alo-application-by-image
+  *ngIf="data"
+  [params]="params"
+  [deployments]="deployments"
+  [appName]="data?.name"
+  [displayName]="data?.displayName"
+  (canceled)="onCanceled()"
+  (saved)="onUpdated($event)"
+></alo-application-by-image>

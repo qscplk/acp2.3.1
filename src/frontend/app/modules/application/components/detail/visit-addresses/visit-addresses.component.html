@@ -1,0 +1,74 @@
+<ng-container *ngIf="type==='internal'">
+  <span *ngIf="visitAddresses.internal[0];else emptyAddr">{{visitAddresses.internal[0]}}</span>
+  <div
+    *ngIf="visitAddresses.internal.length>1"
+    class="address-total"
+  >
+    {{ 'total' | translate }}
+    <span
+      class="aviliable-data"
+      [auiTooltip]="internalAddresses"
+      auiTooltipType="info"
+      auiTooltipTrigger="click"
+      auiTooltipPosition="bottom"
+    >
+      {{ visitAddresses.internal.length }}
+    </span>
+    {{ 'application.image_num' | translate }}
+  </div>
+</ng-container>
+<ng-container *ngIf="type==='external'">
+  <a
+    *ngIf="visitAddresses.external[0];else emptyAddr"
+    [href]="visitAddresses.external[0]"
+    target="_blank"
+  >{{visitAddresses.external[0]}}</a>
+  <div
+    *ngIf="visitAddresses.external.length>1"
+    class="address-total"
+  >
+    {{ 'total' | translate }}
+    <span
+      class="aviliable-data"
+      [auiTooltip]="externalAddresses"
+      auiTooltipType="info"
+      auiTooltipTrigger="click"
+      auiTooltipPosition="bottom"
+    >
+      {{ visitAddresses.external.length }}
+    </span>
+    {{ 'application.image_num' | translate }}
+  </div>
+</ng-container>
+
+
+<ng-template #emptyAddr>
+  <span>{{'-'}}</span>
+</ng-template>
+
+<ng-template #externalAddresses>
+  <div class="tooltip-container">
+    <div class="tooltip-list">
+      <ul>
+        <li *ngFor="let item of visitAddresses.external">
+          <a
+            [href]="item"
+            target="_blank"
+          >{{item}}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #internalAddresses>
+  <div class="tooltip-container">
+    <div class="tooltip-list">
+      <ul>
+        <li *ngFor="let item of visitAddresses.internal">
+          <span>{{item}}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,100 @@
+@import 'var';
+
+.status-desc {
+  font-size: 12px;
+  color: #999999;
+  &.error {
+    color: $color-error;
+  }
+}
+
+:host::ng-deep {
+  .aui-status-bar {
+    margin-bottom: 6px;
+    &__chunk.waiting {
+      background-color: #e5f5fc;
+    }
+
+    &__chunk.low {
+      background-color: mix(#fff, #ffcc00, 20%);
+    }
+
+    &:hover .aui-status-bar__chunk.low {
+      background-color: #ffcc00;
+    }
+  }
+}
+
+::ng-deep {
+  .aui-tooltip.alo-status-overview {
+    padding: 0;
+    border-width: 0;
+
+    .status-summary {
+      padding: 12px 20px 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+      .aui-icon {
+        margin-right: 8px;
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    .count-summary {
+      margin-bottom: 8px;
+    }
+
+    .status-detail {
+      padding: 8px 60px 12px 20px;
+
+      .severity-detail {
+        list-style: none;
+        .pointer {
+          display: inline-block;
+          margin-right: 8px;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+        }
+
+        .count {
+          display: inline-block;
+          width: 28px;
+        }
+
+        .level-1 {
+          background-color: $color-success;
+        }
+        .level-2 {
+          background-color: $color-info;
+        }
+        .level-3 {
+          background-color: #ffcc00;
+        }
+        .level-4 {
+          background-color: $color-warning;
+        }
+        .level-5 {
+          background-color: $color-error;
+        }
+      }
+    }
+
+    .level-1 {
+      color: $color-success;
+    }
+    .level-2 {
+      color: $color-info;
+    }
+    .level-3 {
+      color: #ffcc00;
+    }
+    .level-4 {
+      color: $color-warning;
+    }
+    .level-5 {
+      color: $color-error;
+    }
+  }
+}

@@ -1,0 +1,102 @@
+<div
+  class="options-container"
+  *aloAsyncData="
+    let options;
+    let loading = loading;
+    params: params;
+    handler: fetchOptions;
+  "
+>
+  <div class="options-item-wrapper">
+    <div class="options-item">
+      <label>{{ 'secret.belongs_project' | translate }}:</label>
+      <aui-select [(ngModel)]="query.project" filterable (ngModelChange)="selectedProjectChange($event)">
+        <aui-option
+          [value]="ALL_SYMBOL"
+          [label]="'all' | translate"
+        >
+          {{ 'all' | translate }}
+        </aui-option>
+        <aui-option
+          *ngFor="let project of projects"
+          [value]="project?.key"
+          [label]="project?.name"
+        >
+          {{ project?.name }}
+        </aui-option>
+        <aui-option-placeholder>{{ 'no_data' | translate }}</aui-option-placeholder>
+      </aui-select>
+    </div>
+
+    <div class="options-item">
+      <label>{{ 'type' | translate }}:</label>
+      <aui-select [(ngModel)]="query.type" filterable (ngModelChange)="selectedTypeChange($event)">
+        <aui-option [value]="ALL_SYMBOL" [label]="'all' | translate">{{ 'all' | translate }}</aui-option>
+        <aui-option
+          *ngFor="let issuetype of options?.issuetype"
+          [value]="issuetype?.id"
+          [label]="issuetype?.name"
+        >{{ issuetype?.name }}</aui-option>
+        <aui-option-placeholder>{{ 'no_data' | translate }}</aui-option-placeholder>
+      </aui-select>
+    </div>
+
+    <div class="options-item">
+      <label>{{ 'priority' | translate }}:</label>
+      <aui-select [(ngModel)]="query.priority" filterable (ngModelChange)="selectedPriorityChange($event)">
+        <aui-option [value]="ALL_SYMBOL" [label]="'all' | translate">{{ 'all' | translate }}</aui-option>
+        <aui-option
+          *ngFor="let priority of options?.priority"
+          [value]="priority?.id"
+          [label]="priority?.name"
+        >{{ priority?.name }}</aui-option>
+        <aui-option-placeholder>{{ 'no_data' | translate }}</aui-option-placeholder>
+      </aui-select>
+    </div>
+  </div>
+
+  <div class="options-item-wrapper">
+    <div class="options-item">
+      <label>{{ 'status' | translate }}:</label>
+      <aui-select [(ngModel)]="query.status" filterable (ngModelChange)="selectedStatusChange($event)">
+        <aui-option [value]="ALL_SYMBOL" [label]="'all' | translate">{{ 'all' | translate }}</aui-option>
+        <aui-option
+          *ngFor="let status of options?.status"
+          [value]="status?.id"
+          [label]="status?.name"
+        >{{ status?.name }}</aui-option>
+        <aui-option-placeholder>{{ 'no_data' | translate }}</aui-option-placeholder>
+      </aui-select>
+    </div>
+
+    <div class="options-item">
+      <label>{{ 'key_words' | translate }}:</label>
+      <div class="alo-search">
+        <button aui-button [auiDropdown]="searchMenu">
+          {{ searchBy | translate }}
+          <aui-icon icon="angle_down"></aui-icon>
+        </button>
+        <aui-search
+          [(keyword)]="keywords"
+          [searchButton]="true"
+          [placeholder]="(searchBy === 'issuekey' ? 'pipeline.search_by_id_placeholder' : 'project_management.search_by_summary') | translate"
+          [searching]="loading"
+          (search)="onSearch()"
+          (clear)="clearSearchBy()"
+        ></aui-search>
+        <aui-menu #searchMenu>
+          <aui-menu-item
+            (click)="searchByChanged('issuekey', 'summary')"
+            [actived]="searchBy==='issuekey'"
+          >ID</aui-menu-item>
+          <aui-menu-item
+            (click)="searchByChanged('summary', 'issuekey')"
+            [actived]="searchBy==='summary'"
+          >{{ 'summary' | translate }}</aui-menu-item>
+        </aui-menu>
+      </div>
+    </div>
+  </div>
+</div>
+
+

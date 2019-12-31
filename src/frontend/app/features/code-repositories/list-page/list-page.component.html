@@ -1,0 +1,44 @@
+<alo-breadcrumb *aloPageHeaderContent>
+  <ng-template aloBreadcrumbItem>
+    <span>{{ 'code_repository' | translate }}</span>
+  </ng-template>
+</alo-breadcrumb>
+<aui-card [divider]="false"
+          *aloAsyncData="
+  let codeRepositories;
+  let error = error;
+  let loading = loading;
+  let refetch = refetch;
+  handler: fetchCodeRepositories;
+  params: params$ | async;
+  pullIn: 10 * 1000;
+">
+    <div auiCardHeader class="list-header">
+      <div>{{ 'code_repository' | translate }}</div>
+      <aui-search
+        [placeholder]="'filter_by_name_placeholder' | translate"
+        [disabled]="loading"
+        (keywordChange)="reposFilter$$.next($event)"
+      ></aui-search>
+    </div>
+    <ng-container>
+      <alo-code-repository-list [data]="codeRepositories?.items"></alo-code-repository-list>
+      <alo-no-data
+        *ngIf="!codeRepositories?.items?.length || codeRepositories?.errors?.length"
+        [resourceName]="'code_repository' | translate"
+        [loading]="loading"
+        [error]="error || codeRepositories && codeRepositories.errors"
+        (retry)="refetch()"
+      >
+      </alo-no-data>
+      <aui-paginator
+        *ngIf="codeRepositories?.total"
+        [pageIndex]="(pageIndex$ | async) || 0"
+        [pageSize]="(itemsPerPage$ | async) || 20"
+        [pageSizeOptions]="[20, 50, 100]"
+        [total]="codeRepositories?.total"
+        (currentPageChange)="currentPageChange($event)"
+        (pageSizeChange)="pageSizeChange($event)"
+      ></aui-paginator>
+    </ng-container>
+</aui-card>

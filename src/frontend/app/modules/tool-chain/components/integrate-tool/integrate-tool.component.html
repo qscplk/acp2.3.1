@@ -1,0 +1,52 @@
+<aui-dialog-header>{{ 'tool_chain.integrate' | translate }}</aui-dialog-header>
+<aui-dialog-content>
+    <div class="alo-integrate-tool">
+        <alo-tool-type-bar
+            [(selectedType)]="selectedType"
+            (selectedTypeChange)="toolList.clearSelection()"
+            [types]="toolTypes"
+        ></alo-tool-type-bar>
+        <alo-tool-list
+            #toolList
+            [tools]="getCurrentTools()"
+            [showType]="selectedType === 'all'"
+            (selectedChange)="handleSelectedToolChange($event)"
+        ></alo-tool-list>
+        <div *ngIf="!getCurrentTools().length" class="no-tools-placeholder">
+            {{ 'tool_chain.no_tools_to_integrate' | translate }}
+        </div>
+        <ng-container *ngIf="selectedTool">
+            <div class="form-divider"></div>
+            <aui-inline-alert type="primary" *ngIf="selectedTool?.recommendedVersion">
+                {{'tool_chain.recommended_version' | translate}}
+                {{ selectedTool?.recommendedVersion }}
+                <!--todo: recommended description-->
+            </aui-inline-alert>
+            <alo-integrate-form
+              #integrateForm=alo-integrate-form
+              [tool]="selectedTool"
+              (saved)="saved($event)"
+              (statusChange)="statusChange($event)">
+            </alo-integrate-form>
+        </ng-container>
+    </div>
+</aui-dialog-content>
+<aui-dialog-footer>
+    <div>
+        <button
+            aui-button="primary"
+            (click)="submit()"
+            [loading]="loading"
+            [disabled]="loading || !selectedTool"
+        >
+            {{ 'tool_chain.integrate' | translate }}
+        </button>
+        <button
+            aui-button
+            [auiDialogClose]="null"
+            [disabled]="loading"
+        >
+            {{ 'cancel' | translate }}
+        </button>
+    </div>
+</aui-dialog-footer>

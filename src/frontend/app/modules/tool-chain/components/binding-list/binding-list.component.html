@@ -1,0 +1,75 @@
+<aui-table
+    auiSort
+    [dataSource]="bindings"
+    [trackBy]="bindingName"
+>
+    <ng-container auiTableColumnDef="name">
+        <aui-table-header-cell *auiTableHeaderCellDef>
+            {{ 'name' | translate }}
+        </aui-table-header-cell>
+        <aui-table-cell *auiTableCellDef="let item">
+            <a
+                [routerLink]="['/admin/projects', item.namespace, item.kind, item.name]"
+                [title]="item.name"
+            >
+                {{ item.name }}
+            </a>
+        </aui-table-cell>
+    </ng-container>
+    <ng-container auiTableColumnDef="project">
+        <aui-table-header-cell *auiTableHeaderCellDef>
+            {{ 'project' | translate }}
+        </aui-table-header-cell>
+        <aui-table-cell *auiTableCellDef="let item">
+            <a
+                [routerLink]="['/admin/projects',item.namespace]"
+                [title]="item.namespace"
+            >
+                {{ item.namespace }}
+            </a>
+        </aui-table-cell>
+    </ng-container>
+    <ng-container auiTableColumnDef="secret">
+        <aui-table-header-cell *auiTableHeaderCellDef>
+            {{ 'secret' | translate }}
+        </aui-table-header-cell>
+        <aui-table-cell *auiTableCellDef="let item">
+            <span *ngIf="!item.secret">-</span>
+            <a
+                *ngIf="item.secret"
+                [routerLink]="secretRoute(item.secret)"
+            >
+                {{ secretName(item.secret) }}
+            </a>
+        </aui-table-cell>
+    </ng-container>
+    <ng-container auiTableColumnDef="bind_at">
+        <aui-table-header-cell *auiTableHeaderCellDef>
+            {{ 'tool_chain.bind_at' | translate }}
+        </aui-table-header-cell>
+        <aui-table-cell *auiTableCellDef="let item">
+            {{ item.creationTimestamp | aclStandardTime }}
+        </aui-table-cell>
+    </ng-container>
+    <ng-container auiTableColumnDef="actions">
+      <aui-table-header-cell *auiTableHeaderCellDef></aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item">
+        <alo-menu-trigger
+          [menu]="actionsMenu"
+          [context]="{item: item}"
+        ></alo-menu-trigger>
+      </aui-table-cell>
+    </ng-container>
+    <aui-table-header-row *auiTableHeaderRowDef="columns"></aui-table-header-row>
+    <aui-table-row *auiTableRowDef="let row; columns: columns;"></aui-table-row>
+</aui-table>
+
+<aui-menu #actionsMenu>
+  <ng-template auiMenuContent let-item="item">
+    <acl-disabled-container [isAllowed]="unbindPermission(item)">
+      <aui-menu-item type="danger" [divide]="true" (click)="unbind(item)">{{
+        'project.unbind' | translate
+      }}</aui-menu-item>
+    </acl-disabled-container>
+  </ng-template>
+</aui-menu>

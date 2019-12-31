@@ -1,0 +1,79 @@
+@import 'var';
+
+:host {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  .volume-info-container {
+    * {
+      display: flex;
+    }
+    table {
+      flex: 1;
+      line-height: 32px;
+      flex-direction: column;
+      tr {
+        border-bottom: 1px dashed #e8e8e8;
+        background-color: #fafafa;
+        &:last-of-type {
+          border-bottom: unset;
+          padding-bottom: 5px;
+        }
+        &:first-of-type {
+          margin-top: 2px;
+          border-bottom: unset;
+        }
+        th {
+          background-color: #f0f0f0;
+          text-align: left;
+          padding: 0 8px;
+        }
+        td {
+          flex-direction: column;
+          background-color: #fafafa;
+          padding: 0 8px;
+          table {
+            width: 100%;
+            td {
+              background-color: white;
+            }
+          }
+        }
+        .volume-type {
+          align-items: center;
+          flex-flow: row;
+        }
+      }
+      .action {
+        width: 60px;
+        flex-direction: row !important;
+        align-items: center;
+        .aui-button {
+          align-items: center;
+          justify-content: center;
+          width: 16px;
+          height: 16px;
+          padding: 0;
+          border: unset;
+          background-color: unset;
+          aui-icon {
+            font-size: 16px;
+            color: #000;
+            cursor: pointer;
+            opacity: 0.4;
+
+            &:hover {
+              opacity: 1;
+              color: $color-primary;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  alo-foldable-bar {
+    flex: 1;
+  }
+}

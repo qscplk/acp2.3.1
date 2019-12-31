@@ -1,0 +1,123 @@
+<div *ngIf="!data" class="no-data">
+  <span>{{ 'loading' | translate }}</span>
+</div>
+
+<aui-tab-group *ngIf="data" [(selectedIndex)]="activeTab">
+  <aui-tab>
+    <span *auiTabLabel> {{ 'detail' | translate }} </span>
+    <aui-card>
+      <div auiCardHeader>{{ data.name }}</div>
+      <div auiCardBody class="base-body">
+        <div class="field">
+          <label>{{ 'display_name' | translate }}</label>
+          <span>{{ data.displayName || '-' }}</span>
+        </div>
+        <div class="field app-status-container">
+          <label>{{ 'application.resource_status' | translate }}</label>
+          <div class="app-status">
+            <div class="status-gauge-bar">
+              <alo-status-gauge-bar
+                [statusInfo]="data?.appStatus"
+              ></alo-status-gauge-bar>
+            </div>
+            <span>{{ data?.appStatus.total }}</span>
+          </div>
+        </div>
+        <div class="field address-field" *ngIf="!isEmptyNetwork('external')">
+          <label>{{ 'application.public_network_access' | translate }}</label>
+          <alo-visit-addresses
+            [type]="'external'"
+            [visitAddresses]="data.visitAddresses"
+          ></alo-visit-addresses>
+        </div>
+        <div class="field address-field" *ngIf="!isEmptyNetwork('internal')">
+          <label>{{ 'application.cluster_access' | translate }}</label>
+          <alo-visit-addresses
+            [type]="'internal'"
+            [visitAddresses]="data.visitAddresses"
+          ></alo-visit-addresses>
+        </div>
+      </div>
+    </aui-card>
+
+    <ng-container *ngFor="let resourcekind of resourceKinds">
+      <aui-card *ngIf="data && data[resourcekind] && data[resourcekind].length">
+        <div auiCardHeader>
+          <div class="resoure-header">
+            <alo-k8s-resource-icon
+              [resourceKind]="resourcekind"
+            ></alo-k8s-resource-icon>
+            <span class="resoure-kind"
+              >{{ 'application.' + resourcekind | translate }} ({{
+                data[resourcekind].length
+              }}
+              {{ 'resource_unit' | translate }})</span
+            >
+          </div>
+        </div>
+        <aui-section
+          *ngFor="
+            let item of data[resourcekind];
+            let i = index;
+            trackBy: tracker
+          "
+        >
+          <alo-k8s-resource-card
+            [data]="item"
+            [allowedUpdate]="allowedUpdate"
+            [params]="params"
+            (updated)="updated.emit()"
+            (showContainerLogs)="showLogs($event)"
+          ></alo-k8s-resource-card>
+        </aui-section>
+      </aui-card>
+    </ng-container>
+
+    <aui-card *ngIf="data && data.others && data.others.length">
+      <div class="list-header">
+        <div>{{ 'application.others' | translate }}</div>
+        <aui-search
+          [placeholder]="'filter_by_name_placeholder' | translate"
+          [(keyword)]="othersKeywords"
+        ></aui-search>
+      </div>
+      <alo-application-other-list
+        [data]="data.others"
+        [keywords]="othersKeywords"
+      ></alo-application-other-list>
+    </aui-card>
+  </aui-tab>
+  <aui-tab> <span *auiTabLabel>YAML</span> </aui-tab>
+<!--  <aui-tab>-->
+<!--    <span *auiTabLabel> {{ 'pipelines' | translate }} </span>-->
+<!--    <aui-card>-->
+<!--      <div auiCardBody>-->
+<!--        <alo-pipeline-list-->
+<!--          [pipelines]="data.pipelines || []"-->
+<!--          [columns]="['name', 'history', 'triggers', 'actions']"-->
+<!--          [sort]="{ active: 'name', direction: 'asc' }"-->
+<!--          (started)="onPipelineStart($event)"-->
+<!--          (deleted)="updated.emit()"-->
+<!--        ></alo-pipeline-list>-->
+<!--        <alo-no-data-->
+<!--          *ngIf="(data.pipelines || []).length === 0"-->
+<!--          [resourceName]="'pipelines' | translate"-->
+<!--        ></alo-no-data>-->
+<!--      </div>-->
+<!--    </aui-card>-->
+<!--  </aui-tab>-->
+  <aui-tab>
+    <span *auiTabLabel> {{ 'logs' | translate }} </span>
+  </aui-tab>
+</aui-tab-group>
+<div class="detail-page-tab-container" *ngIf="activeTab === tabs.yaml">
+  <aui-code-editor [options]="displayOptions"
+                   [actionsConfig]="actionsConfig"
+                   [(ngModel)]="yaml">
+  </aui-code-editor>
+</div>
+<div class="detail-page-tab-container" *ngIf="activeTab === tabs.log">
+  <alo-application-log
+    [appLogParams]="logParams || { application: data, cluster: params.cluster }"
+  ></alo-application-log>
+</div>

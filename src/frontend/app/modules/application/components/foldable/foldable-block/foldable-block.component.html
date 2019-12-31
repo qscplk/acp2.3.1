@@ -1,0 +1,9 @@
+<div class="foldable-bar"
+     (click)="folded = !folded">
+  <div>{{ title }}</div>
+  <aui-icon [icon]="folded ? 'basic:angle_double_down' : 'basic:angle_double_up'"></aui-icon>
+</div>
+
+<div [hidden]="folded" class="foldable-content">
+  <ng-content></ng-content>
+</div>

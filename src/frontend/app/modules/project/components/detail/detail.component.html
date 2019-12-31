@@ -1,0 +1,47 @@
+<aui-tab-group type="line" [selectedIndex]="activeTab$ | async" (selectedIndexChange)="changeTab($event)">
+  <aui-tab>
+    <ng-container *auiTabLabel>{{ 'detail' | translate }}</ng-container>
+    <aui-card>
+      <div
+        auiCardHeader
+        class="base-header"
+      >
+        <div>
+          <div>
+            <img
+              src="icons/project.svg"
+              alt="project"
+            >
+          </div>
+          <span>{{ data.name }}</span>
+        </div>
+      </div>
+      <div class="alo-detail">
+        <div class="alo-detail__row">
+          <div class="alo-detail__field">
+            <label>{{ 'display_name' | translate }}</label>
+            <span>{{ data.displayName || '-' }}</span>
+          </div>
+          <div class="alo-detail__field">
+            <label>{{ 'create_at' | translate }}</label>
+            <span>{{ data.creationTimestamp | aclStandardTime }}</span>
+          </div>
+        </div>
+        <div class="alo-detail__row">
+          <div class="alo-detail__field">
+            <label>{{ 'description' | translate }}</label>
+            <span>{{ data.description || '-' }}</span>
+          </div>
+        </div>
+      </div>
+    </aui-card>
+  </aui-tab>
+  <aui-tab>
+    <ng-container *auiTabLabel>{{ 'nav_tool_chain' | translate }}</ng-container>
+    <alo-tool-bindings-section [project]="data.name"></alo-tool-bindings-section>
+  </aui-tab>
+  <aui-tab>
+    <ng-container *auiTabLabel>{{ 'nav_pipeline_template' | translate }}</ng-container>
+    <alo-pipeline-template [project]="data.name"></alo-pipeline-template>
+  </aui-tab>
+</aui-tab-group>

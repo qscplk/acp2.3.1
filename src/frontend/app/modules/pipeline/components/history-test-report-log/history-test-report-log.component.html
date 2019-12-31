@@ -1,0 +1,39 @@
+<div>
+  <div class="report_type_header">
+    <span>{{ 'pipeline.test_' + item.toLowerCase() | translate }}</span>
+    <span> - </span>
+    <span>{{ getCounts(item) }}</span>
+  </div>
+  <ng-container *ngFor="let log of data[item.toUpperCase()]; let idx = index; trackBy: trackLogs">
+    <div
+      class="report_header"
+      [ngClass]="{ folded: !log?.errorStackTrace }"
+      (click)="clickLog(log, idx)"
+    >
+      <div class="report_status {{ log?.status }}">
+        <aui-icon [icon]="getStatusIcon(log)"></aui-icon>
+      </div>
+      <div class="report_title">
+        <div class="title">
+          <aui-icon icon="angle_{{activeItems[idx]? 'down': 'right'}}"></aui-icon>
+          <span class="name">{{ log.name }}</span>
+        </div>
+        <div class="duration">
+          {{ log.duration * 1000 | aloDuration }}
+        </div>
+      </div>
+    </div>
+    <pre
+      *ngIf="log?.errorStackTrace && activeItems[idx]"
+      class="report_content"
+    >
+      <div
+        class="line"
+        *ngFor="let tx of log?.errorStackTrace.split('\n'); let id = index; trackBy: trackLogs"
+      >
+        <div class="id">{{id + 1}}</div>
+        <div class="log_content">{{tx}}</div>
+      </div>
+    </pre>
+  </ng-container>
+</div>

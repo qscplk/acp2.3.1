@@ -1,0 +1,51 @@
+<ng-container *ngIf="!loading && !hasError">
+  <div class="alo-account-group">
+    <div class="alo-account-group__title">{{ 'code.personal_account' |
+      translate }} </div>
+    <alo-remote-repository-selector
+      *ngFor="let account of personalAccounts;"
+      [account]="account"
+      [autoSync]="getMatched(account).all"
+      [selected]="getMatched(account).repositories || []"
+      (selectedChange)="updateSelected(account, $event)"
+      (autoSyncChange)="updateAutoSync(account, $event)"
+    ></alo-remote-repository-selector>
+  </div>
+  <div class="alo-account-group">
+    <div class="alo-account-group__title">{{ 'code.team_account' | translate }}
+    </div>
+    <alo-remote-repository-selector
+      *ngFor="let account of teamAccounts;"
+      [account]="account"
+      [autoSync]="getMatched(account).all"
+      [selected]="getMatched(account).repositories || []"
+      (selectedChange)="updateSelected(account, $event)"
+      (autoSyncChange)="updateAutoSync(account, $event)"
+    ></alo-remote-repository-selector>
+    <div
+      class="status"
+      *ngIf="!teamAccounts?.length"
+    >
+      {{ 'no_data' | translate }}
+    </div>
+  </div>
+</ng-container>
+<div
+  class="status"
+  *ngIf="loading || hasError"
+>
+  <span *ngIf="loading">
+    <aui-icon
+      icon="spinner"
+      class="spinner"
+    ></aui-icon>
+    <span>{{ 'code.remote_repository_loading' | translate }}</span>
+  </span>
+  <span *ngIf="hasError">
+    {{ 'code.remote_repository_load_fail_text' | translate }}
+    <a
+      href="javascript:void(0)"
+      (click)="refresh()"
+    >{{ 'retry' | translate }}</a>
+  </span>
+</div>

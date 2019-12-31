@@ -1,0 +1,47 @@
+<form class="key-value-form" [style.backgroundColor]="backgroundColor" [style.boxShadow]="'0 0 0 4px ' + backgroundColor">
+  <div class="table-header">
+    <div [style.flex]="keyFlex">{{ keyText | translate}}</div>
+    <div [style.flex]="valueFlex">{{ valueText | translate}}</div>
+    <span></span>
+  </div>
+  <ng-container *ngIf="form.controls.length === 0">
+    <div class="key-value-form-row" (click)="addRow(0)">
+      <div class="key-value-form-row__input-group empty-input">
+        <alo-key-value-inputs [readonly]="true" [keyPlaceholder]="keyText" [valuePlaceholder]="valueText"
+          [keyFlex]="keyFlex" [valueFlex]="valueFlex"></alo-key-value-inputs>
+        <span></span>
+      </div>
+    </div>
+    <div class="add-button">
+      <button aui-button="primary" [plain]="true" (click)="addRow(0)">
+        <aui-icon icon="basic:add_circle"></aui-icon> {{'add' | translate}}
+      </button>
+    </div>
+  </ng-container>
+  <ng-container *ngFor="let control of form.controls; let i = index; let isLast = last; trackBy: trackByFn">
+    <div class="key-value-form-row">
+      <div class="key-value-form-row__input-group" [class.hasError]="control?.errors">
+        <alo-key-value-inputs (blur)="onInputsBlur()" [formControl]="control"
+          [keyPlaceholder]="keyText" [valuePlaceholder]="valueText" [keyFlex]="keyFlex"
+          [valueFlex]="valueFlex" [keyOptions]="keyOptions">
+        </alo-key-value-inputs>
+        <div class="key-value-form-row__error" *ngIf="control.invalid">
+          <ng-container *ngIf="control.errors?.keyIsMissing">
+            {{ 'key_is_missing_error_message' | translate }}
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="key-value-form-row__control-button-group">
+        <button aui-button (click)="deleteRow(i)" square="true">
+          <aui-icon icon="basic:minus_circle"></aui-icon>
+        </button>
+      </div>
+    </div>
+    <div class="add-button">
+      <button *ngIf="isLast" aui-button="primary" [plain]="true" (click)="addRow(i + 1)">
+        <aui-icon icon="basic:add_circle"></aui-icon> {{'add' | translate}}
+      </button>
+    </div>
+  </ng-container>
+</form>

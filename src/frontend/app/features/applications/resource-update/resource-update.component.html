@@ -1,0 +1,33 @@
+<div
+  *aloPageHeaderContent
+  class="page-header"
+>
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['../../../../']">{{ 'applications.list' | translate }}</a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['../../../']">{{ (identity$ | async).name }}</a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <a [routerLink]="['../']">{{ (identity$ | async).resourceName }}</a>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <span>
+        {{ 'update' | translate }}
+      </span>
+    </ng-template>
+  </alo-breadcrumb>
+</div>
+<ng-container *aloAsyncData="
+    let resourceDetail;
+    let error = error;
+    let loading = loading;
+    let refresh = refetch;
+    handler: fetchResource;
+    params: identity$ | async;">
+  <alo-k8s-resource-update
+    [params]="identity$ | async"
+    [data]="resourceDetail"
+  ></alo-k8s-resource-update>
+</ng-container>

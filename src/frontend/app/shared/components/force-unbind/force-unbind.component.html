@@ -1,0 +1,31 @@
+<aui-dialog-header>
+  <aui-icon
+    class="header-icon"
+    icon="exclamation_triangle_s"
+  ></aui-icon>
+  <span>{{ 'project.unbind' | translate }}</span>
+</aui-dialog-header>
+<aui-dialog-content>
+  <div class="hint">{{ data.hint || ('project.force_unbind_hint' | translate:binding) }}</div>
+  <div class="tips">{{ 'tool_chain.unbind_tool_input_tips' | translate: binding }}</div>
+  <input
+    class="aui-input aui-input--medium"
+    aui-input
+    [(ngModel)]="inputingName"
+  >
+</aui-dialog-content>
+<aui-dialog-footer>
+  <button
+    aui-button="danger"
+    [disabled]="loading || (inputingName !== binding.name)"
+    [loading]="loading"
+    (click)="unbind()"
+  >{{ 'project.unbind' | translate }}</button>
+  <button
+    aui-button
+    [disabled]="loading"
+    auiDialogClose
+  >
+    {{ 'cancel' | translate }}
+  </button>
+</aui-dialog-footer>

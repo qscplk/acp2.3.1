@@ -1,0 +1,254 @@
+<ng-container *ngIf="id | pure: getStage | async as stage">
+  <div class="side-form__header">
+    <span>{{ 'stage_settings' | translate }}</span>
+    <a href="javascript:;" (click)="remove(stage)">
+      <aui-icon icon="basic:trash" size="16"></aui-icon>
+    </a>
+  </div>
+  <div class="side-form__body">
+    <div class="side-form__group">
+      <div class="side-form__group-header">
+        {{ 'basic_info' | translate }}
+      </div>
+      <form
+        *ngIf="id | pure: toNameForm | async as fg"
+        auiForm
+        auiFormLabelPosition="top"
+        [formGroup]="fg"
+      >
+        <aui-form-item
+          [class.ng-submitted]="submitted || (id | pure: getEdited | async)"
+        >
+          <label auiFormItemLabel>{{ 'stage_name' | translate }}</label>
+          <div
+            auiFormItemControl
+            required
+            class="required-container full-width"
+          >
+            <input
+              aui-input
+              formControlName="name"
+              [placeholder]="nameRule.placeholder | translate"
+            />
+          </div>
+          <div
+            auiFormItemHint
+            class="error-hint"
+            [class.has-error]="!!fg.controls.name.errors"
+          >
+            {{ fg.controls.name.errors | pure: nameFirstError | translate }}
+          </div>
+        </aui-form-item>
+      </form>
+    </div>
+    <div class="side-form__group">
+      <div class="side-form__group-header">
+        {{ 'task' | translate }}
+        ({{
+          stage.task
+            | pure: getTaskDisplayName
+            | async
+            | pure: toCurrentLang
+            | async
+        }})
+        <aui-icon
+          icon="basic:question"
+          color="#999999"
+          [auiTooltip]="
+            stage.task
+              | pure: getTaskDescription
+              | async
+              | pure: toCurrentLang
+              | async
+          "
+        ></aui-icon>
+      </div>
+      <form
+        *ngIf="id | pure: toSettingsForm | async as form"
+        auiForm
+        auiFormLabelPosition="top"
+        [formGroup]="form.fg"
+        [auiFormEmptyAddon]="true"
+      >
+        <div
+          [class.ng-submitted]="submitted || (id | pure: getEdited | async)"
+          *ngIf="form.basic && form.basic.length; else noParameters"
+        >
+          <ng-container *ngIf="form.basic as basic">
+            <ng-container
+              *ngTemplateOutlet="fieldsTemplate; context: { $implicit: basic }"
+            ></ng-container>
+          </ng-container>
+          <ng-container *ngIf="form.advanced as advanced">
+            <ng-container *ngIf="showAdvanced">
+              <ng-container
+                *ngTemplateOutlet="
+                  fieldsTemplate;
+                  context: { $implicit: advanced }
+                "
+              ></ng-container>
+            </ng-container>
+            <a
+              *ngIf="advanced.length"
+              href="javascript:;"
+              class="advanced-fields-button"
+              (click)="showAdvanced = !showAdvanced"
+            >
+              {{
+                (showAdvanced
+                  ? 'pipeline.hide_advanced'
+                  : 'pipeline.show_advanced'
+                ) | translate
+              }}
+              <aui-icon
+                [icon]="
+                  showAdvanced
+                    ? 'basic:angle_double_up'
+                    : 'basic:angle_double_down'
+                "
+              ></aui-icon>
+            </a>
+          </ng-container>
+        </div>
+        <ng-template #fieldsTemplate let-items>
+          <ng-container *ngFor="let item of items; trackBy: fieldTracker">
+            <aui-form-item>
+              <label auiFormItemLabel>
+                {{ item.displayName | pure: toCurrentLang | async }}
+              </label>
+              <div
+                auiFormItemControl
+                class="required-container"
+                [required]="item.required"
+                [class.full-width]="!['switch'].includes(item.controlType)"
+              >
+                <ng-container [ngSwitch]="item.controlType">
+                  <alo-repository-selector
+                    *ngSwitchCase="'alauda.io/coderepositorymix'"
+                    [formControlName]="item.name"
+                    [style.width]="'100%'"
+                    [project]="project"
+                  ></alo-repository-selector>
+                  <acl-image-push-control
+                    *ngSwitchCase="'alauda.io/dockerimagerepositorymix'"
+                    [formControlName]="item.name"
+                    [style.width]="'100%'"
+                    [context]="imageSelectorDataContext"
+                  ></acl-image-push-control>
+                  <acl-image-pull-control
+                    *ngSwitchCase="'alauda.io/dockerimagerepositorypullmix'"
+                    [formControlName]="item.name"
+                    [style.width]="'100%'"
+                    [context]="imageSelectorDataContext"
+                  ></acl-image-pull-control>
+                  <aui-select
+                    *ngSwitchCase="'dropdown'"
+                    [formControlName]="item.name"
+                    [filterable]="true"
+                    [clearable]="true"
+                    [trackFn]="trackFn"
+                    [loading]="item.optionsPending"
+                  >
+                    <aui-option
+                      *ngFor="let option of item.options"
+                      [label]="option.opt_key"
+                      [value]="option.opt_value"
+                    >
+                      {{ option.opt_key }}
+                    </aui-option>
+                    <aui-option-placeholder>
+                      {{ 'no_data' | translate }}
+                    </aui-option-placeholder>
+                  </aui-select>
+                  <aui-select
+                    *ngSwitchCase="'dropdown-input'"
+                    [formControlName]="item.name"
+                    [filterable]="true"
+                    [clearable]="true"
+                    [trackFn]="trackFn"
+                    [loading]="item.optionsPending"
+                    [allowCreate]="true"
+                  >
+                    <aui-option
+                      *ngFor="let option of item.options"
+                      [label]="option.opt_key"
+                      [value]="option.opt_value"
+                    >
+                      {{ option.opt_key }}
+                    </aui-option>
+                    <aui-option-placeholder>
+                      {{ 'no_data' | translate }}
+                    </aui-option-placeholder>
+                  </aui-select>
+                  <aui-multi-select
+                    *ngSwitchCase="'multi-dropdown'"
+                    [formControlName]="item.name"
+                    [filterable]="true"
+                    [clearable]="true"
+                    [required]="item.required"
+                    [trackFn]="multiTrackFn"
+                  >
+                    <aui-option
+                      *ngFor="let option of item.options"
+                      [label]="option.opt_key"
+                      [value]="option.opt_value"
+                    >
+                      {{ option.opt_key }}
+                    </aui-option>
+                    <aui-option-placeholder>
+                      {{ 'no_data' | translate }}
+                    </aui-option-placeholder>
+                  </aui-multi-select>
+                  <aui-switch
+                    *ngSwitchCase="'switch'"
+                    [formControlName]="item.name"
+                  ></aui-switch>
+                  <input
+                    *ngSwitchCase="'input'"
+                    [formControlName]="item.name"
+                    aui-input
+                  />
+                  <textarea
+                    *ngSwitchCase="'textarea'"
+                    [formControlName]="item.name"
+                    aui-input
+                  ></textarea>
+                  <aui-code-editor
+                    *ngSwitchCase="'code'"
+                    [formControlName]="item.name"
+                    [options]="item.args | pure: normalizeEditorOptions"
+                    [plain]="true"
+                  ></aui-code-editor>
+                </ng-container>
+              </div>
+              <div auiFormItemAddon>
+                <aui-icon
+                  *ngIf="
+                    item.description
+                      | pure: toCurrentLang
+                      | async as description
+                  "
+                  icon="basic:question"
+                  class="field-description"
+                  auiTooltip="{{ description }}"
+                ></aui-icon>
+              </div>
+              <div
+                auiFormItemHint
+                class="error-hint"
+                [class.has-error]="!!item.errors"
+              >
+                {{ item.errors | pure: firstError | translate }}
+              </div>
+            </aui-form-item>
+          </ng-container>
+        </ng-template>
+        <ng-template #noParameters>
+          <div class="no-parameters">
+            {{ 'task_without_parameters' | translate }}
+          </div>
+        </ng-template>
+      </form>
+    </div>
+  </div>
+</ng-container>

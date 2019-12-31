@@ -1,0 +1,15 @@
+.pipeline-syncing {
+  color: #cccccc;
+  font-size: 12px;
+}
+
+:host {
+  ::ng-deep {
+    .aui-section {
+      padding: 8px 0;
+    }
+    aui-section + aui-section > .aui-section {
+      border-top: none;
+    }
+  }
+}

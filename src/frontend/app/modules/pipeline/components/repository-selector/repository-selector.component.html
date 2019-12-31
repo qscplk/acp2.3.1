@@ -1,0 +1,194 @@
+<div class="select">
+  <div class="existed-repo" *ngIf="display$ | async as display; else empty">
+    <div class="existed-repo__content">
+      <img
+        class="repo-icon"
+        [src]="'icons/tool-chain/list/' + display.icon + '.svg'"
+        alt="devops"
+      />
+      {{ display.text }}
+    </div>
+    <aui-icon
+      (click)="open()"
+      class="existed-repo__edit"
+      icon="basic:pencil_edit"
+    ></aui-icon>
+  </div>
+  <ng-template #empty>
+    <div class="select-button" (click)="open()">
+      <aui-icon icon="basic:plus"></aui-icon>
+      {{ 'pipeline.select' | translate }}
+    </div>
+  </ng-template>
+</div>
+
+<ng-template #repo>
+  <form
+    *ngIf="fg"
+    auiForm
+    [formGroup]="fg"
+    auiFormLabelPosition="right"
+    [auiFormEmptyAddon]="false"
+    auiFormLabelWidth="150px"
+    (submit)="onSubmit()"
+    #form="ngForm"
+  >
+    <aui-dialog-header>
+      <div>{{ 'pipeline.from_repo' | translate }}</div>
+    </aui-dialog-header>
+    <aui-dialog-content >
+        <aui-form-item>
+          <label auiFormItemLabel>{{ 'pipeline.method' | translate }}</label>
+          <aui-radio-group auiFormItemControl formControlName="usingBuildin">
+            <aui-radio-button [value]="true">
+              {{ 'pipeline.select' | translate }}
+            </aui-radio-button>
+            <aui-radio-button [value]="false">
+              {{ 'pipeline.input' | translate }}
+            </aui-radio-button>
+          </aui-radio-group>
+        </aui-form-item>
+        <ng-container *ngIf="fg.value.usingBuildin">
+          <aui-form-item>
+            <label auiFormItemLabel>
+              {{ 'pipeline.from_repo' | translate }}
+            </label>
+            <div
+              auiFormItemControl
+              required
+            >
+              <aui-select
+                *ngFor="let repositories of [repositories$ | async]; trackBy: byIndex"
+                formControlName="bindingRepository"
+                [loading]="!repositories"
+                name="bindingRepository"
+                filterable
+              >
+                <aui-option
+                  class="repository-option"
+                  *ngFor="let repository of repositories; trackBy: resourceIdentity"
+                  [label]="optionLabelTemplate"
+                  [labelContext]="{ repository: repository }"
+                  [value]="repository.name"
+                >
+                  <div class="repository-option-wrapper">
+                    <img
+                      src="icons/tool-chain/list/{{ repository.type?.toLowerCase() }}.svg"
+                      alt="devops"
+                    />
+                    <div>
+                      <div class="repo-name">{{ repository.fullName }}</div>
+                      <div class="repo-ssh-url" [title]="repository.sshURL">{{ repository.sshURL }}</div>
+                    </div>
+                  </div>
+                </aui-option>
+                <aui-option-placeholder>{{ 'no_data' | translate }}</aui-option-placeholder>
+              </aui-select>
+            </div>
+            <div
+              *ngIf="formValidateErrorForField('bindingRepository') as errors"
+              auiFormItemHint
+              class="error-hint"
+            >
+              <ng-container *ngIf="errors?.required">{{ 'required' | translate }}</ng-container>
+            </div>
+            <div *ngIf="method === 'multi-branch'" auiFormItemHint>
+              {{ 'pipeline.support_discovering_repo_hint' | translate }}
+            </div>
+          </aui-form-item>
+        </ng-container>
+        <ng-container *ngIf="!fg.value.usingBuildin">
+          <aui-form-item >
+            <label auiFormItemLabel>{{ 'pipeline.repo_url_type' | translate }}</label>
+            <aui-radio-group auiFormItemControl formControlName="urlType">
+              <aui-radio-button value="git">
+                <img
+                  class="repo-icon"
+                  [src]="'icons/tool-chain/list/git.svg'"
+                  alt="devops"
+                />
+                Git
+              </aui-radio-button>
+              <aui-radio-button value="svn" *ngIf="!onlyGit">
+                <img
+                  class="repo-icon"
+                  [src]="'icons/tool-chain/list/svn.svg'"
+                  alt="devops"
+                />
+                SVN
+              </aui-radio-button>
+            </aui-radio-group>
+          </aui-form-item>
+          <aui-form-item>
+            <label auiFormItemLabel>
+              {{ 'pipeline.repo_path' | translate }}
+            </label>
+            <div auiFormItemControl required>
+              <input aui-input formControlName="repo" />
+            </div>
+            <div
+              *ngIf="formValidateErrorForField('repo') as errors"
+              auiFormItemHint
+              class="error-hint"
+            >
+              <span *ngIf="errors?.required">{{ 'required' | translate }}</span>
+              <span *ngIf="errors?.pattern">{{ 'pipeline.repo_url_pattern' | translate }}</span>
+            </div>
+            <div *ngIf="method === 'multi-branch'" auiFormItemHint>
+              {{ 'pipeline.unbound_repo_hint' | translate }}
+            </div>
+          </aui-form-item>
+          <aui-form-item>
+            <label auiFormItemLabel>{{ 'pipeline.secret' | translate }}</label>
+            <aui-select
+              *ngFor="let secrets of [secrets$ | async]; trackBy: byIndex"
+              auiFormItemControl
+              formControlName="secret"
+              [loading]="!secrets"
+              [clearable]="true"
+              [trackFn]="resourceValue"
+              (valueChange)="onSecretChange($event)"
+            >
+              <aui-option
+                *ngFor="let secret of secrets; trackBy: secretIdentity"
+                [label]="secret.name || ''"
+                [value]="secret"
+              >
+                <span>{{ secret.name }}</span>
+                <span
+                  class="secret-group__display-name"
+                  *ngIf="!!secret.displayName"
+                >
+                  ({{ secret.displayName }})
+                </span>
+              </aui-option>
+              <aui-option-placeholder>{{ 'no_data' | translate }}</aui-option-placeholder>
+            </aui-select>
+            <div class="add-secret-btn">
+              <button (click)="addSecret()" aui-button type="button">
+                {{ 'add_secret' | translate }}
+              </button>
+            </div>
+          </aui-form-item>
+        </ng-container>
+    </aui-dialog-content>
+    <aui-dialog-footer>
+      <button aui-button="primary">
+        {{ 'pipeline.confirm' | translate }}
+      </button>
+      <button aui-button type="button" auiDialogClose>
+        {{ 'cancel' | translate }}
+      </button>
+    </aui-dialog-footer>
+  </form>
+</ng-template>
+
+<ng-template #optionLabelTemplate let-repository="repository">
+  <div class="repository-label">
+    <img
+      src="icons/tool-chain/list/{{ repository.type?.toLowerCase() }}.svg"
+      alt="devops"
+    />
+    <span>{{ repository.fullName }}</span>
+  </div>
+</ng-template>

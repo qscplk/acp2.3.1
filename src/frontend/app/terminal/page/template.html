@@ -1,0 +1,73 @@
+<div class="terminal-toolbar"
+     [class.terminal-toolbar--dark-theme]="isDarkTheme">
+  <alo-breadcrumb class="terminal-toolbar__title">
+    <ng-container *ngIf="params.resourceKind !== 'Pod'">
+      <ng-template aloBreadcrumbItem>
+        <span>{{ params.resourceKind }}: {{ params.resourceName }}</span>
+      </ng-template>
+    </ng-container>
+    <ng-template aloBreadcrumbItem>
+      <span>{{ params.pod }}</span>
+    </ng-template>
+    <ng-template aloBreadcrumbItem>
+      <span>{{ params.container }}</span>
+    </ng-template>
+  </alo-breadcrumb>
+  <div class="terminal-toolbar__spacer"></div>
+
+  <div class="terminal-toolbar__control-button"
+       (click)="shell.toogleTheme()">
+    <ng-container *ngIf="!isDarkTheme">
+      <div class="terminal-toolbar__control-button-icon">
+        <aui-icon icon="sun"></aui-icon>
+      </div>
+      {{ 'light_theme' | translate }}
+    </ng-container>
+
+    <ng-container *ngIf="isDarkTheme">
+      <div class="terminal-toolbar__control-button-icon">
+        <aui-icon icon="moon"></aui-icon>
+      </div>
+      {{ 'dark_theme' | translate }}
+    </ng-container>
+  </div>
+
+  <div class="terminal-toolbar__control-button"
+       (click)="toggleFindPanel()">
+    <div class="terminal-toolbar__control-button-icon">
+      <aui-icon icon="search_s"></aui-icon>
+    </div>
+    {{ 'find' | translate }}
+  </div>
+
+  <div class="terminal-search-bar"
+       *ngIf="isFindbarActive">
+    <aui-input-group size='medium'>
+      <input [(ngModel)]="searchQuery"
+             (keydown.escape)="isFindbarActive = false"
+             (keydown.enter)="findNext(searchQuery)"
+             aui-input
+             size='medium'
+             type='text' />
+      <div auiInputAddonAfter>
+        <button aui-button
+                size="mini"
+                (click)="findPrevious(searchQuery)">
+          <aui-icon icon="angle_left"></aui-icon>
+        </button>
+        <button aui-button
+                size="mini"
+                (click)="findNext(searchQuery)">
+          <aui-icon icon="angle_right"></aui-icon>
+        </button>
+      </div>
+    </aui-input-group>
+
+  </div>
+</div>
+<alo-shell #shell
+           [namespace]="params.namespace"
+           [cluster]="params.cluster"
+           [podName]="params.pod"
+           [containerName]="params.container">
+</alo-shell>

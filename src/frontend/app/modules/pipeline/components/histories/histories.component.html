@@ -1,0 +1,24 @@
+<div
+  *aloAsyncData="
+    let data;
+    let loading = loading;
+    params: (historyParams$ | async);
+    handler: fetchData;
+    pullIn: pullInTime
+  "
+>
+  <alo-pipeline-history-table
+    [hideTitle]="hideTitle"
+    [showWaiting]="showWaiting"
+    [historyList]="data"
+    [project]="project"
+    [loading]="loading"
+    [branchs]="branchs"
+    [activeBranch]="activeBranch"
+    [permissions]="permissions"
+    [(pageSize)]="historyPageSize"
+    [(pageIndex)]="historyPageIndex"
+    (paramsChanged)="historyParamsChanged($event)"
+    (branchChange)="onBranchChange($event)"
+  ></alo-pipeline-history-table>
+</div>

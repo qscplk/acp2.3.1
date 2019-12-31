@@ -1,0 +1,59 @@
+<header class="nav-bar custom-nav-bar">
+  <alo-logo>
+  </alo-logo>
+  <div class="toolbar">
+    <alo-global-actions></alo-global-actions>
+  </div>
+  <div class="page-header">
+    <alo-breadcrumb>
+      <ng-template aloBreadcrumbItem>
+        <span>
+          {{ 'portal' | translate }}
+        </span>
+      </ng-template>
+    </alo-breadcrumb>
+    <div class="global-loader" [class.loading]="showLoadingBar$ | async"></div>
+  </div>
+</header>
+<main *ngIf="!(thirdPartyData$ | async).error">
+  <aui-card>
+    <div auiCardHeader class="list-header">
+      <div class="dashboard-title">
+        <img src="icons/alauda@2x.png" alt="devops" />
+        <span>DevOps</span>
+      </div>
+      <a href="javascript:void(0)" routerLink="/home/projects">
+        {{ 'goto_devops' | translate }}
+        <aui-icon icon="angle_right"></aui-icon>
+      </a>
+    </div>
+    <ng-container
+      *aloAsyncData="
+        let projects;
+        let loading = loading;
+        let error = error;
+        let refresh = refetch;
+        handler: fetchProjects;
+      "
+    >
+      <alo-project-list
+        [data]="projects"
+        [plainTable]="true"
+      ></alo-project-list>
+      <alo-no-data
+        *ngIf="!projects || !projects.length"
+        [resourceName]="'project.list' | translate"
+        [error]="error || projects && projects.errors"
+        [loading]="loading"
+        (retry)="refresh()"
+      ></alo-no-data>
+    </ng-container>
+  </aui-card>
+  <alo-third-party-dashboard
+    [items]="(thirdPartyData$ | async).data"
+  ></alo-third-party-dashboard>
+</main>
+<alo-error-page
+  *ngIf="(thirdPartyData$ | async).error"
+  [error]="(thirdPartyData$ | async).error"
+></alo-error-page>

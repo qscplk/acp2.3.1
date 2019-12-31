@@ -1,0 +1,95 @@
+<aui-card>
+  <div auiCardHeader>
+    <span>{{ issueDetail?.key }}</span>
+    <span class="header-summary">{{ issueDetail?.summary }}</span>
+    <a
+      *ngIf="accessUrl"
+      class="jump-icon"
+      [auiTooltip]="'jump_to' | translate:{ name: 'Jira' }"
+      auiTooltipType="info"
+      auiTooltipPosition="bottom start"
+      auiTooltipClass="jump-tooltip"
+      [href]="(accessUrl + issueDetail?.selflink) | pure:dropDuplicateUrlSlash"
+      target="_blank"
+    ><aui-icon icon="basic:jump"></aui-icon></a>
+  </div>
+
+  <div auiCardBody>
+    <aui-section>
+      <div auiSectionTitle>
+        {{ 'project_management.basic_attributes' | translate }}
+      </div>
+      <div class="base-body">
+        <div class="field">
+          <label>{{ 'secret.belongs_project' | translate }}</label>
+          <span>{{issueDetail?.project?.metadata?.name}}</span>
+        </div>
+        <div class="field">
+          <label>{{ 'create_at' | translate }}</label>
+          <span>{{issueDetail?.created | aclStandardTime}}</span>
+        </div>
+        <div class="field">
+          <label>{{ 'type' | translate }}</label>
+          <span>{{issueDetail?.issuetype?.name}}</span>
+        </div>
+        <div class="field">
+          <label>{{ 'code.update_at' | translate }}</label>
+          <span>{{issueDetail?.updated | aclRelativeTime}}</span>
+        </div>
+        <div class="field">
+          <label>{{ 'priority' | translate }}</label>
+          <span>{{issueDetail?.priority?.name}}</span>
+        </div>
+        <div class="field">
+          <label>{{ 'create_by' | translate }}</label>
+          <span>{{issueDetail?.creator?.username}}</span>
+        </div>
+        <div class="field">
+          <label>{{ 'status' | translate }}</label>
+          <span>{{issueDetail?.status?.name}}</span>
+        </div>
+        <div class="field">
+          <label>{{ 'project_management.assign_to' | translate }}</label>
+          <span>{{issueDetail?.assignee?.username || ('project_management.unassigned' | translate)}}</span>
+        </div>
+      </div>
+    </aui-section>
+
+    <aui-section>
+      <div auiSectionTitle>
+        {{ 'description' | translate }}
+      </div>
+      <ng-container *ngIf="!!issueDetail?.description">
+        {{ 'description' | translate }}：{{ issueDetail?.description }}
+      </ng-container>
+    </aui-section>
+
+    <aui-section>
+      <div auiSectionTitle>
+        {{ 'project_management.issue_links' | translate }}
+      </div>
+      <ul>
+        <li *ngFor="let issuelink of issueDetail?.issuelinks">
+          <div>{{ issuelink?.summary }}</div>
+        </li>
+      </ul>
+    </aui-section>
+
+    <aui-section>
+      <div auiSectionTitle>
+        {{ 'project_management.issue_comments' | translate }}
+      </div>
+      <ul>
+        <li *ngFor="let comment of issueDetail?.comments" style="margin-top: 8px">
+          <div class="issue-content-pos">
+            <span>
+              {{comment?.author}}
+              <span class="issue-content-time">{{comment?.time | aclRelativeTime}}</span>
+            </span>
+            <span class="issue-content">{{comment?.content}}</span>
+          </div>
+        </li>
+      </ul>
+    </aui-section>
+  </div>
+</aui-card>

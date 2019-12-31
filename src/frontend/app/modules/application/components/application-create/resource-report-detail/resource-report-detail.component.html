@@ -1,0 +1,67 @@
+<div
+  class="report"
+  *ngIf="reports"
+>
+  <div class="report__header">
+    {{ 'application.resource_report' | translate }}
+  </div>
+  <div class="report__content">
+    <ng-container *ngFor="let report of reports;">
+      <div
+        class="item"
+        *ngIf="report.error"
+      >
+        <label class="fail"></label>
+        <div class="detail">
+          <div class="message">
+            {{ showReportMessage(report) }}
+          </div>
+          <a
+            href="javascript:void(0)"
+            class="collapse"
+            (click)="report['collapse']=!report['collapse']"
+          >
+            <aui-icon
+              icon="angle_right"
+              *ngIf="!report['collapse']"
+            ></aui-icon>
+            <aui-icon
+              icon="angle_down"
+              *ngIf="report['collapse']"
+            ></aui-icon>
+            {{ 'application.error_message' | translate}}
+          </a>
+          <div
+            class="error"
+            *ngIf="report['collapse']"
+          >
+            {{report.error?.ErrStatus?.message}}
+          </div>
+        </div>
+      </div>
+      <div
+        class="item"
+        *ngIf="!report.error"
+      >
+        <label class="success"></label>
+        <div class="detail">
+          <div class="message">
+            {{ showReportMessage(report)}}
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<div
+  class="report"
+  *ngIf="errorMessage"
+>
+  <div class="report__header">
+    {{ 'application.error_message' | translate }}
+  </div>
+  <div class="report__content">
+    {{ errorMessage }}
+  </div>
+</div>

@@ -1,0 +1,36 @@
+@import '~@alauda/ui/theme/_pattern';
+
+.base-body {
+  flex: 1;
+  flex-direction: column;
+  aui-table {
+    flex: 1;
+  }
+}
+
+.header {
+  @include table-card-header;
+}
+
+.aui-table {
+  min-width: 0px;
+  &__column-address {
+    flex: 2;
+  }
+  &__column-type {
+    flex: 1;
+  }
+  &__column-port {
+    flex: 1;
+  }
+  &__column-time {
+    flex: 1;
+  }
+  &__column-actions {
+    max-width: 40px;
+  }
+  .node-port-icon {
+    color: #999;
+    margin-left: 4px;
+  }
+}

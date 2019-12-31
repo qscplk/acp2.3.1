@@ -1,0 +1,47 @@
+<div
+  class="alo-repository-selector"
+  [class.alo-repository-selector--active]="active"
+>
+  <div class="alo-repository-selector__header" fxLayout>
+    <div fxLayoutAlign="start center">
+      <img
+        class="alo-repository-selector__photo"
+        [src]="account.avatarURL || 'icons/default-avatar@2x.png'"
+        alt="devops"
+      />
+      <span>{{ account.name }}</span>
+    </div>
+    <div fxFlex></div>
+    <div class="alo-repository-selector__setting">
+      <aui-checkbox
+        [ngModel]="autoSync"
+        (ngModelChange)="autoSyncChange.emit($event)"
+      >{{ 'code.repository_auto_sync' | translate }}</aui-checkbox>
+      <aui-icon icon="basic:question" [auiTooltip]="'code.sync_all_repo_hint' | translate" auiTooltipType="info"></aui-icon>
+    </div>
+  </div>
+  <div class="alo-repository-selector__content">
+    <div class="alo-repository-selector__label">{{
+      'code.please_select_repository' | translate }}</div>
+    <aui-multi-select
+      [filterable]="true"
+      [placeholder]="'code.please_select_repository' | translate"
+      [disabled]="!account.repositories.length || autoSync"
+      [ngModel]="selected"
+      (ngModelChange)="selectedChange.emit($event)"
+    >
+      <aui-option
+        *ngFor="let repository of account.repositories"
+        [value]="repository.name"
+      >
+        <span>{{ repository.name }}</span>
+      </aui-option>
+      <aui-option-placeholder>{{ 'no_data' | translate }}</aui-option-placeholder>
+    </aui-multi-select>
+  </div>
+  <aui-icon
+    icon="check_triangle_s"
+    *ngIf="active"
+    class="alo-repository-selector__active-icon"
+  ></aui-icon>
+</div>

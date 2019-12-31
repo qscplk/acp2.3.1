@@ -1,0 +1,85 @@
+@import 'var';
+
+.alo-project-binding-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(204px, 1fr));
+  grid-gap: 16px;
+}
+
+.alo-project-binding-card {
+  padding: 20px;
+  position: relative;
+  border-radius: 2px;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.24);
+  display: block;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    box-shadow: 0 0 0 1px $color-primary, 0 4px 16px 0 rgba(0, 0, 0, 0.16);
+  }
+
+  .alert {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    color: #f8ac58;
+  }
+
+  .icon-stack {
+    height: 60px;
+    position: relative;
+
+    .type-icon {
+      display: block;
+      margin: auto;
+      height: 100%;
+      width: 80px;
+    }
+
+    .enterprise-mark {
+      display: block;
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(10px);
+    }
+  }
+
+  .title {
+    margin: 8px 0;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    text-align: center;
+    color: #333333;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .description {
+    font-size: 12px;
+    line-height: 16px;
+    color: #999999;
+    text-align: center;
+    overflow: hidden;
+    word-wrap: break-word;
+    word-break: break-all;
+    display: -webkit-box;
+    /* autoprefixer: ignore next */
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .tags {
+    text-align: center;
+    margin-top: 8px;
+  }
+}

@@ -1,0 +1,9 @@
+<div>
+  <alo-volume-info #volumeInfoRef [data]="volume" [resource]="containerParams" [container]="container"
+    [canAction]="true" (updated)="volumeChange()"></alo-volume-info>
+</div>
+<div class="add-volume">
+  <button aui-button="primary" [plain]="true" (click)="addVolumeMount()">
+    {{ 'application.mount_volume' | translate }}
+  </button>
+</div>

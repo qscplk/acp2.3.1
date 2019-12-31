@@ -1,0 +1,55 @@
+@import 'var';
+
+$status-color-map: (
+  success: $color-success,
+  error: $color-error,
+  pending: $color-primary,
+  unknown: $color-info,
+  bound: $color-primary,
+  warning: $color-warning,
+);
+
+.status-gauge-status-hint {
+  display: flex;
+  align-items: center;
+  color: #999999;
+  margin-bottom: 8px;
+
+  &__item {
+    margin-right: 12px;
+  }
+}
+
+.status-gauge-container {
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  height: 8px;
+  width: 100%;
+  background-color: #eeeeee;
+  &__item {
+    cursor: pointer;
+    border: 1px solid white;
+    transition: opacity 0.1s;
+    &:hover {
+      opacity: 0.8;
+    }
+
+    @each $status, $color in $status-color-map {
+      &--#{$status} {
+        background-color: $color;
+      }
+    }
+  }
+}
+
+.status-gauge-tooltip {
+  display: flex;
+  align-items: center;
+  padding: 4px;
+
+  &__label {
+    margin-left: 6px;
+    font-size: 12px;
+  }
+}

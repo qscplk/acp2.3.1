@@ -1,0 +1,37 @@
+<aui-dialog-header>{{ 'rollback' | translate }}</aui-dialog-header>
+<aui-dialog-content>
+  <aui-table [dataSource]="data.items">
+    <ng-container auiTableColumnDef="revision">
+      <aui-table-header-cell *auiTableHeaderCellDef>{{ 'registry.version' | translate }}</aui-table-header-cell>
+      <aui-radio-group #radio name="food1" [(value)]="selectedRevision">
+        <aui-table-cell *auiTableCellDef="let item"> <aui-radio [value]="item.revision">{{ item.revision }}</aui-radio></aui-table-cell>
+      </aui-radio-group>
+    </ng-container>
+    <ng-container auiTableColumnDef="tag">
+      <aui-table-header-cell *auiTableHeaderCellDef>{{ 'image_tag' | translate }}</aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item">
+        <div *ngFor="let tag of item.tags">{{ tag }}</div>
+      </aui-table-cell>
+    </ng-container>
+    <ng-container auiTableColumnDef="time">
+      <aui-table-header-cell *auiTableHeaderCellDef>{{ 'create_at' | translate }}</aui-table-header-cell>
+      <aui-table-cell *auiTableCellDef="let item">
+        {{ item.creationTimestamp | aclStandardTime }}
+      </aui-table-cell>
+    </ng-container>
+    <aui-table-header-row
+      *auiTableHeaderRowDef="['revision', 'tag', 'time']"
+    ></aui-table-header-row>
+    <aui-table-row
+      *auiTableRowDef="let row; columns: ['revision', 'tag', 'time']"
+    ></aui-table-row>
+  </aui-table>
+</aui-dialog-content>
+<aui-dialog-footer>
+  <div>
+    <button aui-button="primary" (click)="rollback()" [loading]="submitting">
+      {{ 'rollback' | translate }}
+    </button>
+    <button aui-button auiDialogClose>{{ 'cancel' | translate }}</button>
+  </div>
+</aui-dialog-footer>

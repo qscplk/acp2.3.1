@@ -1,0 +1,17 @@
+@import 'var';
+
+.pencil {
+  cursor: pointer;
+  margin-left: 4px;
+  flex-shrink: 0;
+  color: $color-primary;
+}
+.not-allowed-update {
+  cursor: not-allowed;
+  margin-left: 4px;
+  color: #999;
+}
+
+alo-status-icon {
+  margin-right: 5px;
+}

@@ -1,0 +1,41 @@
+<div class="log-container">
+  <div *ngIf="appLogParams" class="log-setting">
+    <label>{{ 'resource_name' | translate }}:</label>
+    <aui-select [(ngModel)]="selectedResourceName" filterable="true" (ngModelChange)="selectedResourceNameChange($event)">
+      <aui-option-group *ngFor="let K8sResourceKey of kindList">
+        <div auiOptionGroupTitle>{{ 'application.' + K8sResourceKey | translate }}</div>
+        <ng-container *ngFor="let item of resourceNames">
+          <aui-option *ngIf="item.kind === K8sResourceKey" [value]="item.value" [label]="item.name">{{ item.name }}</aui-option>
+        </ng-container>
+      </aui-option-group>
+      <aui-option-placeholder>{{ 'no_data' | translate }}</aui-option-placeholder>
+    </aui-select>
+  </div>
+  <div class="log-setting">
+    <label>{{ 'container_group' | translate }}:</label>
+    <aui-select [(ngModel)]="selectedPod" filterable="true" (ngModelChange)="selectedPodChange($event)">
+      <aui-option [value]="pod.name" *ngFor="let pod of pods">{{ pod.name }}</aui-option>
+      <aui-option-placeholder>{{ 'no_data' | translate }}</aui-option-placeholder>
+    </aui-select>
+  </div>
+  <div class="log-setting">
+    <label>{{'container' | translate}}:</label>
+    <aui-select [(ngModel)]="selectedContainer" filterable="true" (ngModelChange)="selectedContainerChange($event)">
+      <aui-option [value]="container.name" *ngFor="let container of containers">{{ container.name }}</aui-option>
+      <aui-option-placeholder>{{ 'no_data' | translate }}</aui-option-placeholder>
+    </aui-select>
+  </div>
+</div>
+<ng-container *aloAsyncData="
+    let logResult;
+    let loading = loading;
+    handler: fetchLog;
+    params: params;
+    pullIn: pullEnabled ? 5 * 1000 : 0;
+  ">
+  <alo-log-view [logs]="logResult?.logs" [range]="logResult?.range" [loading]="loading"
+    [paginated]="true" [pullEnabled]="pullEnabled" [pullToggleEnabled]="true" [downloadEnabled]="false"
+    (pullEnabledChange)="onPullEnabledChange($event)" (pageChange)="updatePage($event, logResult?.selection)"
+    (downloadAction)="download()">
+  </alo-log-view>
+</ng-container>

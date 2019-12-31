@@ -1,0 +1,35 @@
+<aui-select 
+  *ngIf="keyOptions; else elseInput"
+  placeholder="{{ keyPlaceholder | translate }}"
+  [value]="key"
+  [style.flex]="keyFlex">
+  <aui-option
+    *ngFor="let option of keyOptions"
+    [value]="option"
+    (click)="onKeyChange(option, true)"
+  >{{option}}</aui-option>
+</aui-select>
+<ng-template #elseInput>
+  <input 
+    type="text"
+    aui-input
+    [required]="!readonly"
+    placeholder="{{ keyPlaceholder | translate }}"
+    maxlength="63"
+    [disabled]="disabled"
+    (blur)="onBlur()"
+    [attr.readonly]="readonly"
+    (input)="onKeyChange($event.target.value, true)"
+    [value]="key"
+    [style.flex]="keyFlex">
+</ng-template>
+<input
+  type="text"
+  aui-input
+  placeholder="{{ valuePlaceholder | translate }}"
+  [disabled]="disabled"
+  (blur)="onBlur()"
+  [attr.readonly]="readonly"
+  (input)="onValueChange($event.target.value, true)"
+  [value]="value"
+  [style.flex]="valueFlex">

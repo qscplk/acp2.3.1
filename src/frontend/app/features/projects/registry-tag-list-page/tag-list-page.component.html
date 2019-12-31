@@ -1,0 +1,29 @@
+<alo-breadcrumb *aloPageHeaderContent>
+  <ng-template aloBreadcrumbItem>
+    <a [routerLink]="['/admin/projects']">{{ 'project.list' | translate }}</a>
+  </ng-template>
+  <ng-template aloBreadcrumbItem>
+    <a [routerLink]="['/admin/projects', namespace$ | async]">
+      {{ namespace$ | async }}
+    </a>
+  </ng-template>
+  <ng-template aloBreadcrumbItem>
+    <a [routerLink]="['../']">
+      {{ bindingName$ | async }}
+    </a>
+  </ng-template>
+  <ng-template aloBreadcrumbItem>
+    <span>{{ repoName$ | async }}</span>
+  </ng-template>
+</alo-breadcrumb>
+
+<alo-tag-list-section
+  [loading]="loading"
+  [repository]="(repo$ | async)"
+  [tags]="(tags$ | async)"
+  [error]="error"
+  (filterChange)="keyword$$.next($event)"
+  (scanTrigger)="updated$$.next(null)"
+  (refetch)="updated$$.next(null)"
+>
+</alo-tag-list-section>

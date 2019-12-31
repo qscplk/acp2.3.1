@@ -1,0 +1,89 @@
+<alo-array-form-table resourceName="env" [noRowSeparator]="true" (remove)="remove($event)"
+  [rows]="form.controls">
+  <ng-container *aloArrayFormTableHeader>
+    <th width="33%">{{ 'name' | translate }}</th>
+    <th width="66%" colspan="2">{{ 'value' | translate }}</th>
+  </ng-container>
+
+  <!-- Input row -->
+  <ng-container *aloArrayFormTableRow="let control" [formGroup]="control">
+    <td>
+      <input (blur)="onBlur()" placeholder="{{ 'name' | translate }}" aui-input formControlName="name">
+    </td>
+
+    <ng-container [ngSwitch]="envVarViewMode(control.value)">
+
+      <!-- Value only mode -->
+      <td colspan="2" *ngSwitchCase="'value'">
+        <input (blur)="onBlur()" aui-input placeholder="{{ 'value' | translate }}" formControlName="value">
+      </td>
+
+      <!-- yaml mode -->
+      <td colspan="2" *ngSwitchCase="'yaml'">
+        <pre auiCodeColorize="yaml" [innerHTML]="getYaml(control.get('valueFrom').value)"></pre>
+      </td>
+
+      <!-- valueFrom (ref key) mode -->
+      <ng-container *ngSwitchCase="'valueFrom'">
+        <td>
+          <aui-select required (blur)="onBlur()" auiFormItemControl [filterable]="true" [filterFn]="refObjFilterFn"
+            [trackFn]="refObjTrackByFn" [loading]="!(configMaps$ | async) || !(secrets$ | async)"
+            formControlName="refObj">
+            <aui-option-group *ngIf="(configMaps$ | async)?.length > 0">
+              <div auiOptionGroupTitle>{{ 'application.configmap' | translate }}</div>
+              <aui-option *ngFor="let configMap of configMaps$ | async" [value]="getRefObj(configMap)">
+                {{ configMap.objectMeta.name }}
+              </aui-option>
+            </aui-option-group>
+
+            <aui-option-group *ngIf="(secrets$ | async)?.length > 0">
+              <div auiOptionGroupTitle>{{ 'application.secret' | translate }}</div>
+              <aui-option *ngFor="let secret of secrets$ | async" [value]="getRefObj(secret)">
+                {{ secret.objectMeta.name }}
+              </aui-option>
+            </aui-option-group>
+            <aui-option-placeholder>{{ 'no_data' | translate }}</aui-option-placeholder>
+          </aui-select>
+
+        </td>
+        <td>
+          <aui-select required (blur)="onBlur()" auiFormItemControl [filterable]="true" formControlName="refObjKey">
+            <aui-option *ngFor="let key of getRefObjKeys(control) | async" [value]="key">
+              {{ key }}
+            </aui-option>
+            <aui-option-placeholder>{{ 'no_data' | translate }}</aui-option-placeholder>
+          </aui-select>
+        </td>
+      </ng-container>
+    </ng-container>
+
+  </ng-container>
+
+  <!-- Input error row -->
+  <ng-container *aloArrayFormTableRow="let control">
+    <td *ngIf="control.invalid" colspan="4" class="alo-table-form-error-hint">
+      <ng-container *ngIf="control.errors?.keyIsMissing">
+        {{ 'key_is_missing_error_message' | translate }}
+      </ng-container>
+
+      <ng-container *ngIf="control.errors?.duplicateKey">
+        {{ 'duplicate_key_error_message' | translate: {key: control?.errors?.duplicateKey}
+        }}
+      </ng-container>
+    </td>
+  </ng-container>
+
+  <!-- Row controls -->
+  <ng-container *aloArrayFormTableFooter>
+    <button aui-button="primary" class="add-button" size="small" [plain]="true" (click)="add(length, false)">
+      <aui-icon icon="basic:add_circle">
+      </aui-icon>
+      {{ 'add' | translate }}
+    </button>
+    <button aui-button class="add-button" size="small" [plain]="true" (click)="add(length, true)">
+      <aui-icon icon="basic:add_circle">
+      </aui-icon>
+      {{ 'add_reference' | translate }}
+    </button>
+  </ng-container>
+</alo-array-form-table>

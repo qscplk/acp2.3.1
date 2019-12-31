@@ -1,0 +1,49 @@
+@import 'var';
+
+.alo-repository-selector {
+  padding: 0 20px 20px;
+  border: 1px solid #cccccc;
+  border-radius: 2px;
+  position: relative;
+  &__header {
+    border-bottom: 1px solid #cccccc;
+    padding: 12px 0;
+    font-size: 14px;
+  }
+  &--active {
+    border-color: $color-primary;
+  }
+  &__photo {
+    border-radius: 50%;
+    background-color: #ccc;
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+  }
+  &__setting {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    > aui-icon {
+      margin-left: 8px;
+      color: #999;
+    }
+  }
+  &__label {
+    margin: 16px 0 4px;
+  }
+  &__active-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    font-size: 24px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    color: $color-primary;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+}

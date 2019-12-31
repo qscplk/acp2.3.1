@@ -1,0 +1,108 @@
+<aui-card [divider]="true">
+  <div auiCardHeader class="header">
+    <span> {{ 'pipeline.update' | translate }} {{ name }} </span>
+    <button aui-button="text"
+            type="button"
+            size="small"
+            (click)="templateDetail(pipelineConfig?.strategy?.template)">
+      {{ (pipelineConfig?.strategy?.template?.displayName)[key$ | async] }}
+      {{ pipelineConfig?.strategy?.template?.version }}
+    </button>
+  </div>
+  <form
+    [formGroup]="form"
+    #updateForm="ngForm"
+    auiForm
+    class="body"
+    auiFormLabelWidth="200px"
+  >
+    <div auiCardBody class="body-form">
+      <!-- basic form -->
+      <aui-section>
+        <div auiSectionTitle>
+          {{ 'pipeline.basic_info' | translate }}
+        </div>
+        <alo-pipeline-basic-form
+          [form]="form.controls.basic"
+          [project]="project"
+          [method]="method"
+          type="update"
+        ></alo-pipeline-basic-form>
+      </aui-section>
+
+      <!-- code repository selector form -->
+      <aui-section *ngIf="sourceType === 'repo' && ['multi-branch', 'script'].includes(method)">
+        <div auiSectionTitle>
+          Jenkinsfile
+        </div>
+        <alo-pipeline-repository-form
+          [form]="form.controls.jenkinsfile"
+          [project]="project"
+          [method]="method"
+          type="create"
+        ></alo-pipeline-repository-form>
+      </aui-section>
+
+      <!-- dynamic parameters form -->
+      <aui-section *ngIf="method === 'template'">
+        <div auiSectionTitle>
+          {{ 'pipeline.dynamic_form' | translate }}
+        </div>
+        <alo-pipeline-dynamic-parameters-form
+          [templateFields]="pipelineConfig?.strategy?.template?.arguments"
+          [project]="project"
+          [template]="modelTemplate"
+          [jenkinsInstance]="form.controls.basic.value?.jenkins_instance"
+          [agent]="pipelineConfig?.strategy?.template?.agent"
+        ></alo-pipeline-dynamic-parameters-form>
+      </aui-section>
+
+      <!-- jenkinsfile editor form -->
+      <aui-section *ngIf="sourceType === 'script' && method === 'script'">
+        <alo-pipeline-script-form
+          [form]="form.controls.editor_script"
+        ></alo-pipeline-script-form>
+      </aui-section>
+
+      <!-- trigger form -->
+      <aui-section>
+        <div auiSectionTitle>{{ 'pipeline.trigger' | translate }}</div>
+        <div>
+          <alo-pipeline-code-change-trigger-form
+            [form]="getCodeTriggerControls()"
+          ></alo-pipeline-code-change-trigger-form>
+        </div>
+        <div *ngIf="method !== 'multi-branch'">
+          <alo-pipeline-cron-trigger-form
+            [form]="getCronTriggerControls()"
+            [project]="project"
+            [jenkinsBinding]="getJenkinsBinding()"
+          ></alo-pipeline-cron-trigger-form>
+        </div>
+      </aui-section>
+    </div>
+  </form>
+  <div auiCardFooter class="footer">
+    <div>
+      <button
+        aui-button="primary"
+        (click)="preview()"
+        [plain]="true"
+        [disabled]="!updateForm.valid"
+        *ngIf="method === 'template'"
+      >
+        {{ 'pipeline.preview_jenkinsfile' | translate }}
+      </button>
+    </div>
+    <span>
+    <button
+      aui-button="primary"
+      (click)="submit()"
+      [disabled]="!updateForm.valid"
+    >
+      {{ 'pipeline.update' | translate }}
+    </button>
+    <button aui-button (click)="cancel()">{{ 'cancel' | translate }}</button>
+  </span>
+  </div>
+</aui-card>

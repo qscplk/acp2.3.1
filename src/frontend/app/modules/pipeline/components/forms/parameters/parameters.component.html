@@ -1,0 +1,212 @@
+<button
+  aui-button="text"
+  type="button"
+  size="small"
+  class="pipeline-global-settings"
+  (click)="openGlobalSetting()"
+>
+  <aui-icon icon="basic:setting"></aui-icon>
+  {{ 'pipeline_global_settings' | translate }}
+</button>
+<aui-dynamic-form
+  *ngIf="templateFields && templateFields.length; else empty"
+  [template]="templateFields"
+  [model]="model"
+  [controlMapper]="controlTypes"
+>
+  <ng-container *auiDynamicFormDef="let form; let state = state">
+    <form
+      *ngIf="state"
+      [formGroup]="form"
+      auiForm
+      auiFormLabelWidth="200px"
+      #ngForm="ngForm"
+    >
+      <ng-container *ngFor="let group of groups; trackBy: groupTracker">
+        <hr />
+        <div
+          *ngIf="!state.groups[group.displayName.en].hidden"
+          class="dynamic-form-group"
+        >
+          <div class="group-name">
+            {{ group.displayName[translateKey$ | async] }}
+          </div>
+          <div>
+            <div *ngIf="group.default && group.default.length">
+              <ng-container
+                *ngTemplateOutlet="
+                  fieldsTemplate;
+                  context: { fields: group.default }
+                "
+              ></ng-container>
+            </div>
+            <div *ngIf="group.advanced && group.advanced.length">
+              <ng-container *ngIf="advancedState[group.displayName.en]">
+                <ng-container
+                  *ngTemplateOutlet="
+                    fieldsTemplate;
+                    context: { fields: group.advanced }
+                  "
+                ></ng-container>
+              </ng-container>
+              <div
+                class="advanced-fields-button"
+                (click)="toggleGroupAdvanced(group)"
+                *ngIf="group.advanced"
+              >
+                {{
+                  (advancedState[group.displayName.en]
+                    ? 'pipeline.hide_advanced'
+                    : 'pipeline.show_advanced'
+                  ) | translate
+                }}
+                <aui-icon
+                  [icon]="
+                    advancedState[group.displayName.en]
+                      ? 'basic:angle_double_up'
+                      : 'basic:angle_double_down'
+                  "
+                ></aui-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #fieldsTemplate let-fields="fields">
+        <div *ngFor="let item of fields; trackBy: fieldTracker">
+          <ng-container *ngIf="!state.controls[item.name].hidden">
+            <aui-form-item>
+              <label
+                auiFormItemLabel
+                title="{{ item.display.name[translateKey$ | async] }}"
+              >
+                {{ item.display.name[translateKey$ | async] }}
+              </label>
+              <ng-container [ngSwitch]="item.controlType">
+                <alo-repository-selector
+                  *ngSwitchCase="'alauda.io/coderepositorymix'"
+                  [formControlName]="item.name"
+                  [style.width]="'100%'"
+                  auiFormItemControl
+                  [project]="project"
+                  [required]="item.required"
+                  (contextChange)="
+                    onRepositorySelecterContextChange(item.name, $event)
+                  "
+                ></alo-repository-selector>
+                <acl-image-push-control
+                  *ngSwitchCase="'alauda.io/dockerimagerepositorymix'"
+                  [formControlName]="item.name"
+                  [style.width]="'100%'"
+                  auiFormItemControl
+                  [required]="item.required"
+                  [context]="imageSelectorDataContext"
+                ></acl-image-push-control>
+                <acl-image-pull-control
+                  *ngSwitchCase="'alauda.io/dockerimagerepositorypullmix'"
+                  [formControlName]="item.name"
+                  [style.width]="'100%'"
+                  auiFormItemControl
+                  [required]="item.required"
+                  [context]="imageSelectorDataContext"
+                ></acl-image-pull-control>
+                <aui-select
+                  *ngSwitchCase="'dropdown'"
+                  [formControlName]="item.name"
+                  auiFormItemControl
+                  [filterable]="true"
+                  [clearable]="true"
+                  [allowCreate]="
+                    input_dropdown_types.includes(item.display?.type)
+                  "
+                  [required]="item.required"
+                  [trackFn]="trackFn"
+                >
+                  <aui-option
+                    *ngFor="let option of state.controls[item.name].options"
+                    [label]="option.opt_key"
+                    [value]="option.opt_value"
+                  >
+                    {{ option.opt_key }}
+                  </aui-option>
+                  <aui-option-placeholder>
+                    {{ 'no_data' | translate }}
+                  </aui-option-placeholder>
+                </aui-select>
+                <aui-multi-select
+                  *ngSwitchCase="'multiDropdown'"
+                  [formControlName]="item.name"
+                  auiFormItemControl
+                  [filterable]="true"
+                  [clearable]="true"
+                  [required]="item.required"
+                  [trackFn]="multiTrackFn"
+                >
+                  <aui-option
+                    *ngFor="let option of state.controls[item.name].options"
+                    [label]="option.opt_key"
+                    [value]="option.opt_value"
+                  >
+                    {{ option.opt_key }}
+                  </aui-option>
+                  <aui-option-placeholder>
+                    {{ 'no_data' | translate }}
+                  </aui-option-placeholder>
+                </aui-multi-select>
+                <aui-switch
+                  *ngSwitchCase="'switch'"
+                  [formControlName]="item.name"
+                  auiFormItemControl
+                  [required]="item.required"
+                ></aui-switch>
+                <input
+                  *ngSwitchCase="'input'"
+                  [formControlName]="item.name"
+                  aui-input
+                  auiFormItemControl
+                  [required]="item.required"
+                />
+                <textarea
+                  *ngSwitchCase="'textarea'"
+                  [formControlName]="item.name"
+                  aui-input
+                  auiFormItemControl
+                  [required]="item.required"
+                ></textarea>
+                <aui-code-editor
+                  *ngSwitchCase="'code'"
+                  [formControlName]="item.name"
+                  auiFormItemControl
+                  [options]="item.display.args | pure: normalizeEditorOptions"
+                  [plain]="true"
+                ></aui-code-editor>
+              </ng-container>
+              <div auiFormAddOn class="form-addon">
+                <aui-icon
+                  *ngIf="(item.display?.description)[translateKey$ | async]"
+                  auiTooltipPosition="top end"
+                  icon="basic:question"
+                  [auiTooltip]="
+                    (item.display?.description)[translateKey$ | async]
+                  "
+                ></aui-icon>
+              </div>
+              <div
+                auiFormItemError
+                *ngIf="form.controls[item.name]?.errors?.required"
+              >
+                {{ 'required' | translate }}
+              </div>
+            </aui-form-item>
+          </ng-container>
+        </div>
+      </ng-template>
+    </form>
+  </ng-container>
+</aui-dynamic-form>
+
+<ng-template #empty>
+  <div class="empty">
+    {{ 'this_template_has_no_arguments' | translate }}
+  </div>
+</ng-template>

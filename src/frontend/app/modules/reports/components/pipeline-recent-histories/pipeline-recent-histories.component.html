@@ -1,0 +1,68 @@
+<div class="chart-header">
+  <span class="chart-header__title">{{ 'reports.pipeline_recent_histories' | translate }}</span>
+  <div class="chart-header__actions">
+    <button
+      class="redirect"
+      aui-button
+      [routerLink]="['/workspace', project, 'pipelines', 'all']"
+    ><aui-icon icon="angle_right"></aui-icon></button>
+  </div>
+</div>
+<ng-container
+  *aloAsyncData="
+    let data;
+    let loading = loading;
+    let error = error;
+    let refresh = refetch;
+    handler: fetchPipelineRecentHistories;
+    params: project
+  "
+>
+  <ul *ngIf="data && data.length" class="report-container">
+    <li *ngFor="let item of data;" class="report-item">
+      <span [ngClass]="['report-item__icon', item.status?.phase.toLowerCase() || 'unknown']">
+        <aui-icon
+          [icon]="icons[item.status?.phase || 'Unknown']"
+          size="16px"
+        ></aui-icon>
+      </span>
+      <div class="report-item__content">
+        <div class="report-item__body">
+          <a class="pipeline-name" [routerLink]="['/workspace', project, 'pipelines', 'all', item.pipeline]">
+            <div>{{ item.pipeline }}</div>  
+          </a>
+          <a class="history-id" [routerLink]="['/workspace', project, 'pipelines', 'all', item.pipeline, item.name]">
+            #{{ item.jenkins?.build || '-' }}
+          </a>
+          <div class="report-item__space"></div>
+          <div class="report-item__actions">
+            <a
+              class="history-toggle"
+              [auiTooltip]="'reports.click_to_view_history_overview' | translate"
+              href="javascript:;"
+              (click)="openLog(item)"
+            >
+              <aui-icon
+                icon="basic:overview"
+                size="16px"
+              ></aui-icon>
+            </a>
+          </div>
+        </div>
+        <div class="report-item__footer">
+          <div>{{ item.status?.startedAt | aclRelativeTime }}</div>
+          <div class="report-item__space"></div>
+          <div>{{ 'reports.consumed' | translate }} {{ getDuration(item.status?.startedAt, item.status?.finishedAt) | aloDuration }}</div>
+        </div>
+      </div>
+    </li>
+  </ul>
+  <div *ngIf="!data || !data.length" class="reports-no-data">
+    <span *ngIf="loading">{{ 'loading' | translate }}</span>
+    <span *ngIf="error">
+      <span>{{ 'retry_on_error' | translate }}</span>
+      <a href="javascript:;" (click)="refresh()">{{ 'retry' | translate }}</a>
+    </span>
+    <span *ngIf="!error && !loading">{{ 'no_data' | translate }}</span>
+  </div>
+</ng-container>

@@ -1,0 +1,63 @@
+@import 'var';
+
+@import '../../../../../shared/mixins';
+
+$border: 1px solid #eee;
+$border-radius: 12px;
+@mixin labelContainer {
+  border: $border;
+  border-radius: $border-radius;
+  font-size: 12px;
+  background: #fafafa;
+  color: #666666;
+  display: inline-block;
+  padding: 2px 8px;
+  max-width: 350px;
+}
+
+:host {
+  display: inline-flex;
+}
+
+.plain-container {
+  @include text-overflow();
+  display: inline-block;
+  border-radius: $border-radius;
+  margin-right: 4px;
+
+  &__label {
+    @include labelContainer();
+    margin-right: 4px;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.plain-container-labels-wrapper {
+  @include text-overflow();
+  margin-bottom: -4px;
+
+  .plain-container__label {
+    margin-bottom: 4px;
+  }
+}
+
+::ng-deep .aui-tooltip .plain-container-labels-wrapper {
+  white-space: normal;
+}
+
+.full-content-toggle {
+  cursor: pointer;
+  flex-shrink: 0;
+  flex-basis: 20px;
+  &__label {
+    @include labelContainer();
+
+    &:hover {
+      color: $color-primary;
+      background: #e5f5fc;
+      border-color: $color-primary;
+    }
+  }
+}

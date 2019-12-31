@@ -1,0 +1,50 @@
+<ng-container *aloPageHeaderContent>
+  <alo-breadcrumb>
+    <ng-template aloBreadcrumbItem>
+      <span>
+        {{ 'project.list' | translate }}
+      </span>
+    </ng-template>
+  </alo-breadcrumb>
+</ng-container>
+<div
+  *aloAsyncData="
+    let projects;
+    let loading = loading;
+    let error = error;
+    params: params$ | async;
+    handler: fetchProjects;
+    notification: refresh$;
+  "
+>
+  <div class="list-header">
+    <div class="actions"> <!-- TODO: keepspace for future changes -->
+    </div>
+    <div class="alo-search">
+      <aui-search
+        [keyword]="keywords"
+        [placeholder]="(searchBy === 'name' ? 'search_by_name_placeholder' : 'search_by_display_name_placeholder') | translate"
+        [searchButton]="true"
+        [searching]="loading"
+        (search)="search($event)"
+      ></aui-search>
+    </div>
+  </div>
+  <div>
+    <alo-project-list
+      [params]="params$ | async"
+      [data]="projects"
+      [itemRoute]="itemRoute"
+      (sortChange)="onSort($event)"
+    >
+    </alo-project-list>
+    <alo-no-data
+      *ngIf="!projects || !projects.length"
+      mode="card"
+      [resourceName]="'project.list' | translate"
+      [loading]="loading"
+      [error]="error || projects && projects.errors"
+      (retry)="refresh$.next()"
+    ></alo-no-data>
+  </div>
+</div>

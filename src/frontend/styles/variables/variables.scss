@@ -1,0 +1,34 @@
+@import 'font';
+@import 'color';
+
+// font
+$font-family-primary: $font-family-100;
+$font-family-secondary: $font-family-200;
+$font-size-base: $font-size-14;
+$font-size-title: $font-size-18;
+$font-size-card-header: $font-size-18;
+$font-size-section-header: $font-size-16;
+
+// line-height
+$line-height-base: $line-height-1;
+$line-height-base: $line-height-1;
+$line-height-card-header: $line-height-24;
+$line-height-section-header: $line-height-22;
+
+//margins
+$margin-8: 8px;
+// margins
+$margin-12: 12px;
+$margin-16: 16px;
+$margin-20: 20px;
+
+$margin-base: $margin-12;
+$margin-form-item: $margin-16;
+$margin-inner: $margin-12;
+$margin-text: $margin-8;
+
+// colors
+$color-border-base: $gray-1;
+$color-section-header: $black-333;
+
+$color-primary: $blue-300;

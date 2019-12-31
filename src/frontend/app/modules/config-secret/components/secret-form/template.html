@@ -1,0 +1,181 @@
+<form
+  [formGroup]="form"
+  auiForm
+  auiFormLabelWidth="150px"
+  [auiFormEmptyAddon]="true"
+>
+  <aui-card>
+    <div auiCardHeader>
+      {{ (updateMode ? 'configsecret.update' : 'configsecret.create') |
+      translate }}
+    </div>
+    <aui-form-item formGroupName="metadata">
+      <label auiFormItemLabel>
+        {{ 'name' | translate }}
+      </label>
+      <input
+        auiFormItemControl
+        aui-input
+        (blur)="onBlur()"
+        required
+        [readonly]="updateMode"
+        formControlName="name"
+        [placeholder]="nameRule.placeholder | translate"
+      />
+      <div auiFormItemError *ngIf="form.get('metadata.name').errors?.required">
+        {{ nameRule.requiredError | translate }}
+      </div>
+      <div auiFormItemError *ngIf="form.get('metadata.name').errors?.pattern">
+        {{ nameRule.patternError | translate }}
+      </div>
+      <div auiFormItemError *ngIf="form.get('metadata.name').errors?.maxlength">
+        {{ nameRule.maxLengthError | translate }}
+      </div>
+    </aui-form-item>
+
+    <ng-content></ng-content>
+
+    <aui-form-item>
+      <label auiFormItemLabel>{{ 'type' | translate }}</label>
+      <aui-radio-group
+        auiFormItemControl
+        formControlName="type"
+        (valueChange)="typeChange()"
+      >
+        <aui-radio-button
+          [value]="secretTypes.Opaque"
+          [disabled]="updateMode && type !== 'Opaque'"
+          *ngIf="types.includes(secretTypes.Opaque)"
+        >
+          <aui-icon
+            icon="basic:secrets_s"
+            [auiTooltip]="'nav_secret' | translate"
+          ></aui-icon>
+          Opaque
+        </aui-radio-button>
+        <aui-radio-button
+          [value]="secretTypes.TLS"
+          [disabled]="updateMode && type !== 'kubernetes.io/tls'"
+          *ngIf="types.includes(secretTypes.TLS)"
+        >
+          <aui-icon
+            icon="basic:secrets_s"
+            [auiTooltip]="'nav_secret' | translate"
+          ></aui-icon>
+          TLS
+        </aui-radio-button>
+        <aui-radio-button
+          [value]="secretTypes.SSH"
+          [disabled]="updateMode && type !== 'kubernetes.io/ssh-auth'"
+          *ngIf="types.includes(secretTypes.SSH)"
+        >
+          <aui-icon
+            icon="basic:secrets_s"
+            [auiTooltip]="'nav_secret' | translate"
+          ></aui-icon>
+          {{ 'configsecret.ssh_auth' | translate }}
+        </aui-radio-button>
+        <aui-radio-button
+          [value]="secretTypes.BasicAuth"
+          [disabled]="updateMode && type !== 'kubernetes.io/basic-auth'"
+          *ngIf="types.includes(secretTypes.BasicAuth)"
+        >
+          <aui-icon
+            icon="basic:credential_s"
+            [auiTooltip]="'nav_secrets' | translate"
+          ></aui-icon>
+          {{ 'configsecret.basic_auth' | translate }}
+        </aui-radio-button>
+        <aui-radio-button
+          [value]="secretTypes.DockerConfig"
+          [disabled]="updateMode && type !== 'kubernetes.io/dockerconfigjson'"
+          *ngIf="types.includes(secretTypes.DockerConfig)"
+        >
+          <aui-icon
+            icon="basic:credential_s"
+            [auiTooltip]="'nav_secrets' | translate"
+          ></aui-icon>
+          {{ 'configsecret.dockerconfigjson' | translate }}
+        </aui-radio-button>
+      </aui-radio-group>
+      <div auiFormItemAddon>
+        <!-- <aui-icon icon="basic:question"></aui-icon> -->
+      </div>
+    </aui-form-item>
+
+    <aui-form-item [hidden]="true" formGroupName="metadata">
+      <label auiFormItemLabel>
+        {{ 'labels' | translate }}
+      </label>
+
+      <alo-key-value-form-table
+        auiFormItemControl
+        (blur)="onBlur()"
+        formControlName="labels"
+      >
+      </alo-key-value-form-table>
+    </aui-form-item>
+
+    <aui-form-item [hidden]="true" formGroupName="metadata">
+      <label auiFormItemLabel>
+        {{ 'annotations' | translate }}
+      </label>
+
+      <alo-key-value-form-table
+        auiFormItemControl
+        (blur)="onBlur()"
+        formControlName="annotations"
+      >
+      </alo-key-value-form-table>
+    </aui-form-item>
+
+    <ng-container [ngSwitch]="type">
+      <ng-container *ngSwitchCase="secretTypes.Opaque">
+        <aui-form-item>
+          <label auiFormItemLabel>
+            {{ 'data' | translate }}
+          </label>
+          <alo-key-value-form-list
+            auiFormItemControl
+            (blur)="onBlur()"
+            formControlName="data"
+          >
+          </alo-key-value-form-list>
+        </aui-form-item>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="secretTypes.TLS">
+        <alo-tls-editor
+          auiFormItemControl
+          (blur)="onBlur()"
+          formControlName="data"
+        ></alo-tls-editor>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="secretTypes.SSH">
+        <alo-ssh-auth-editor
+          auiFormItemControl
+          (blur)="onBlur()"
+          formControlName="data"
+        ></alo-ssh-auth-editor>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="secretTypes.BasicAuth">
+        <alo-basic-auth-editor
+          auiFormItemControl
+          (blur)="onBlur()"
+          formControlName="data"
+        ></alo-basic-auth-editor>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="secretTypes.DockerConfig">
+        <alo-dockerconfig-editor
+          auiFormItemControl
+          [type]="'.dockerconfigjson'"
+          (blur)="onBlur()"
+          formControlName="data"
+        ></alo-dockerconfig-editor>
+      </ng-container>
+    </ng-container>
+  </aui-card>
+</form>

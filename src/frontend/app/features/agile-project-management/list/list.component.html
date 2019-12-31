@@ -1,0 +1,40 @@
+<alo-breadcrumb *aloPageHeaderContent>
+  <ng-template aloBreadcrumbItem>
+    <span>
+      {{ 'nav_agile_project_management' | translate }}
+    </span>
+  </ng-template>
+  <ng-template aloBreadcrumbItem>
+    <span>{{ 'nav_issues_list' | translate }}</span>
+  </ng-template>
+</alo-breadcrumb>
+
+<ng-container *ngIf="(bindings$ | async) as bindings">
+  <aui-tab-group *ngIf="bindings.length > 1">
+    <aui-tab *ngFor="let bind of bindings">
+      <span *auiTabLabel>{{ bind.name }}</span>
+      <ng-container *auiTabContent>
+        <ng-container *ngTemplateOutlet="issuesList; context: { bind: bind }"></ng-container>
+      </ng-container>
+    </aui-tab>
+  </aui-tab-group>
+
+  <ng-container *ngIf="bindings.length === 1">
+    <ng-container *ngFor="let bind of bindings">
+      <ng-container *ngTemplateOutlet="issuesList; context: { bind: bind }"></ng-container>
+    </ng-container>
+  </ng-container>
+</ng-container>
+
+<ng-template #issuesList let-bind="bind">
+  <aui-card>
+    <aui-inline-alert
+      *ngIf="bind?.status?.phase !== 'Ready'"
+      [content]="'project_management.binding_inline_alert_error' | translate"
+      type="error"
+    ></aui-inline-alert>
+    <alo-project-management-issues-wizard
+      [bind]="bind"
+    ></alo-project-management-issues-wizard>
+  </aui-card>
+</ng-template>

@@ -1,0 +1,134 @@
+@import 'var';
+
+$SUCCESS: $color-success;
+$FAILURE: $color-error;
+$RUNNING: $color-primary;
+$ABORTED: #999;
+$PAUSED: $color-primary;
+
+$status-color-map: (
+  SUCCESS: $SUCCESS,
+  FAILURE: $FAILURE,
+  RUNNING: $RUNNING,
+  ABORTED: $ABORTED,
+  PAUSED: $PAUSED,
+);
+
+.step_header {
+  display: flex;
+  border: solid 1px #e4e4e4;
+  cursor: pointer;
+  &:hover {
+    background-color: #f8f8f8;
+  }
+  &.folded {
+    .title {
+      ::ng-deep .aui-icon {
+        fill: $color-info;
+      }
+    }
+    &:hover {
+      background-color: #fff;
+      cursor: default;
+    }
+  }
+  .step_status {
+    flex-shrink: 0;
+    color: #fafafa;
+    width: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    @each $status, $color in $status-color-map {
+      &.#{$status} {
+        background-color: $color;
+      }
+    }
+  }
+  .step_title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-grow: 1;
+    min-width: 0px;
+    .title {
+      margin-left: 8px;
+      display: flex;
+      height: 35px;
+      line-height: 35px;
+      width: 100%;
+      min-width: 0px;
+      .name {
+        flex-shrink: 0;
+      }
+      .description {
+        color: #a4a4a4;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        word-break: break-all;
+        margin-left: 20px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        &::before {
+          content: '—';
+        }
+      }
+    }
+    .duration {
+      flex-shrink: 0;
+      margin-right: 8px;
+    }
+  }
+}
+.step_content {
+  background-color: #262626;
+  display: flex;
+  flex-direction: column;
+  .line {
+    background-color: #262626;
+    color: #f5f5f5;
+    font-size: 12px;
+    padding: 4px;
+    display: flex;
+    &:hover {
+      background-color: #444444;
+    }
+    &:last-child {
+      display: none;
+    }
+    .id {
+      width: 100px;
+      text-align: right;
+      padding: 0 40px;
+      color: #777;
+    }
+    .log_content {
+      white-space: pre-wrap;
+    }
+  }
+}
+.parameters-container {
+  border: $default-border;
+  background-color: #f2f2f2;
+  padding: 20px 32px;
+  .parameter-message {
+    font-size: 16px;
+    color: #4d4d4d;
+    margin-bottom: 16px;
+  }
+  .operations {
+    text-indent: 100px;
+  }
+
+  &.confirm {
+    .parameter-message {
+      text-align: center;
+    }
+    .operations {
+      text-indent: 0;
+      text-align: center;
+    }
+  }
+}

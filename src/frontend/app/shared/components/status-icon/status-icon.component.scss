@@ -1,0 +1,76 @@
+@import 'var';
+
+@keyframes spin-with-pause {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  20% {
+    transform: rotate(180deg);
+  }
+
+  100% {
+    transform: rotate(180deg);
+  }
+}
+
+:host {
+  position: relative;
+  display: inline-flex;
+  vertical-align: middle;
+  font-size: 16px;
+  border-radius: 50%;
+  background: #fff;
+
+  ::ng-deep {
+    aui-icon {
+      display: inline-flex;
+    }
+  }
+}
+
+.status-icon {
+  &--success {
+    color: $color-success;
+  }
+
+  &--running {
+    color: $color-success;
+  }
+
+  &--error,
+  &--failed {
+    color: $color-error;
+  }
+
+  &--pending {
+    color: $color-primary;
+    transform-origin: center;
+    animation-name: spin-with-pause;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+  }
+
+  &--unknown,
+  &--stopped {
+    color: $color-info;
+  }
+
+  &--bound {
+    color: $color-primary;
+  }
+
+  &--warning {
+    color: $color-warning;
+  }
+
+  &--terminating {
+    color: $color-error;
+    transform-origin: center;
+    animation-name: spin-with-pause;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+  }
+}

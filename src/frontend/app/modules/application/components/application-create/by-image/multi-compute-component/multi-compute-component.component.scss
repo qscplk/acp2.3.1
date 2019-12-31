@@ -1,0 +1,69 @@
+.yaml-card-container {
+  margin-top: 10px;
+  margin-bottom: 70px;
+}
+.actions {
+  button {
+    border: unset;
+  }
+}
+.aui-table {
+  min-width: 0px;
+  &__column-componentName {
+    flex: 4;
+  }
+  &__column-type {
+    flex: 2;
+  }
+  &__column-replicas {
+    flex: 2;
+  }
+  &__column-container {
+    flex: 8;
+  }
+  &__column-actions {
+    flex: 1;
+  }
+}
+.list-yaml-card-header {
+  display: flex;
+  justify-content: space-between;
+}
+.container-item {
+  display: flex;
+  .container-image {
+    max-width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .container-size {
+    font-size: 12px;
+    border-radius: 10px;
+    border: solid 1px #cccccc;
+    background-color: #f2f2f2;
+    padding: 0 5px;
+    margin-left: 5px;
+  }
+}
+.aviliable-data {
+  cursor: pointer;
+  color: #24a7e3;
+  &:hover {
+    background-color: #e5f5fc;
+  }
+}
+.tooltip-container {
+  .tooltip-list {
+    margin-left: 30px;
+    padding: 10px 20px 10px 0;
+  }
+}
+.no-border {
+  border: unset;
+}
+.yaml-editing-mode {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 10px;
+}

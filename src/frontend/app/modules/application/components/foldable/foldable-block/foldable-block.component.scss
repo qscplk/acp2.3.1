@@ -1,0 +1,31 @@
+@import 'variables';
+
+:host {
+  display: flex;
+  flex-flow: column-reverse;
+}
+
+.foldable-bar {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  width: 100%;
+  background-color: #fafafa;
+  color: $color-primary;
+  opacity: 0.8;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &__icon {
+    display: inline-flex;
+    svg {
+      width: 1em;
+      height: 1em;
+      fill: $color-primary;
+    }
+  }
+}

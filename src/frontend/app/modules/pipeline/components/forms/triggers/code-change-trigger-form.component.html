@@ -1,0 +1,41 @@
+<div
+  class="card"
+  [class.card--checked]="formValue('enabled')"
+>
+  <div class="checkbox">
+    <aui-checkbox [formControl]="form.controls.enabled"></aui-checkbox>
+  </div>
+  <div class="v-line"></div>
+  <div class="input">
+    <div class="title">
+      <aui-icon
+        [icon]="'basic:code'"
+        [ngClass]="{enabled:formValue('enabled')}"
+      ></aui-icon>
+      {{'pipeline.code_change_scan_trigger'|translate}}
+    </div>
+    <hr>
+    <div>
+      <aui-form-item>
+        <label auiFormItemLabel>{{'pipeline.trigger_cron'|translate}}</label>
+        <aui-select
+          auiFormItemControl
+          placeholder="{{'pipeline.trigger_select_input_placeholder'|translate}}"
+          [formControl]="form.controls.cron_string"
+          [clearable]="true"
+          [placeholder]="select_or_input|translate"
+          [required]="formValue('enabled')"
+        >
+          <aui-option
+            *ngFor="let rule of codeCheckOptions"
+            [value]="rule.value"
+            [label]="rule.name|translate"
+          >
+            {{rule.name|translate}}
+          </aui-option>
+        </aui-select>
+      </aui-form-item>
+      <div class="tips">{{'pipeline.trigger_tips'|translate}}</div>
+    </div>
+  </div>
+</div>

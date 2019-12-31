@@ -1,0 +1,62 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  .no-data {
+    display: flex;
+    height: 80px;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    background-color: white;
+  }
+
+  .detail-page-tab-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    position: relative;
+    aui-code-editor {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      height: 100%;
+      width: 100%;
+    }
+  }
+
+  .containers-wrapper {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    & > alo-container {
+      flex-basis: 100%;
+      flex-grow: 1;
+      padding: 6px 0;
+    }
+    .volume-info-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  .empty-tab {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    color: lightgray;
+  }
+
+  .container-card {
+    margin: 16px 0;
+    ::ng-deep .aui-card__content {
+      padding-top: unset;
+    }
+  }
+  alo-resource-network {
+    margin-top: 15px;
+  }
+}

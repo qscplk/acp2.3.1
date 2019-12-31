@@ -1,0 +1,44 @@
+<div class="time-pick">
+  <button
+    aui-button
+    size="small"
+    (click)="timePicker()"
+  >
+    <aui-icon icon="basic:plus"></aui-icon>
+    <span style="margin-left:4px">配置时间</span>
+  </button>
+  <div
+    *ngIf="selecting"
+    [@fadeInOut]
+  >
+    <div class="time-container">
+      <div class="current-time">
+        {{currentTime.hour + ':' + currentTime.minute}}
+      </div>
+      <div class="time-pick-plane">
+        <div class="hours column">
+          <ng-container *ngFor="let hour of hours">
+            <div
+              class="cell"
+              [ngClass]="{'selected': hour === currentTime.hour}"
+              (click)="setHour(hour)"
+            >
+              {{hour}}
+            </div>
+          </ng-container>
+        </div>
+        <div class="minutes column">
+          <ng-container *ngFor="let min of minutes">
+            <div
+              class="cell"
+              [ngClass]="{'selected': min === currentTime.minute}"
+              (click)="setMin(min)"
+            >
+              {{min}}
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

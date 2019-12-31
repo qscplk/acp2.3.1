@@ -1,0 +1,72 @@
+<ng-container *ngIf="!plainTable">
+  <div
+    class="project-card"
+    *ngFor="let item of data.items; trackBy: tracker"
+  >
+    <div class="name-container">
+      <img
+        src="icons/project.svg"
+        alt="project"
+      >
+      <div class="name">
+        <span>
+          <a
+            *ngIf="!!itemRoute"
+            [routerLink]="itemRoute(item)"
+          >
+            <span>{{ item.name }}</span>
+          </a>
+          <span *ngIf="!itemRoute">
+            <span>{{ item.name }}</span>
+          </span>
+        </span>
+        <span>{{item.displayName}}</span>
+      </div>
+    </div>
+    <div>
+      <span class="created-time">
+        {{ item.creationTimestamp | aclRelativeTime }}
+      </span>
+    </div>
+    <div>
+      <span
+        title="{{item.description || '-'}}"
+        class="description"
+        style="-webkit-box-orient: vertical;"
+      >
+         {{item.description || '-'}}
+      </span>
+    </div>
+  </div>
+</ng-container>
+<aui-table
+  *ngIf="plainTable"
+  [dataSource]="data.items"
+>
+  <ng-container auiTableColumnDef="name">
+    <aui-table-header-cell *auiTableHeaderCellDef>{{ 'name' | translate }}</aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      <span>{{ item.name }}</span>
+      <div class="display-name">{{ item.displayName || '-' }}</div>
+    </aui-table-cell>
+  </ng-container>
+  <ng-container auiTableColumnDef="manager">
+    <aui-table-header-cell *auiTableHeaderCellDef>{{ 'project_manager' |
+      translate }}</aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">{{ item.projectManagers.join(',
+      ') }}</aui-table-cell>
+  </ng-container>
+  <ng-container auiTableColumnDef="creationTimestamp">
+    <aui-table-header-cell *auiTableHeaderCellDef>{{ 'create_at' | translate }}</aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">
+      {{ item.creationTimestamp | aclRelativeTime }}
+    </aui-table-cell>
+  </ng-container>
+  <ng-container auiTableColumnDef="description">
+    <aui-table-header-cell *auiTableHeaderCellDef>{{ 'description' | translate
+      }}</aui-table-header-cell>
+    <aui-table-cell *auiTableCellDef="let item">{{ item.description }}</aui-table-cell>
+  </ng-container>
+  <aui-table-header-row *auiTableHeaderRowDef="columns"></aui-table-header-row>
+  <aui-table-row *auiTableRowDef="let row; columns: columns;"></aui-table-row>
+</aui-table>

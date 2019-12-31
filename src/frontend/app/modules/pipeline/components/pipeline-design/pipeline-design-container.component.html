@@ -1,0 +1,55 @@
+<alo-pipeline-design-source
+  *ngIf="['repo', 'multi-branch'].includes(type)"
+  [type]="type"
+  [namespace]="pipelineConfig?.namespace"
+  [source]="source"
+></alo-pipeline-design-source>
+<ng-container *ngIf="fields?.length">
+  <aui-card>
+    <div auiCardHeader>
+      {{'pipeline.jenkinsfile'|translate}}
+      <span
+        class="pipeline-syncing"
+        *ngIf="creating"
+      >
+        ({{'pipeline.template_pipeline_hint'|translate}})
+      </span>
+      </div>
+      <aui-code-editor
+        [options]="editorOptions"
+        [actionsConfig]="actionsConfig"
+        [(ngModel)]="jenkinsfile"
+      ></aui-code-editor>
+    </aui-card>
+    <aui-card>
+      <div auiCardHeader>{{'pipeline.trigger_parameters'|translate}}</div>
+      <aui-section *ngIf="!!globalSettings">
+        <div auiSectionTitle>{{'pipeline_global_settings'|translate}}</div>
+        <alo-pipeline-global-setting
+          [globalSettings]="globalSettings"
+        ></alo-pipeline-global-setting>
+      </aui-section>
+      <aui-section>
+        <div auiSectionTitle>{{'pipeline.template_parameter'|translate}}</div>
+        <alo-pipeline-design-parameters
+          *ngFor="let field of fields; trackBy: trackField"
+          [field]="field"
+        ></alo-pipeline-design-parameters>
+      </aui-section>
+    </aui-card>
+</ng-container>
+<aui-card *ngIf="type === 'script' && (!fields || !fields.length)">
+  <div
+    auiCardHeader
+    class="header"
+  >
+    {{'pipeline.jenkinsfile'|translate}}
+  </div>
+  <div class="jenkinsfile-content">
+    <aui-code-editor
+      [options]="editorOptions"
+      [actionsConfig]="actionsConfig"
+      [(ngModel)]="jenkinsfile"
+    ></aui-code-editor>
+  </div>
+</aui-card>

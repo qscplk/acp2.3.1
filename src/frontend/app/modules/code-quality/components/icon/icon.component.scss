@@ -1,0 +1,133 @@
+@import 'var';
+
+$levels: A B C D E;
+$file-sizes: XS S M L XL;
+$colors: $color-success #9ece4f #fc0 $color-warning $color-error;
+$size-color: #32aee6;
+$coverage-colors: $color-error $color-success;
+$size-default: 28px;
+$size-small: 16px;
+$duplicate-sizes-small: 0 2px 6px 8px 10px;
+$duplicate-sizes-default: 0 4px 8px 12px 14px;
+$coverage-degs: 315deg 270deg 225deg 135deg 45deg;
+
+.code-quanlity-icon {
+  border-radius: 50%;
+  width: $size-default;
+  height: $size-default;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @for $i from 1 through length($levels) {
+    &--level-#{to-lower-case(nth($levels, $i))} {
+      background-color: nth($colors, $i);
+      &:after {
+        content: '#{nth($levels, $i)}';
+        color: #fff;
+      }
+    }
+  }
+
+  @for $i from 1 through length($levels) {
+    &--size-#{to-lower-case(nth($levels, $i))} {
+      background-color: $size-color;
+      &:after {
+        content: '#{nth($file-sizes, $i)}';
+        color: #fff;
+      }
+    }
+  }
+
+  @for $i from 1 through length($levels) {
+    &--duplicate-#{to-lower-case(nth($levels, $i))} {
+      background-color: #fff;
+      position: relative;
+      &:before {
+        position: absolute;
+        content: '';
+        width: 100%;
+        height: 100%;
+        border: solid 4px nth($colors, $i);
+        border-radius: 50%;
+        top: 0;
+        left: 0;
+      }
+      &:after {
+        content: '';
+        background-color: nth($colors, $i);
+        width: nth($duplicate-sizes-default, $i);
+        height: nth($duplicate-sizes-default, $i);
+        border-radius: 50%;
+      }
+    }
+  }
+
+  @for $i from 1 through length($levels) {
+    &--coverage-#{to-lower-case(nth($levels, $i))} {
+      position: relative;
+      background-color: nth($coverage-colors, 1);
+      overflow: hidden;
+      .value,
+      .fill,
+      &:after,
+      &:before {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+      }
+      .value {
+        background-color: nth($coverage-colors, 2);
+        transform: rotate(nth($coverage-degs, $i)) translate(-50%);
+        z-index: 1;
+      }
+      .fill {
+        background-color: nth($coverage-colors, 2);
+        transform: translate(50%);
+        opacity: if(nth($coverage-degs, $i) > 180deg, 1, 0);
+        z-index: 3;
+      }
+      &:before {
+        content: '';
+        background-color: nth($coverage-colors, 1);
+        transform: translate(-50%);
+        opacity: if(nth($coverage-degs, $i) < 180deg, 1, 0);
+        z-index: 2;
+      }
+      &:after {
+        content: '';
+        border-radius: 50%;
+        background-color: #fff;
+        width: calc(100% - 8px);
+        height: calc(100% - 8px);
+        z-index: 4;
+      }
+    }
+  }
+
+  &--small {
+    width: $size-small;
+    height: $size-small;
+    font-size: 10px;
+
+    @for $i from 1 through length($levels) {
+      &.code-quanlity-icon--duplicate-#{to-lower-case(nth($levels, $i))} {
+        &:after {
+          width: nth($duplicate-sizes-small, $i);
+          height: nth($duplicate-sizes-small, $i);
+        }
+        &:before {
+          border-width: 2px;
+        }
+      }
+
+      &.code-quanlity-icon--coverage-#{to-lower-case(nth($levels, $i))} {
+        &:after {
+          width: calc(100% - 4px);
+          height: calc(100% - 4px);
+        }
+      }
+    }
+  }
+}

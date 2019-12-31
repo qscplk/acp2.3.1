@@ -1,0 +1,76 @@
+<div
+  class="days"
+  [ngClass]="{'error': errors?.leastOneDay}"
+>
+  <div class="day-items">
+    <aui-checkbox
+      [(ngModel)]="model.days.mon"
+      (ngModelChange)="dayChange()"
+    >
+      {{'pipeline.monday'| translate}}
+    </aui-checkbox>
+    <aui-checkbox
+      [(ngModel)]="model.days.tue"
+      (ngModelChange)="dayChange()"
+    >
+      {{'pipeline.tuesday'| translate}}
+    </aui-checkbox>
+    <aui-checkbox
+      [(ngModel)]="model.days.wed"
+      (ngModelChange)="dayChange()"
+    >
+      {{'pipeline.wednesday'| translate}}
+    </aui-checkbox>
+    <aui-checkbox
+      [(ngModel)]="model.days.thu"
+      (ngModelChange)="dayChange()"
+    >
+      {{'pipeline.thursday'| translate}}
+    </aui-checkbox>
+    <aui-checkbox
+      [(ngModel)]="model.days.fri"
+      (ngModelChange)="dayChange()"
+    >
+      {{'pipeline.friday'| translate}}
+    </aui-checkbox>
+    <aui-checkbox
+      [(ngModel)]="model.days.sat"
+      (ngModelChange)="dayChange()"
+    >
+      {{'pipeline.saturday'| translate}}
+    </aui-checkbox>
+    <aui-checkbox
+      [(ngModel)]="model.days.sun"
+      (ngModelChange)="dayChange()"
+    >
+      {{'pipeline.sunday'| translate}}
+    </aui-checkbox>
+  </div>
+</div>
+<div
+  class="errors"
+  *ngIf="errors?.leastOneDay"
+>
+  {{'pipeline.leastOneDay'|translate}}
+</div>
+<div class="time-container">
+  <div *ngFor="let time of model.times; let i = index; trackBy: trackFn">
+    <aui-tag
+      [closeable]="true"
+      type="info"
+      (close)="deleteTime(i)"
+    >
+      <aui-icon icon="basic:time"></aui-icon>
+      <span>{{time}}</span>
+    </aui-tag>
+  </div>
+  <div style="display: flex">
+    <alo-trigger-time-selector (timeSelected)="timeSelected($event)"></alo-trigger-time-selector>
+    <p
+      class="errors least_time"
+      *ngIf="errors?.leastOneTime"
+    >
+      {{'pipeline.leastOneTime'|translate}}
+    </p>
+  </div>
+</div>

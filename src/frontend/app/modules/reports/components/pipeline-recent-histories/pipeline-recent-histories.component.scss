@@ -1,0 +1,87 @@
+@import 'var';
+
+$queued: $color-primary;
+$pending: $color-primary;
+$running: $color-primary;
+$failed: $color-error;
+$complete: $color-success;
+$cancelled: $color-info;
+$aborted: $color-warning;
+$unknown: $color-info;
+
+$status-color-map: (
+  pending: $pending,
+  queued: $queued,
+  running: $running,
+  failed: $failed,
+  complete: $complete,
+  cancelled: $cancelled,
+  aborted: $aborted,
+  unknown: $unknown,
+);
+
+:host {
+  display: flex;
+  overflow: hidden;
+  height: 289px;
+  flex-direction: column;
+}
+
+ul.report-container {
+  .report-item {
+    &__icon {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+      aui-icon {
+        border-radius: 50%;
+        margin-right: 4px;
+      }
+
+      @each $status, $color in $status-color-map {
+        &.#{$status} {
+          aui-icon {
+            color: $color;
+          }
+        }
+      }
+    }
+    &__actions {
+      a.history-toggle {
+        color: #999;
+        &:hover,
+        &:active,
+        &:focus {
+          color: $color-primary;
+        }
+      }
+    }
+    &__body {
+      > .pipeline-name {
+        flex-shrink: 1;
+        min-width: 0;
+        > div {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+      > .history-id {
+        flex-shrink: 0;
+        white-space: nowrap;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        &:before {
+          content: '';
+          width: 4px;
+          height: 4px;
+          background-color: #d8d8d8;
+          border-radius: 50%;
+          margin: 0px 4px;
+        }
+      }
+    }
+  }
+}

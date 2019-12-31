@@ -1,0 +1,69 @@
+<aui-form-item>
+  <label auiFormItemLabel>{{ 'pipeline.repository' | translate }}</label>
+  <alo-repository-selector
+    [style.width]="'100%'"
+    auiFormItemControl
+    [formControl]="form.controls.repo"
+    [project]="project"
+    [method]="method"
+    [onlyGit]="method === 'multi-branch'"
+    required
+  ></alo-repository-selector>
+  <div auiFormItemError *ngIf="form.controls.repo?.errors?.repoRequired">
+    {{'required' | translate}}
+  </div>
+</aui-form-item>
+<aui-form-item [hidden]="isSvnRepo">
+  <label auiFormItemLabel>{{
+    (method === 'multi-branch' ? 'pipeline.branch_filter' : 'pipeline.branch')
+      | translate
+  }}</label>
+  <ng-container [ngSwitch]="method">
+    <input
+      *ngSwitchCase="'multi-branch'"
+      auiFormItemControl
+      aui-input
+      [formControl]="form.controls.branch"
+      required
+    />
+    <aui-select
+      *ngSwitchDefault
+      auiFormItemControl
+      [formControl]="form.controls.branch"
+      [filterable]="true"
+      [clearable]="true"
+      [allowCreate]="true"
+    >
+      <aui-option
+        *ngFor="let option of branches"
+        [label]="option.opt_key"
+        [value]="option.opt_value"
+      >
+        {{ option.opt_key }}
+      </aui-option>
+    </aui-select>
+  </ng-container>
+  <div auiFormItemAddon *ngIf="method === 'multi-branch'">
+    <aui-icon
+      icon="basic:question"
+      [auiTooltip]="'pipeline.branch_filter_hint' | translate"
+    ></aui-icon>
+  </div>
+  <div auiFormItemError *ngIf="form.controls.branch?.errors?.required">
+    {{'required' | translate}}
+  </div>
+</aui-form-item>
+<aui-form-item>
+  <label auiFormItemLabel>
+    {{ 'pipeline.jenkinsfile_path' | translate }}
+  </label>
+  <input
+    auiFormItemControl
+    aui-input
+    [formControl]="form.controls.path"
+    required
+  />
+  <div auiFormItemError *ngIf="form.controls.path?.errors?.required">
+    {{'required' | translate}}
+  </div>
+</aui-form-item>

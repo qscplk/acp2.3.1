@@ -1,0 +1,49 @@
+@import 'var';
+
+.help-icon {
+  color: #999;
+  font-size: 16px;
+  margin-left: 8px;
+  &:hover {
+    color: $color-primary;
+  }
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+.header-action {
+  display: flex;
+  justify-content: space-between;
+
+  button {
+    padding: 0 12px;
+    height: 28px;
+    border-radius: 14px;
+    border: none;
+    outline: none;
+    color: #333;
+    background-color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    &.isSelected {
+      color: #fff;
+      background-color: $color-primary;
+    }
+    &[disabled] {
+      color: #999;
+      cursor: no-drop;
+    }
+  }
+}
+.no-template-hint {
+  min-height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+}
+
+aui-paginator {
+  margin-top: 12px;
+}

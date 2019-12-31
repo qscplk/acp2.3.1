@@ -1,0 +1,125 @@
+<aui-card>
+  <div
+    auiCardHeader
+    style="display:flex"
+  >
+    <span style="display:flex">
+      <img
+        *ngIf="method"
+        src="icons/pipeline/{{ method }}.svg"
+        alt="devops"
+      >
+      <span style="margin-left: 8px">{{pipeline?.name}}</span>
+    </span>
+    <span
+      *ngIf="pipeline?.status?.phase === 'Error'"
+      style="color: #f8ac58;margin-left: 8px;"
+    >
+      <aui-icon
+        icon="exclamation_circle_s"
+        [auiTooltip]="errors"
+      ></aui-icon>
+    </span>
+    <ng-template #errors>
+      <div>{{pipeline?.status.message}}</div>
+      <ul>
+        <li
+          *ngFor="let condition of pipeline?.status?.conditions"
+        >{{condition?.message}}</li>
+      </ul>
+    </ng-template>
+  </div>
+  <div
+    auiCardBody
+    class="basic-body"
+  >
+    <div class="field">
+      <label>{{ 'display_name' | translate }}</label>
+      <span>{{ pipeline?.displayName || '-'}}</span>
+    </div>
+    <div class="field">
+      <label>{{ 'create_at' | translate }}</label>
+      <span>{{ pipeline?.createdAt | aclStandardTime }}</span>
+    </div>
+    <div class="field">
+      <label>{{ 'create_mode' | translate }}</label>
+      <ng-container [ngSwitch]="method">
+        <span *ngSwitchCase="kinds.MultiBranch">
+          {{ 'pipeline.create_by_multi_branch' | translate }}
+        </span>
+        <span *ngSwitchCase="kinds.Template">
+          {{ 'pipeline.created_by_template' | translate }}
+        </span>
+        <span *ngSwitchCase="kinds.Graph">
+          {{ 'pipeline.create_by_graph' | translate }}
+        </span>
+        <span *ngSwitchDefault>
+          {{ 'pipeline.created_by_script' | translate }}
+        </span>
+      </ng-container>
+    </div>
+    <div class="field">
+      <label>{{ 'jenkins_instance' | translate }}</label>
+      <span>{{ pipeline?.jenkinsInstance || '-' }}</span>
+    </div>
+    <div class="field">
+      <label>{{ 'pipeline_trigger' | translate }}</label>
+      <span>
+        <ng-container *ngIf="pipeline?.triggers | pure: hasEnabledTriggers; else noTriggers">
+          <aui-icon
+            *ngFor="let trigger of enabledTriggers"
+            style="color: #333"
+            [icon]="mapTriggerIcon(trigger.type)"
+            auiTooltip="
+            {{mapTriggerTranslateKey(trigger.type)|translate}}
+            {{'pipeline_trigger'|translate}}
+            {{'pipeline.trigger_rules'|translate}}
+            {{getCodeCheckNameByValue(trigger.rule)|translate}}"
+          ></aui-icon>
+        </ng-container>
+        <ng-template #noTriggers>
+          <span>-</span>
+        </ng-template>
+      </span>
+    </div>
+    <!--<div class="field">-->
+      <!--<label>-->
+        <!--{{ 'pipeline.belongs_application' | translate }}-->
+      <!--</label>-->
+      <!--<a-->
+        <!--*ngIf="pipeline?.application"-->
+        <!--[routerLink]="['/workspace',pipeline.namespace,'applications',pipeline.application]"-->
+      <!--&gt;-->
+        <!--{{ pipeline?.application }}-->
+      <!--</a>-->
+      <!--<span *ngIf="!pipeline?.application">-</span>-->
+    <!--</div>-->
+    <div
+      class="field"
+      *ngIf="method !== 'multi-branch'"
+    >
+      <label>{{ 'pipeline.run_policy' | translate }}</label>
+      {{ (pipeline?.runPolicy === 'Serial' ? 'pipeline.serial' : 'pipeline.parallel') | translate }}
+      <span *ngIf="!pipeline?.runPolicy">-</span>
+    </div>
+    <div
+      class="field"
+      *ngIf="method === 'multi-branch'"
+    >
+      <label>{{ 'pipeline.scan_logs' | translate }}</label>
+      <span>
+        <acl-disabled-container [isAllowed]="viewLogsPermission">
+          <button
+            aui-button="text"
+            size="small"
+            href="javascript:;"
+            (click)="openScanLog()"
+          >
+            <aui-icon icon="basic:log"></aui-icon>
+            {{ 'pipeline.detail_short' | translate }}
+          </button>
+        </acl-disabled-container>
+      </span>
+    </div>
+  </div>
+</aui-card>
