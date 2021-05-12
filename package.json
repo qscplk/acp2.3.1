@@ -53,7 +53,7 @@
     "monaco-languages": "^1.7.0",
     "ng-monaco-editor": "^2.0.0",
     "ng-resource-form-util": "^1.2.0",
-    "nodemailer": "^4.6.8",
+    "nodemailer": "^6.4.16",
     "path-to-regexp": "^3.0.0",
     "pluralize": "^8.0.0",
     "protractor-retry": "^1.2.0",
